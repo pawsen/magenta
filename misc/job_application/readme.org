@@ -1,0 +1,133 @@
+#+TITLE: Readme
+
+A few notes for the Magenta interview.
+The mail said:
+
+#+begin_quote
+OS2datascanner gør i dag brug af Beautiful Soup-biblioteket som HTML og XML konverteringsfunktion. Under kørsel bygger Beautiful Soup et relativt kompleks datastruktur, der nøjagtigt afspejler HTML-dokumentets træstruktur, men det har OS2datascanner slet ikke brug for - i stedet er OS2datascanner kun interesseret i at hive selve teksten ud. Det er dog vigtigt for OS2datascanner at mellemrum og linjeskift bliver bibeholdt i den konverterede tekst.
+
+Opgave: Find en bedre parser og påvis, at den er bedre, og påvis også at den konverterede tekst overholder mellemrum og linjeskift.
+#+end_quote
+
+
+git clone --depth 1 git@github.com:os2datascanner/os2datascanner.git
+* Run the library on macos
+comment out packages that doesn't run on macos(systemd, smbclient)
+: apt install smbclient  # in case you're lucky enough to run debian... Not me.
+
+Install proper =sed= so we have =-i=. Installed as =gsed=
+
+: brew install gnu-sed
+: conda create -n os2 pip python=3.6
+#+begin_src sh
+file='requirements/python-requirements/requirements-engine.txt'
+gsed -e '/pysmbc/ s/^#*/#/' -i $file
+gsed -e '/systemd-python/ s/^#*/#/' -i $file
+pip install -r $file
+#+end_src
+
+install =libmagic= for python-magic
+/libmagic identifies file types by checking their headers according to a predefined list of file types./
+: brew install libmagic
+Reminds me of the [[https://en.wikipedia.org/wiki/List_of_file_signatures][magic bytes]], when I was trying to learn hexdump years ago
+
+#+begin_src sh
+hexdump data/ocr/good/cpr.png | head
+od -bc data/ocr/good/cpr.png | head
+#+end_src
+
+
+: PYTHONPATH=~/git/os2datascanner/src/ python3 ~/git/os2datascanner/src/os2datascanner/engine2/tests/test_engine2_conversions.py
+Not working, due to missing =smbc=. I have no linux virtual machine on this computer. And I cannot install vagrant. See my [[https://github.com/pawsen/vagrant][vagrantfiles]].
+I give up.
+
+* Find usage of beautiful Soup library
+
+Locate relevant file with =ripgrep= (rg)
+
+: rg -i beauti
+OR in emacs™ (equivalent)
+With =M-n= (next) and =M-p= (previous) you can cycle through your history of search queries.
+
+: SPC / beauti
+: SPC s p beauti
+
+: src/os2datascanner/engine2/conversions/text/html.py
+or on github: [[https://github.com/os2datascanner/os2datascanner/tree/master/src/os2datascanner/engine2/conversions/text/html.py][html.py]]
+(=SPC g y= to copy the file url to clipboard)
+
+* How it seems to work
+[[https://github.com/os2datascanner/os2datascanner/blob/master/src/os2datascanner/engine2/conversions/text/html.py#L19][html_processor]] gets a =make_stream= [[https://docs.python.org/3/library/contextlib.html#contextlib.contextmanager][contextmanager]] defined in the [[https://github.com/os2datascanner/os2datascanner/blob/master/src/os2datascanner/engine2/model/http.py#L181][http.py]] engine.
+The abstract method is defined in the [[https://github.com/os2datascanner/os2datascanner/blob/master/src/os2datascanner/engine2/model/core/resource.py#L98][core/resource.py]] engine.
+
+From the doc for =make_stream=
+#+begin_quote
+Returns a context manager that, when entered, returns a read-only Python stream
+through which the content of this FileResource can be accessed until the context
+is exited.
+#+end_quote
+Thus, a [[https://docs.python.org/3/library/io.html#io.BytesIO][IO]] byte stream is returned/yield'et. =_get_cookie= is defined in
+[[https://github.com/os2datascanner/os2datascanner/blob/master/src/os2datascanner/engine2/model/core/resource.py#L43][resource.py]] where =sm= is a [[https://github.com/os2datascanner/os2datascanner/blob/master/src/os2datascanner/engine2/model/core/utilities.py#L14][SourceManager]] object defining [[https://github.com/os2datascanner/os2datascanner/blob/master/src/os2datascanner/engine2/model/core/utilities.py#L87][open]].
+
+* Testing BS4 in http engine
+[[https://github.com/magenta-aps/os2datascanner/blob/master/src/os2datascanner/engine2/tests/test_engine2_conversions.py][unittest]] for the http engine. Two [[https://github.com/magenta-aps/os2datascanner/tree/master/src/os2datascanner/engine2/tests/data/html][html files]] to test on.
+
+Get the content of the html [[https://raw.githubusercontent.com/magenta-aps/os2datascanner/master/src/os2datascanner/engine2/tests/data/html/simple.html][pages]]. Use =-O -= to print to stdout for wget.
+Use =lynx= or =w3m= to get/parse the body
+
+#+begin_src sh
+wget https://raw.githubusercontent.com/magenta-aps/os2datascanner/master/src/os2datascanner/engine2/tests/data/html/simple.html -q -O simple.html
+wget https://raw.githubusercontent.com/html5lib/html5lib-python/master/benchmarks/data/html.html -q
+
+w3m -dump simple.html
+lynx -dump simple.html
+#+end_src
+
+BUT it seems that the implemented BS4 engine is not parsing the html correct. I cannot see that it keeps the expected newlines and whitespace. Maybe I don't understand the assignment.
+
+* New parser
+** First try,
+[[https://docs.python.org/3/library/html.parser.html][html.parser]] with [[https://github.com/python/cpython/blob/3.9/Lib/html/parser.py][source]]. Very simple; as per the [[https://docs.python.org/3/library/html.parser.html#examples][doc]], I just make a subclass of the =HTMLParser= class, which implement =def handle_data(self, data):=.
+=html.parser= is more or less a regex data-extraction tool, not a html parser.
+
+The parser [[./simple_html.py]] returns same output as the BS4 implementation; but as it does not build and store a tree of the page, it is much faster.
+There's no testing for empty files, error handing, etc.
+
+** Second try
+A search gives the following parsers(there are many more)
+- [[http://lxml.de/][lxml]]
+- [[https://scrapy.readthedocs.org][scrapy]]
+- [[https://pypi.python.org/pypi/BeautifulSoup/][BeautifulSoup]]
+- [[https://github.com/html5lib/html5lib-python][html5lib-python]] and [[https://html5lib.readthedocs.io/][docs]]
+- [[https://github.com/Alir3z4/html2text][html2text]], not a parser but text extractor.
+where =lxml= seems to be the fastest. We try it.
+
+If =os2datascanner= only needs to extract the text/body, then maybe the easiest is to use =html2text=? Unfortunately =html2text= formats the ascii as Markdown.
+
+** comparison
+See [[file:./driver.py]] for comparison. The output is
+
+#+begin_src
+BS4_parser          ; passed test for simple.html
+simpleHTMLParser    ; passed test for simple.html
+lxml                ; passed test for simple.html
+html2text           ; failed test for simple.html
+
+For html.html:
+ Both parsers(BS4 & simple) returns same (malformatted) content
+timing:
+BS4_parser          ; 2.1163
+simpleHTMLParser    ; 1.1954
+lxml                ; 0.099332
+html2text           ; 1.7818
+#+end_src
+
+Thus, in terms of speed and (probably) stability, =lxml= could be a better choice. The output of =lxml= is however not exactly as I expect.
+In =html.html= there is a =<li>= element in the end. The tags are just removed without representing the numbers. But this is probably due to my lack of knowledge about =lxml=.
+
+
+Also, the simple =HTMLParser= based on regex's seems better than =BS4=; if the current implemented engine is returning the body content formatted as expected.
+
+* note
+Nice to see =os2datascanner= uses [[https://www.python.org/dev/peps/pep-3107/][function annotations]] some places. I would like to get more familiar with this, [[https://www.python.org/dev/peps/pep-0484][type hints]] and [[https://www.python.org/dev/peps/pep-0526/][variable annotations]]. I used the [[https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html][cheat sheet]] a few times.
+[[file:./code_quality.png]]

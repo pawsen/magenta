@@ -1,0 +1,4399 @@
+
+  
+   
+   
+    HTML
+    Living Standard — Last Updated [DATE: 01 Jan 1901]
+   
+   
+    
+     Multipage Version whatwg.org/html
+     One-Page Version whatwg.org/c
+     PDF Version whatwg.org/pdf
+     Developer Version developers.whatwg.org
+    
+    
+     FAQ whatwg.org/faq
+     Validators validator.whatwg.org
+    
+    
+     Join our Mailing List whatwg@whatwg.org
+     Join us on IRC #whatwg on Freenode
+     Join our Forums forums.whatwg.org
+    
+    
+     
+     Change Log html5.org's tracker
+     Twitter Updates @WHATWG
+    
+    
+     View Open Bugs filed in Bugzilla
+     File a Bug whatwg.org/newbug
+     E-mail the Editor ian@hixie.ch
+    
+   
+  
+
+  
+
+  
+
+  Table of contents
+  
+
+  
+
+
+
+  Introduction
+
+  
+
+  Where does this specification fit?
+
+  This specification defines a big part of the Web platform, in lots of detail. Its place in the
+  Web platform specification stack relative to other specifications can be best summed up as
+  follows:
+
+  
+
+  
+
+
+  Is this HTML5?
+
+  
+
+  In short: Yes.
+
+  In more length: The term "HTML5" is widely used as a buzzword to refer to modern Web
+  technologies, many of which (though by no means all) are developed at the WHATWG. This document is
+  one such; others are available from the WHATWG
+  specification index.
+
+  Although we have asked them to stop doing so, the W3C also republishes some parts
+  of this specification as separate documents. There are numerous differences between this
+  specification and the W3C forks; some minor, some major. Unfortunately these are not currently
+  accurately documented anywhere, so there is no way to know which are intentional and which are
+  not.
+
+
+  Background
+
+  
+
+  HTML is the World Wide Web's core markup language. Originally, HTML was primarily designed as a
+  language for semantically describing scientific documents. Its general design, however, has
+  enabled it to be adapted, over the subsequent years, to describe a number of other types of
+  documents and even applications.
+
+
+  Audience
+
+  
+
+  This specification is intended for authors of documents and scripts that use the features
+  defined in this specification, implementors of tools that operate on pages that
+  use the features defined in this specification, and individuals wishing to establish the
+  correctness of documents or implementations with respect to the requirements of this
+  specification.
+
+  This document is probably not suited to readers who do not already have at least a passing
+  familiarity with Web technologies, as in places it sacrifices clarity for precision, and brevity
+  for completeness. More approachable tutorials and authoring guides can provide a gentler
+  introduction to the topic.
+
+  In particular, familiarity with the basics of DOM is necessary for a complete understanding of
+  some of the more technical parts of this specification. An understanding of Web IDL, HTTP, XML,
+  Unicode, character encodings, JavaScript, and CSS will also be helpful in places but is not
+  essential.
+
+
+  Scope
+
+  
+
+  This specification is limited to providing a semantic-level markup language and associated
+  semantic-level scripting APIs for authoring accessible pages on the Web ranging from static
+  documents to dynamic applications.
+
+  The scope of this specification does not include providing mechanisms for media-specific
+  customization of presentation (although default rendering rules for Web browsers are included at
+  the end of this specification, and several mechanisms for hooking into CSS are provided as part of
+  the language).
+
+  The scope of this specification is not to describe an entire operating system. In particular,
+  hardware configuration software, image manipulation tools, and applications that users would be
+  expected to use with high-end workstations on a daily basis are out of scope. In terms of
+  applications, this specification is targeted specifically at applications that would be expected
+  to be used by users on an occasional basis, or regularly but from disparate locations, with low
+  CPU requirements. Examples of such applications include online purchasing systems, searching
+  systems, games (especially multiplayer online games), public telephone books or address books,
+  communications software (e-mail clients, instant messaging clients, discussion software), document
+  editing software, etc.
+
+
+  History
+
+  
+
+  For its first five years (1990-1995), HTML went through a number of revisions and experienced a
+  number of extensions, primarily hosted first at CERN, and then at the IETF.
+
+  With the creation of the W3C, HTML's development changed venue again. A first abortive attempt
+  at extending HTML in 1995 known as HTML 3.0 then made way to a more pragmatic approach known as
+  HTML 3.2, which was completed in 1997. HTML4 quickly followed later that same year.
+
+  The following year, the W3C membership decided to stop evolving HTML and instead begin work on
+  an XML-based equivalent, called XHTML.  This
+  effort started with a reformulation of HTML4 in XML, known as XHTML 1.0, which added no new
+  features except the new serialisation, and which was completed in 2000. After XHTML 1.0, the W3C's
+  focus turned to making it easier for other working groups to extend XHTML, under the banner of
+  XHTML Modularization. In parallel with this, the W3C also worked on a new language that was not
+  compatible with the earlier HTML and XHTML languages, calling it XHTML2.
+
+  Around the time that HTML's evolution was stopped in 1998, parts of the API for HTML developed
+  by browser vendors were specified and published under the name DOM Level 1 (in 1998) and DOM Level
+  2 Core and DOM Level 2 HTML (starting in 2000 and culminating in 2003). These efforts then petered
+  out, with some DOM Level 3 specifications published in 2004 but the working group being closed
+  before all the Level 3 drafts were completed.
+
+  In 2003, the publication of XForms, a technology which was positioned as the next generation of
+  Web forms, sparked a renewed interest in evolving HTML itself, rather than finding replacements
+  for it. This interest was borne from the realization that XML's deployment as a Web technology was
+  limited to entirely new technologies (like RSS and later Atom), rather than as a replacement for
+  existing deployed technologies (like HTML).
+
+  A proof of concept to show that it was possible to extend HTML4's forms to provide many of the
+  features that XForms 1.0 introduced, without requiring browsers to implement rendering engines
+  that were incompatible with existing HTML Web pages, was the first result of this renewed
+  interest. At this early stage, while the draft was already publicly available, and input was
+  already being solicited from all sources, the specification was only under Opera Software's
+  copyright.
+
+  The idea that HTML's evolution should be reopened was tested at a W3C workshop in 2004, where
+  some of the principles that underlie the HTML5 work (described below), as well as the
+  aforementioned early draft proposal covering just forms-related features, were presented to the
+  W3C jointly by Mozilla and Opera. The proposal was rejected on the grounds that the proposal
+  conflicted with the previously chosen direction for the Web's evolution; the W3C staff and
+  membership voted to continue developing XML-based replacements instead.
+
+  Shortly thereafter, Apple, Mozilla, and Opera jointly announced their intent to continue
+  working on the effort under the umbrella of a new venue called the WHATWG. A public mailing list
+  was created, and the draft was moved to the WHATWG site. The copyright was subsequently amended to
+  be jointly owned by all three vendors, and to allow reuse of the specification.
+
+  The WHATWG was based on several core principles, in particular that technologies need to be
+  backwards compatible, that specifications and implementations need to match even if this means
+  changing the specification rather than the implementations, and that specifications need to be
+  detailed enough that implementations can achieve complete interoperability without
+  reverse-engineering each other.
+
+  The latter requirement in particular required that the scope of the HTML5 specification include
+  what had previously been specified in three separate documents: HTML4, XHTML1, and DOM2 HTML. It
+  also meant including significantly more detail than had previously been considered the norm.
+
+  In 2006, the W3C indicated an interest to participate in the development of HTML5 after all,
+  and in 2007 formed a working group chartered to work with the WHATWG on the development of the
+  HTML5 specification. Apple, Mozilla, and Opera allowed the W3C to publish the specification under
+  the W3C copyright, while keeping a version with the less restrictive license on the WHATWG
+  site.
+
+  For a number of years, both groups then worked together. In 2011, however, the groups came to
+  the conclusion that they had different goals: the W3C wanted to publish a "finished" version of
+  "HTML5", while the WHATWG wanted to continue working on a Living Standard for HTML, continuously
+  maintaining the specification rather than freezing it in a state with known problems, and adding
+  new features as needed to evolve the platform.
+
+  Since then, the WHATWG has been working on this specification (amongst others), and the W3C has
+  been copying fixes made by the WHATWG into their fork of the document, as well as making other
+  changes, some intentional and some not, with no documentation listing or explaining the
+  differences.
+
+
+
+  Design notes
+
+  
+
+  It must be admitted that many aspects of HTML appear at first glance to be nonsensical and
+  inconsistent.
+
+  HTML, its supporting DOM APIs, as well as many of its supporting technologies, have been
+  developed over a period of several decades by a wide array of people with different priorities
+  who, in many cases, did not know of each other's existence.
+
+  Features have thus arisen from many sources, and have not always been designed in especially
+  consistent ways. Furthermore, because of the unique characteristics of the Web, implementation
+  bugs have often become de-facto, and now de-jure, standards, as content is often unintentionally
+  written in ways that rely on them before they can be fixed.
+
+  Despite all this, efforts have been made to adhere to certain design goals. These are described
+  in the next few subsections.
+
+
+
+  Serializability of script execution
+
+  
+
+  To avoid exposing Web authors to the complexities of multithreading, the HTML and DOM APIs are
+  designed such that no script can ever detect the simultaneous execution of other scripts. Even
+  with workers, the intent is that the behavior of implementations can
+  be thought of as completely serializing the execution of all scripts in all browsing contexts.
+
+  The navigator.yieldForStorageUpdates() method, in
+  this model, is equivalent to allowing other scripts to run while the calling script is
+  blocked.
+
+
+
+  Compliance with other specifications
+
+  
+
+  This specification interacts with and relies on a wide variety of other specifications. In
+  certain circumstances, unfortunately, conflicting needs have led to this specification violating
+  the requirements of these other specifications. Whenever this has occurred, the transgressions
+  have each been noted as a "willful violation", and the reason for the violation has
+  been noted.
+
+
+
+  Extensibility
+
+  
+
+  HTML has a wide array of extensibility mechanisms that can be used for adding semantics in a
+  safe manner:
+
+  
+
+   Authors can use the class attribute to extend elements,
+   effectively creating their own elements, while using the most applicable existing "real" HTML
+   element, so that browsers and other tools that don't know of the extension can still support it
+   somewhat well. This is the tack used by microformats, for example.
+
+   Authors can include data for inline client-side scripts or server-side site-wide scripts
+   to process using the data-*="" attributes. These are guaranteed
+   to never be touched by browsers, and allow scripts to include data on HTML elements that scripts
+   can then look for and process.
+
+   Authors can use the <meta name="" content=""> mechanism to
+   include page-wide metadata by registering extensions to
+   the predefined set of metadata names.
+
+   Authors can use the rel="" mechanism to annotate
+   links with specific meanings by registering extensions to
+   the predefined set of link types. This is also used by microformats.
+
+   Authors can embed raw data using the <script type="">
+   mechanism with a custom type, for further handling by inline or server-side scripts.
+
+   Authors can create plugins and invoke them using the
+   embed element. This is how Flash works.
+
+   Authors can extend APIs using the JavaScript prototyping mechanism. This is widely used by
+   script libraries, for instance.
+
+   Authors can use the microdata feature (the itemscope="" and itemprop=""
+   attributes) to embed nested name-value pairs of data to be shared with other applications and
+   sites.
+
+  
+
+
+
+
+  HTML vs XHTML
+
+  
+
+  This specification defines an abstract language for describing documents and applications, and
+  some APIs for interacting with in-memory representations of resources that use this language.
+
+  The in-memory representation is known as "DOM HTML", or "the DOM" for short.
+
+  There are various concrete syntaxes that can be used to transmit resources that use this
+  abstract language, two of which are defined in this specification.
+
+  The first such concrete syntax is the HTML syntax. This is the format suggested for most
+  authors. It is compatible with most legacy Web browsers. If a document is transmitted with the
+  text/html MIME type, then it will be processed as an HTML document by
+  Web browsers. This specification defines the latest HTML syntax, known simply as "HTML".
+
+  The second concrete syntax is the XHTML syntax, which is an application of XML. When a document
+  is transmitted with an XML MIME type, such as application/xhtml+xml,
+  then it is treated as an XML document by Web browsers, to be parsed by an XML processor. Authors
+  are reminded that the processing for XML and HTML differs; in particular, even minor syntax errors
+  will prevent a document labeled as XML from being rendered fully, whereas they would be ignored in
+  the HTML syntax. This specification defines the latest XHTML syntax, known simply as "XHTML".
+
+  The DOM, the HTML syntax, and the XHTML syntax cannot all represent the same content. For
+  example, namespaces cannot be represented using the HTML syntax, but they are supported in the DOM
+  and in the XHTML syntax. Similarly, documents that use the noscript feature can be
+  represented using the HTML syntax, but cannot be represented with the DOM or in the XHTML syntax.
+  Comments that contain the string "-->" can only be represented in the
+  DOM, not in the HTML and XHTML syntaxes.
+
+
+  Structure of this specification
+
+  
+
+  This specification is divided into the following major sections:
+
+  
+
+
+   Introduction
+
+   Non-normative materials providing a context for the HTML standard.
+
+
+   Common infrastructure
+
+   The conformance classes, algorithms, definitions, and the common underpinnings of the rest of
+   the specification.
+
+
+   Semantics, structure, and APIs of HTML documents
+
+   Documents are built from elements. These elements form a tree using the DOM. This section
+   defines the features of this DOM, as well as introducing the features common to all elements, and
+   the concepts used in defining elements.
+
+
+   The elements of HTML
+
+   Each element has a predefined meaning, which is explained in this section. Rules for authors
+   on how to use the element, along with user agent requirements for how to
+   handle each element, are also given. This includes large signature features of HTML such
+   as video playback and subtitles, form controls and form submission, and a 2D graphics API known
+   as the HTML canvas.
+
+
+   Microdata
+
+   This specification introduces a mechanism for adding machine-readable annotations to
+   documents, so that tools can extract trees of name-value pairs from the document. This section
+   describes this mechanism and some algorithms that can be used to convert HTML
+   documents into other formats. This section also defines some sample Microdata vocabularies
+   for contact information, calendar events, and licensing works.
+
+
+   User interaction
+
+   HTML documents can provide a number of mechanisms for users to interact with and modify
+   content, which are described in this section, such as how focus works, and drag-and-drop.
+
+
+   Loading Web pages
+
+   HTML documents do not exist in a vacuum — this section defines many of the features
+   that affect environments that deal with multiple pages, such as Web browsers and offline
+   caching of Web applications.
+
+
+   Web application APIs
+
+   This section introduces basic features for scripting of applications in HTML.
+
+
+   Web workers
+
+   This section defines an API for background threads in JavaScript.
+
+
+   The communication APIs
+
+   This section describes some mechanisms that applications written in HTML can use to
+   communicate with other applications from different domains running on the same client. It also
+   introduces a server-push event stream mechanism known as Server Sent Events or
+   EventSource, and a two-way full-duplex socket protocol for scripts known as Web
+   Sockets.
+
+   
+
+
+   Web storage
+
+   This section defines a client-side storage mechanism based on name-value pairs.
+
+
+   The HTML syntax
+   The XHTML syntax
+
+   All of these features would be for naught if they couldn't be represented in a serialized
+   form and sent to other people, and so these sections define the syntaxes of HTML and XHTML, along with rules for how to parse content using those syntaxes.
+
+
+   Rendering
+
+   This section defines the default rendering rules for Web browsers.
+
+
+  
+
+  There are also some appendices, listing obsolete features and IANA considerations, and several indices.
+
+
+
+  How to read this specification
+
+  This specification should be read like all other specifications. First, it should be read
+  cover-to-cover, multiple times. Then, it should be read backwards at least once. Then it should be
+  read by picking random sections from the contents list and following all the cross-references.
+
+  As described in the conformance requirements section below, this specification describes
+  conformance criteria for a variety of conformance classes. In particular, there are conformance
+  requirements that apply to producers, for example authors and the documents they create,
+  and there are conformance requirements that apply to consumers, for example Web browsers.
+  They can be distinguished by what they are requiring: a requirement on a producer states what is
+  allowed, while a requirement on a consumer states how software is to act.
+
+  
+
+   For example, "the foo attribute's value must be a valid
+   integer" is a requirement on producers, as it lays out the allowed values; in contrast,
+   the requirement "the foo attribute's value must be parsed using the
+   rules for parsing integers" is a requirement on consumers, as it describes how to
+   process the content.
+
+  
+
+  Requirements on producers have no bearing whatsoever on consumers.
+
+  
+
+   Continuing the above example, a requirement stating that a particular attribute's value is
+   constrained to being a valid integer emphatically does not imply anything
+   about the requirements on consumers. It might be that the consumers are in fact required to treat
+   the attribute as an opaque string, completely unaffected by whether the value conforms to the
+   requirements or not. It might be (as in the previous example) that the consumers are required to
+   parse the value using specific rules that define how invalid (non-numeric in this case) values
+   are to be processed.
+
+  
+
+
+
+  Typographic conventions
+
+  This is a definition, requirement, or explanation.
+
+  This is a note.
+
+  This is an example.
+
+  This is an open issue.
+
+  This is a warning.
+
+  interface Example {
+  // this is an IDL definition
+};
+
+  
+
+   variable = object . method( [ optionalArgument ] )
+
+   
+
+    This is a note to authors describing the usage of an interface.
+
+   
+
+  
+
+  /* this is a CSS fragment */
+
+  The defining instance of a term is marked up like this. Uses of that
+  term are marked up like this or like this.
+
+  The defining instance of an element, attribute, or API is marked up like this. References to that element, attribute, or API are marked
+  up like this.
+
+  Other code fragments are marked up like this.
+
+  Variables are marked up like this.
+
+  In an algorithm, steps in synchronous sections are
+  marked with ⌛.
+
+  In some cases, requirements are given in the form of lists with conditions and corresponding
+  requirements. In such cases, the requirements that apply to a condition are always the first set
+  of requirements that follow the condition, even in the case of there being multiple sets of
+  conditions for those requirements. Such cases are presented as follows:
+
+  
+
+   This is a condition
+   This is another condition
+   This is the requirement that applies to the conditions above.
+
+   This is a third condition
+   This is the requirement that applies to the third condition.
+
+  
+
+
+
+  Privacy concerns
+
+  
+
+  Some features of HTML trade user convenience for a measure of user privacy.
+
+  In general, due to the Internet's architecture, a user can be distinguished from another by the
+  user's IP address. IP addresses do not perfectly match to a user; as a user moves from device to
+  device, or from network to network, their IP address will change; similarly, NAT routing, proxy
+  servers, and shared computers enable packets that appear to all come from a single IP address to
+  actually map to multiple users. Technologies such as onion routing can be used to further
+  anonymise requests so that requests from a single user at one node on the Internet appear to come
+  from many disparate parts of the network.
+
+  However, the IP address used for a user's requests is not the only mechanism by which a user's
+  requests could be related to each other. Cookies, for example, are designed specifically to enable
+  this, and are the basis of most of the Web's session features that enable you to log into a site
+  with which you have an account.
+
+  There are other mechanisms that are more subtle. Certain characteristics of a user's system can
+  be used to distinguish groups of users from each other; by collecting enough such information, an
+  individual user's browser's "digital fingerprint" can be computed, which can be as good, if not
+  better, as an IP address in ascertaining which requests are from the same user.
+
+  Grouping requests in this manner, especially across multiple sites, can be used for both benign
+  (and even arguably positive) purposes, as well as for malevolent purposes. An example of a
+  reasonably benign purpose would be determining whether a particular person seems to prefer sites
+  with dog illustrations as opposed to sites with cat illustrations (based on how often they visit
+  the sites in question) and then automatically using the preferred illustrations on subsequent
+  visits to participating sites. Malevolent purposes, however, could include governments combining
+  information such as the person's home address (determined from the addresses they use when getting
+  driving directions on one site) with their apparent political affiliations (determined by
+  examining the forum sites that they participate in) to determine whether the person should be
+  prevented from voting in an election.
+
+  Since the malevolent purposes can be remarkably evil, user agent implementors are encouraged to
+  consider how to provide their users with tools to minimise leaking information that could be used
+  to fingerprint a user.
+
+  Unfortunately, as the first paragraph in this section implies, sometimes there is great benefit
+  to be derived from exposing the very information that can also be used for fingerprinting
+  purposes, so it's not as easy as simply blocking all possible leaks. For instance, the ability to
+  log into a site to post under a specific identity requires that the user's requests be
+  identifiable as all being from the same user, more or less by definition. More subtly, though,
+  information such as how wide text is, which is necessary for many effects that involve drawing
+  text onto a canvas (e.g. any effect that involves drawing a border around the text) also leaks
+  information that can be used to group a user's requests. (In this case, by potentially exposing,
+  via a brute force search, which fonts a user has installed, information which can vary
+  considerably from user to user.)
+
+  Features in this specification which can be used to
+  fingerprint the user are marked as this paragraph is.
+  
+  
+
+  Other features in the platform can be used for the same purpose, though, including, though not
+  limited to:
+
+  
+
+   The exact list of which features a user agents supports.
+
+   The maximum allowed stack depth for recursion in script.
+
+   Features that describe the user's environment, like Media Queries and the Screen
+   object. [MQ] [CSSOMVIEW]
+
+   The user's time zone.
+
+  
+
+
+
+  A quick introduction to HTML
+
+  
+
+  A basic HTML document looks like this:
+
+  <!DOCTYPE html>
+<html>
+ <head>
+  <title>Sample page</title>
+ </head>
+ <body>
+  <h1>Sample page</h1>
+  <p>This is a <a href="demo.html">simple</a> sample.</p>
+  <!-- this is a comment -->
+ </body>
+</html>
+
+  HTML documents consist of a tree of elements and text. Each element is denoted in the source by
+  a start tag, such as "<body>", and
+  an end tag, such as "</body>".
+  (Certain start tags and end tags can in certain cases be omitted and are implied by other tags.)
+
+  Tags have to be nested such that elements are all completely within each other, without
+  overlapping:
+
+  <p>This is <em>very <strong>wrong</em>!</strong></p>
+  <p>This <em>is <strong>correct</strong>.</em></p>
+
+  This specification defines a set of elements that can be used in HTML, along with rules about
+  the ways in which the elements can be nested.
+
+  Elements can have attributes, which control how the elements work. In the example below, there
+  is a hyperlink, formed using the a element and its href attribute:
+
+  <a href="demo.html">simple</a>
+
+  Attributes are placed inside the start tag, and consist
+  of a name and a value, separated by an "=" character.
+  The attribute value can remain unquoted if it doesn't contain space characters or any of " ' ` = < or
+  >. Otherwise, it has to be quoted using either single or double quotes.
+  The value, along with the "=" character, can be omitted altogether if the
+  value is the empty string.
+
+  <!-- empty attributes -->
+<input name=address disabled>
+<input name=address disabled="">
+
+<!-- attributes with a value -->
+<input name=address maxlength=200>
+<input name=address maxlength='200'>
+<input name=address maxlength="200">
+
+  HTML user agents (e.g. Web browsers) then parse this markup, turning it into a DOM
+  (Document Object Model) tree. A DOM tree is an in-memory representation of a document.
+
+  DOM trees contain several kinds of nodes, in particular a DocumentType node,
+  Element nodes, Text nodes, Comment nodes, and in some cases
+  ProcessingInstruction nodes.
+
+  The markup snippet at the top of this section would be
+  turned into the following DOM tree:
+
+  DOCTYPE: htmlhtmlhead#text: ⏎␣␣title#text: Sample page#text: ⏎␣#text: ⏎␣body#text: ⏎␣␣h1#text: Sample page#text: ⏎␣␣p#text: This is a a href="demo.html"#text: simple#text:  sample.#text: ⏎␣␣#comment:  this is a comment #text: ⏎␣⏎
+
+  The root element of this tree is the html element, which is the
+  element always found at the root of HTML documents. It contains two elements, head
+  and body, as well as a Text node between them.
+
+  There are many more Text nodes in the DOM tree than one would initially expect,
+  because the source contains a number of spaces (represented here by "␣") and line breaks
+  ("⏎") that all end up as Text nodes in the DOM. However, for historical
+  reasons not all of the spaces and line breaks in the original markup appear in the DOM. In
+  particular, all the whitespace before head start tag ends up being dropped silently,
+  and all the whitespace after the body end tag ends up placed at the end of the
+  body.
+
+  The head element contains a title element, which itself contains a
+  Text node with the text "Sample page". Similarly, the body element
+  contains an h1 element, a p element, and a comment.
+
+  
+
+  This DOM tree can be manipulated from scripts in the page. Scripts (typically in JavaScript)
+  are small programs that can be embedded using the script element or using event
+  handler content attributes. For example, here is a form with a script that sets the value
+  of the form's output element to say "Hello World":
+
+  <form name="main">
+ Result: <output name="result"></output>
+ <script>
+  document.forms.main.elements.result.value = 'Hello World';
+ </script>
+</form>
+
+  Each element in the DOM tree is represented by an object, and these objects have APIs so that
+  they can be manipulated. For instance, a link (e.g. the a element in the tree above)
+  can have its "href" attribute changed in several
+  ways:
+
+  var a = document.links[0]; // obtain the first link in the document
+a.href = 'sample.html'; // change the destination URL of the link
+a.protocol = 'https'; // change just the scheme part of the URL
+a.setAttribute('href', 'http://example.com/'); // change the content attribute directly
+
+  Since DOM trees are used as the way to represent HTML documents when they are processed and
+  presented by implementations (especially interactive implementations like Web browsers), this
+  specification is mostly phrased in terms of DOM trees, instead of the markup described above.
+
+  
+
+  HTML documents represent a media-independent description of interactive content. HTML documents
+  might be rendered to a screen, or through a speech synthesiser, or on a braille display. To
+  influence exactly how such rendering takes place, authors can use a styling language such as
+  CSS.
+
+  In the following example, the page has been made yellow-on-blue using CSS.
+
+  <!DOCTYPE html>
+<html>
+ <head>
+  <title>Sample styled page</title>
+  <style>
+   body { background: navy; color: yellow; }
+  </style>
+ </head>
+ <body>
+  <h1>Sample styled page</h1>
+  <p>This page is just a demo.</p>
+ </body>
+</html>
+
+  For more details on how to use HTML, authors are encouraged to consult tutorials and guides.
+  Some of the examples included in this specification might also be of use, but the novice author is
+  cautioned that this specification, by necessity, defines the language with a level of detail that
+  might be difficult to understand at first.
+
+
+
+
+  Writing secure applications with HTML
+
+  
+
+  When HTML is used to create interactive sites, care needs to be taken to avoid introducing
+  vulnerabilities through which attackers can compromise the integrity of the site itself or of the
+  site's users.
+
+  A comprehensive study of this matter is beyond the scope of this document, and authors are
+  strongly encouraged to study the matter in more detail. However, this section attempts to provide
+  a quick introduction to some common pitfalls in HTML application development.
+
+  The security model of the Web is based on the concept of "origins", and correspondingly many of
+  the potential attacks on the Web involve cross-origin actions. [ORIGIN]
+
+  
+
+   Not validating user input
+   Cross-site scripting (XSS)
+   SQL injection
+
+   
+
+    When accepting untrusted input, e.g. user-generated content such as text comments, values in
+    URL parameters, messages from third-party sites, etc, it is imperative that the data be
+    validated before use, and properly escaped when displayed. Failing to do this can allow a
+    hostile user to perform a variety of attacks, ranging from the potentially benign, such as
+    providing bogus user information like a negative age, to the serious, such as running scripts
+    every time a user looks at a page that includes the information, potentially propagating the
+    attack in the process, to the catastrophic, such as deleting all data in the server.
+
+    When writing filters to validate user input, it is imperative that filters always be
+    whitelist-based, allowing known-safe constructs and disallowing all other input. Blacklist-based
+    filters that disallow known-bad inputs and allow everything else are not secure, as not
+    everything that is bad is yet known (for example, because it might be invented in the
+    future).
+
+    
+
+     For example, suppose a page looked at its URL's query string to determine what to display,
+     and the site then redirected the user to that page to display a message, as in:
+
+     <ul>
+ <li><a href="message.cgi?say=Hello">Say Hello</a>
+ <li><a href="message.cgi?say=Welcome">Say Welcome</a>
+ <li><a href="message.cgi?say=Kittens">Say Kittens</a>
+</ul>
+
+     If the message was just displayed to the user without escaping, a hostile attacker could
+     then craft a URL that contained a script element:
+
+     http://example.com/message.cgi?say=%3Cscript%3Ealert%28%27Oh%20no%21%27%29%3C/script%3E
+
+     If the attacker then convinced a victim user to visit this page, a script of the attacker's
+     choosing would run on the page. Such a script could do any number of hostile actions, limited
+     only by what the site offers: if the site is an e-commerce shop, for instance, such a script
+     could cause the user to unknowingly make arbitrarily many unwanted purchases.
+
+     This is called a cross-site scripting attack.
+
+    
+
+    There are many constructs that can be used to try to trick a site into executing code. Here
+    are some that authors are encouraged to consider when writing whitelist filters:
+
+    
+
+     When allowing harmless-seeming elements like img, it is important to whitelist
+     any provided attributes as well. If one allowed all attributes then an attacker could, for
+     instance, use the onload attribute to run arbitrary
+     script.
+
+     When allowing URLs to be provided (e.g. for links), the scheme of each URL also needs to be
+     explicitly whitelisted, as there are many schemes that can be abused. The most prominent
+     example is "javascript:", but user agents can
+     implement (and indeed, have historically implemented) others. 
+
+     Allowing a base element to be inserted means any script elements
+     in the page with relative links can be hijacked, and similarly that any form submissions can
+     get redirected to a hostile site.
+
+    
+
+   
+
+
+   Cross-site request forgery (CSRF)
+
+   
+
+    If a site allows a user to make form submissions with user-specific side-effects, for example
+    posting messages on a forum under the user's name, making purchases, or applying for a passport,
+    it is important to verify that the request was made by the user intentionally, rather than by
+    another site tricking the user into making the request unknowingly.
+
+    This problem exists because HTML forms can be submitted to other origins.
+
+    Sites can prevent such attacks by populating forms with user-specific hidden tokens, or by
+    checking Origin headers on all requests.
+
+   
+
+
+
+   Clickjacking
+
+   
+
+    A page that provides users with an interface to perform actions that the user might not wish
+    to perform needs to be designed so as to avoid the possibility that users can be tricked into
+    activating the interface.
+
+    One way that a user could be so tricked is if a hostile site places the victim site in a
+    small iframe and then convinces the user to click, for instance by having the user
+    play a reaction game. Once the user is playing the game, the hostile site can quickly position
+    the iframe under the mouse cursor just as the user is about to click, thus tricking the user
+    into clicking the victim site's interface.
+
+    To avoid this, sites that do not expect to be used in frames are encouraged to only enable
+    their interface if they detect that they are not in a frame (e.g. by comparing the window object to the value of the top
+    attribute).
+
+   
+
+  
+
+
+
+  Common pitfalls to avoid when using the scripting APIs
+
+  
+
+  Scripts in HTML have "run-to-completion" semantics, meaning that the browser will generally run
+  the script uninterrupted before doing anything else, such as firing further events or continuing
+  to parse the document.
+
+  On the other hand, parsing of HTML files happens asynchronously and incrementally, meaning that
+  the parser can pause at any point to let scripts run. This is generally a good thing, but it does
+  mean that authors need to be careful to avoid hooking event handlers after the events could have
+  possibly fired.
+
+  There are two techniques for doing this reliably: use event handler content
+  attributes, or create the element and add the event handlers in the same script. The latter
+  is safe because, as mentioned earlier, scripts are run to completion before further events can
+  fire.
+
+  
+
+   One way this could manifest itself is with img elements and the load event. The event could fire as soon as the element has been
+   parsed, especially if the image has already been cached (which is common).
+
+   Here, the author uses the onload handler on an
+   img element to catch the load event:
+
+   <img src="games.png" alt="Games" onload="gamesLogoHasLoaded(event)">
+
+   If the element is being added by script, then so long as the event handlers are added in the
+   same script, the event will still not be missed:
+
+   <script>
+ var img = new Image();
+ img.src = 'games.png';
+ img.alt = 'Games';
+ img.onload = gamesLogoHasLoaded;
+ // img.addEventListener('load', gamesLogoHasLoaded, false); // would work also
+</script>
+
+   However, if the author first created the img element and then in a separate
+   script added the event listeners, there's a chance that the load
+   event would be fired in between, leading it to be missed:
+
+   <!-- Do not use this style, it has a race condition! -->
+ <img id="games" src="games.png" alt="Games">
+ <!-- the 'load' event might fire here while the parser is taking a
+      break, in which case you will not see it! -->
+ <script>
+  var img = document.getElementById('games');
+  img.onload = gamesLogoHasLoaded; // might never fire!
+ </script>
+
+  
+
+
+
+  How to catch mistakes when writing HTML: validators and conformance checkers
+
+  
+
+  Authors are encouraged to make use of conformance checkers (also known as validators) to
+  catch common mistakes. The WHATWG maintains a list of such tools at: http://validator.whatwg.org/
+
+
+
+  Conformance requirements for authors
+
+  
+
+  Unlike previous versions of the HTML specification, this specification defines in some detail
+  the required processing for invalid documents as well as valid documents. 
+
+  However, even though the processing of invalid content is in most cases well-defined,
+  conformance requirements for documents are still important: in practice, interoperability (the
+  situation in which all implementations process particular content in a reliable and identical or
+  equivalent way) is not the only goal of document conformance requirements. This section details
+  some of the more common reasons for still distinguishing between a conforming document and one
+  with errors.
+
+
+  Presentational markup
+
+  
+
+  The majority of presentational features from previous versions of HTML are no longer allowed.
+  Presentational markup in general has been found to have a number of problems:
+
+  
+
+   The use of presentational elements leads to poorer accessibility
+
+   
+
+    While it is possible to use presentational markup in a way that provides users of assistive
+    technologies (ATs) with an acceptable experience (e.g. using ARIA), doing so is significantly
+    more difficult than doing so when using semantically-appropriate markup. Furthermore, even using
+    such techniques doesn't help make pages accessible for non-AT non-graphical users, such as users
+    of text-mode browsers.
+
+    Using media-independent markup, on the other hand, provides an easy way for documents to be
+    authored in such a way that they work for more users (e.g. text browsers).
+
+   
+
+
+   Higher cost of maintenance
+
+   
+
+    It is significantly easier to maintain a site written in such a way that the markup is
+    style-independent. For example, changing the colour of a site that uses
+    <font color=""> throughout requires changes across the entire site, whereas
+    a similar change to a site based on CSS can be done by changing a single file.
+
+   
+
+
+   Larger document sizes
+
+   
+
+    Presentational markup tends to be much more redundant, and thus results in larger document
+    sizes.
+
+   
+
+  
+
+  For those reasons, presentational markup has been removed from HTML in this version. This
+  change should not come as a surprise; HTML4 deprecated presentational markup many years ago and
+  provided a mode (HTML4 Transitional) to help authors move away from presentational markup; later,
+  XHTML 1.1 went further and obsoleted those features altogether.
+
+  The only remaining presentational markup features in HTML are the style attribute and the style element. Use of the style attribute is somewhat discouraged in production environments, but
+  it can be useful for rapid prototyping (where its rules can be directly moved into a separate
+  style sheet later) and for providing specific styles in unusual cases where a separate style sheet
+  would be inconvenient. Similarly, the style element can be useful in syndication or
+  for page-specific styles, but in general an external style sheet is likely to be more convenient
+  when the styles apply to multiple pages.
+
+  It is also worth noting that some elements that were previously presentational have been
+  redefined in this specification to be media-independent: b, i,
+  hr, s, small, and u.
+
+
+  Syntax errors
+
+  
+
+  The syntax of HTML is constrained to avoid a wide variety of problems.
+
+  
+
+   Unintuitive error-handling behavior
+
+   
+
+    Certain invalid syntax constructs, when parsed, result in DOM trees that are highly
+    unintuitive.
+
+    
+
+     For example, the following markup fragment results in a DOM with an hr element
+     that is an earlier sibling of the corresponding table element:
+
+     <table><hr>...
+
+    
+
+   
+
+
+   Errors with optional error recovery
+
+   
+
+    To allow user agents to be used in controlled environments without having to implement the
+    more bizarre and convoluted error handling rules, user agents are permitted to fail whenever
+    encountering a parse error.
+
+   
+
+
+   Errors where the error-handling behavior is not compatible with streaming user agents
+
+   
+
+    Some error-handling behavior, such as the behavior for the <table><hr>... example mentioned above, are incompatible with streaming
+    user agents (user agents that process HTML files in one pass, without storing state). To avoid
+    interoperability problems with such user agents, any syntax resulting in such behavior is
+    considered invalid.
+
+   
+
+
+   Errors that can result in infoset coercion
+
+   
+
+    When a user agent based on XML is connected to an HTML parser, it is possible that certain
+    invariants that XML enforces, such as comments never containing two consecutive hyphens, will be
+    violated by an HTML file. Handling this can require that the parser coerce the HTML DOM into an
+    XML-compatible infoset. Most syntax constructs that require such handling are considered
+    invalid.
+
+   
+
+
+   Errors that result in disproportionally poor performance
+
+   
+
+    Certain syntax constructs can result in disproportionally poor performance. To discourage the
+    use of such constructs, they are typically made non-conforming.
+
+    
+
+     For example, the following markup results in poor performance, since all the unclosed
+     i elements have to be reconstructed in each paragraph, resulting in progressively
+     more elements in each paragraph:
+
+     <p><i>He dreamt.
+<p><i>He dreamt that he ate breakfast.
+<p><i>Then lunch.
+<p><i>And finally dinner.
+
+     The resulting DOM for this fragment would be:
+
+     pi#text: He dreamt.pii#text: He dreamt that he ate breakfast.piii#text: Then lunch.piiii#text: And finally dinner.
+
+    
+
+   
+
+
+   Errors involving fragile syntax constructs
+
+   
+
+    There are syntax constructs that, for historical reasons, are relatively fragile. To help
+    reduce the number of users who accidentally run into such problems, they are made
+    non-conforming.
+
+    
+
+     For example, the parsing of certain named character references in attributes happens even
+     with the closing semicolon being omitted. It is safe to include an ampersand followed by
+     letters that do not form a named character reference, but if the letters are changed to a
+     string that does form a named character reference, they will be interpreted as that
+     character instead.
+
+     In this fragment, the attribute's value is "?bill&ted":
+
+     <a href="?bill&ted">Bill and Ted</a>
+
+     In the following fragment, however, the attribute's value is actually "?art©", not the intended "?art&copy",
+     because even without the final semicolon, "&copy" is handled the same
+     as "&copy;" and thus gets interpreted as "©":
+
+     <a href="?art&copy">Art and Copy</a>
+
+     To avoid this problem, all named character references are required to end with a semicolon,
+     and uses of named character references without a semicolon are flagged as errors.
+
+     Thus, the correct way to express the above cases is as
+     follows:
+
+     <a href="?bill&ted">Bill and Ted</a> <!-- &ted is ok, since it's not a named character reference -->
+     <a href="?art&amp;copy">Art and Copy</a> <!-- the & has to be escaped, since &copy is a named character reference -->
+
+    
+
+   
+
+
+   Errors involving known interoperability problems in legacy user agents
+
+   
+
+    Certain syntax constructs are known to cause especially subtle or serious problems in legacy
+    user agents, and are therefore marked as non-conforming to help authors avoid them.
+
+    
+
+     For example, this is why the U+0060 GRAVE ACCENT character (`) is not allowed in unquoted
+     attributes. In certain legacy user agents,  it is sometimes treated as a
+     quote character.
+
+    
+
+    
+
+     Another example of this is the DOCTYPE, which is required to trigger no-quirks
+     mode, because the behavior of legacy user agents in quirks mode is often
+     largely undocumented.
+
+    
+
+   
+
+
+
+   Errors that risk exposing authors to security attacks
+
+   
+
+    Certain restrictions exist purely to avoid known security problems.
+
+    
+
+     For example, the restriction on using UTF-7 exists purely to avoid authors falling prey to a
+     known cross-site-scripting attack using UTF-7. [UTF7]
+
+    
+
+   
+
+
+
+   Cases where the author's intent is unclear
+
+   
+
+    Markup where the author's intent is very unclear is often made non-conforming. Correcting
+    these errors early makes later maintenance easier.
+
+    
+
+     For example, it is unclear whether the author intended the following to be an
+     h1 heading or an h2 heading:
+
+     <h1>Contact details</h2>
+
+    
+
+   
+
+
+   Cases that are likely to be typos
+
+   
+
+    When a user makes a simple typo, it is helpful if the error can be caught early, as this can
+    save the author a lot of debugging time. This specification therefore usually considers it an
+    error to use element names, attribute names, and so forth, that do not match the names defined
+    in this specification.
+
+    
+
+     For example, if the author typed <capton> instead of
+     <caption>, this would be flagged as an error and the author could correct the
+     typo immediately.
+
+    
+
+   
+
+
+   Errors that could interfere with new syntax in the future
+
+   
+
+    In order to allow the language syntax to be extended in the future, certain otherwise
+    harmless features are disallowed.
+
+    
+
+     For example, "attributes" in end tags are ignored currently, but they are invalid, in case a
+     future change to the language makes use of that syntax feature without conflicting with
+     already-deployed (and valid!) content.
+
+    
+
+   
+
+
+  
+
+  Some authors find it helpful to be in the practice of always quoting all attributes and always
+  including all optional tags, preferring the consistency derived from such custom over the minor
+  benefits of terseness afforded by making use of the flexibility of the HTML syntax. To aid such
+  authors, conformance checkers can provide modes of operation wherein such conventions are
+  enforced.
+
+
+
+  Restrictions on content models and on attribute values
+
+  
+
+  Beyond the syntax of the language, this specification also places restrictions on how elements
+  and attributes can be specified. These restrictions are present for similar reasons:
+
+  
+
+
+   Errors involving content with dubious semantics
+
+   
+
+    To avoid misuse of elements with defined meanings, content models are defined that restrict
+    how elements can be nested when such nestings would be of dubious value.
+
+    For example, this specification disallows nesting a section
+    element inside a kbd element, since it is highly unlikely for an author to indicate
+    that an entire section should be keyed in.
+
+   
+
+
+   Errors that involve a conflict in expressed semantics
+
+   
+
+    Similarly, to draw the author's attention to mistakes in the use of elements, clear
+    contradictions in the semantics expressed are also considered conformance errors.
+
+    
+
+     In the fragments below, for example, the semantics are nonsensical: a separator cannot
+     simultaneously be a cell, nor can a radio button be a progress bar.
+
+     <hr role="cell">
+     <input type=radio role=progressbar>
+
+    
+
+    Another example is the restrictions on the content models of the
+    ul element, which only allows li element children. Lists by definition
+    consist just of zero or more list items, so if a ul element contains something
+    other than an li element, it's not clear what was meant.
+
+   
+
+
+   Cases where the default styles are likely to lead to confusion
+
+   
+
+    Certain elements have default styles or behaviors that make certain combinations likely to
+    lead to confusion. Where these have equivalent alternatives without this problem, the confusing
+    combinations are disallowed.
+
+    For example, div elements are rendered as block boxes, and
+    span elements as inline boxes. Putting a block box in an inline box is
+    unnecessarily confusing; since either nesting just div elements, or nesting just
+    span elements, or nesting span elements inside div
+    elements all serve the same purpose as nesting a div element in a span
+    element, but only the latter involves a block box in an inline box, the latter combination is
+    disallowed.
+
+    Another example would be the way interactive content cannot be
+    nested. For example, a button element cannot contain a textarea
+    element. This is because the default behavior of such nesting interactive elements would be
+    highly confusing to users. Instead of nesting these elements, they can be placed side by
+    side.
+
+   
+
+
+   Errors that indicate a likely misunderstanding of the specification
+
+   
+
+    Sometimes, something is disallowed because allowing it would likely cause author
+    confusion.
+
+    For example, setting the disabled
+    attribute to the value "false" is disallowed, because despite the
+    appearance of meaning that the element is enabled, it in fact means that the element is
+    disabled (what matters for implementations is the presence of the attribute, not its
+    value).
+
+   
+
+
+   Errors involving limits that have been imposed merely to simplify the language
+
+   
+
+    Some conformance errors simplify the language that authors need to learn.
+
+    For example, the area element's shape attribute, despite accepting both circ and circle values in practice as synonyms, disallows
+    the use of the circ value, so as to simplify
+    tutorials and other learning aids. There would be no benefit to allowing both, but it would
+    cause extra confusion when teaching the language.
+
+   
+
+
+   Errors that involve peculiarities of the parser
+
+   
+
+    Certain elements are parsed in somewhat eccentric ways (typically for historical reasons),
+    and their content model restrictions are intended to avoid exposing the author to these
+    issues.
+
+    
+
+     For example, a form element isn't allowed inside phrasing content,
+     because when parsed as HTML, a form element's start tag will imply a
+     p element's end tag. Thus, the following markup results in two paragraphs, not one:
+
+     <p>Welcome. <form><label>Name:</label> <input></form>
+
+     It is parsed exactly like the following:
+
+     <p>Welcome. </p><form><label>Name:</label> <input></form>
+
+    
+
+   
+
+
+   Errors that would likely result in scripts failing in hard-to-debug ways
+
+   
+
+    Some errors are intended to help prevent script problems that would be hard to debug.
+
+    This is why, for instance, it is non-conforming to have two id attributes with the same value. Duplicate IDs lead to the wrong
+    element being selected, with sometimes disastrous effects whose cause is hard to determine.
+
+   
+
+
+   Errors that waste authoring time
+
+   
+
+    Some constructs are disallowed because historically they have been the cause of a lot of
+    wasted authoring time, and by encouraging authors to avoid making them, authors can save time in
+    future efforts.
+
+    For example, a script element's src attribute causes the element's contents to be ignored.
+    However, this isn't obvious, especially if the element's contents appear to be executable script
+    — which can lead to authors spending a lot of time trying to debug the inline script
+    without realizing that it is not executing. To reduce this problem, this specification makes it
+    non-conforming to have executable script in a script element when the src attribute is present. This means that authors who are
+    validating their documents are less likely to waste time with this kind of mistake.
+
+   
+
+
+   Errors that involve areas that affect authors migrating to and from XHTML
+
+   
+
+    Some authors like to write files that can be interpreted as both XML and HTML with similar
+    results. Though this practice is discouraged in general due to the myriad of subtle
+    complications involved (especially when involving scripting, styling, or any kind of automated
+    serialisation), this specification has a few restrictions intended to at least somewhat mitigate
+    the difficulties. This makes it easier for authors to use this as a transitionary step when
+    migrating between HTML and XHTML.
+
+    For example, there are somewhat complicated rules surrounding the lang and xml:lang attributes
+    intended to keep the two synchronized.
+
+    Another example would be the restrictions on the values of xmlns attributes in the HTML serialisation, which are intended to ensure that
+    elements in conforming documents end up in the same namespaces whether processed as HTML or
+    XML.
+
+   
+
+
+   Errors that involve areas reserved for future expansion
+
+   
+
+    As with the restrictions on the syntax intended to allow for new syntax in future revisions
+    of the language, some restrictions on the content models of elements and values of attributes
+    are intended to allow for future expansion of the HTML vocabulary.
+
+    For example, limiting the values of the target attribute that start with an U+005F LOW LINE
+    character (_) to only specific predefined values allows new predefined values to be introduced
+    at a future time without conflicting with author-defined values.
+
+   
+
+
+   Errors that indicate a mis-use of other specifications
+
+   
+
+    Certain restrictions are intended to support the restrictions made by other
+    specifications.
+
+    For example, requiring that attributes that take media queries use only
+    valid media queries reinforces the importance of following the conformance rules of
+    that specification.
+
+   
+
+  
+
+
+
+  Suggested reading
+
+  
+
+  The following documents might be of interest to readers of this specification.
+
+  
+
+   Character Model for the World Wide Web 1.0: Fundamentals [CHARMOD]
+
+   This Architectural Specification provides authors of specifications, software
+   developers, and content developers with a common reference for interoperable text manipulation on
+   the World Wide Web, building on the Universal Character Set, defined jointly by the Unicode
+   Standard and ISO/IEC 10646. Topics addressed include use of the terms 'character', 'encoding' and
+   'string', a reference processing model, choice and identification of character encodings,
+   character escaping, and string indexing.
+
+   Unicode Security Considerations [UTR36]
+
+   Because Unicode contains such a large number of characters and incorporates
+   the varied writing systems of the world, incorrect usage can expose programs or systems to
+   possible security attacks. This is especially important as more and more products are
+   internationalized. This document describes some of the security considerations that programmers,
+   system analysts, standards developers, and users should take into account, and provides specific
+   recommendations to reduce the risk of problems.
+
+   Web Content Accessibility Guidelines (WCAG) 2.0 [WCAG]
+
+   Web Content Accessibility Guidelines (WCAG) 2.0 covers a wide range of
+   recommendations for making Web content more accessible. Following these guidelines will make
+   content accessible to a wider range of people with disabilities, including blindness and low
+   vision, deafness and hearing loss, learning disabilities, cognitive limitations, limited
+   movement, speech disabilities, photosensitivity and combinations of these. Following these
+   guidelines will also often make your Web content more usable to users in
+   general.
+
+   Authoring Tool Accessibility Guidelines (ATAG) 2.0 [ATAG]
+
+   This specification provides guidelines for designing Web content
+   authoring tools that are more accessible for people with disabilities. An authoring tool that
+   conforms to these guidelines will promote accessibility by providing an accessible user interface
+   to authors with disabilities as well as by enabling, supporting, and promoting the production of
+   accessible Web content by all authors.
+
+   User Agent Accessibility Guidelines (UAAG) 2.0 [UAAG]
+
+   This document provides guidelines for designing user agents that
+   lower barriers to Web accessibility for people with disabilities. User agents include browsers
+   and other types of software that retrieve and render Web content. A user agent that conforms to
+   these guidelines will promote accessibility through its own user interface and through other
+   internal facilities, including its ability to communicate with other technologies (especially
+   assistive technologies). Furthermore, all users, not just users with disabilities, should find
+   conforming user agents to be more usable.
+
+  
+
+
+
+  Common infrastructure
+
+  Terminology
+
+  This specification refers to both HTML and XML attributes and IDL attributes, often in the same
+  context. When it is not clear which is being referred to, they are referred to as content attributes for HTML and XML attributes, and IDL
+  attributes for those defined on IDL interfaces. Similarly, the term "properties" is used for
+  both JavaScript object properties and CSS properties. When these are ambiguous they are qualified
+  as object properties and CSS properties respectively.
+
+  Generally, when the specification states that a feature applies to the HTML syntax
+  or the XHTML syntax, it also includes the other. When a feature specifically only
+  applies to one of the two languages, it is called out by explicitly stating that it does not apply
+  to the other format, as in "for HTML, ... (this does not apply to XHTML)".
+
+  This specification uses the term document to refer to any use of HTML,
+  ranging from short static documents to long essays or reports with rich multimedia, as well as to
+  fully-fledged interactive applications. The term is used to refer both to Document
+  objects and their descendant DOM trees, and to serialised byte streams using the HTML syntax or XHTML syntax, depending
+  on context.
+
+  In the context of the DOM structures, the terms HTML
+  document and XML document are used as defined in the DOM
+  specification, and refer specifically to two different modes that Document objects
+  can find themselves in. [DOM] (Such uses are always hyperlinked to their
+  definition.)
+
+  In the context of byte streams, the term HTML document refers to resources labeled as
+  text/html, and the term XML document refers to resources labeled with an XML
+  MIME type.
+
+  The term XHTML document is used to refer to both Documents in the XML document mode that contains element nodes in the HTML
+  namespace, and byte streams labeled with an XML MIME type that contain
+  elements from the HTML namespace, depending on context.
+
+  
+
+  For simplicity, terms such as shown, displayed, and
+  visible might sometimes be used when referring to the way a document is
+  rendered to the user. These terms are not meant to imply a visual medium; they must be considered
+  to apply to other media in equivalent ways.
+
+  
+
+  When an algorithm B says to return to another algorithm A, it implies that A called B. Upon
+  returning to A, the implementation must continue from where it left off in calling B.
+
+  
+
+  
+  The term "transparent black" refers to the colour with red, green, blue, and alpha channels all
+  set to zero.
+
+
+  Resources
+
+  The specification uses the term supported when referring to whether a user
+  agent has an implementation capable of decoding the semantics of an external resource. A format or
+  type is said to be supported if the implementation can process an external resource of that
+  format or type without critical aspects of the resource being ignored. Whether a specific resource
+  is supported can depend on what features of the resource's format are in use.
+
+  For example, a PNG image would be considered to be in a supported format if its
+  pixel data could be decoded and rendered, even if, unbeknownst to the implementation, the image
+  also contained animation data.
+
+  An MPEG-4 video file would not be considered to be in a supported format if the
+  compression format used was not supported, even if the implementation could determine the
+  dimensions of the movie from the file's metadata.
+
+  What some specifications, in particular the HTTP specification, refer to as a
+  representation is referred to in this specification as a resource. [HTTP]
+
+  The term MIME type is used to refer to what is sometimes called an Internet media
+  type in protocol literature. The term media type in this specification is used to refer
+  to the type of media intended for presentation, as used by the CSS specifications. [RFC2046] [MQ]
+
+  A string is a valid MIME type if it matches the media-type
+  rule defined in section 3.7 "Media Types" of RFC 2616. In particular, a valid MIME
+  type may include MIME type parameters. [HTTP]
+
+  A string is a valid MIME type with no parameters if it matches the media-type rule defined in section 3.7 "Media Types" of RFC 2616, but does not
+  contain any U+003B SEMICOLON characters (;). In other words, if it consists only of a type and
+  subtype, with no MIME Type parameters. [HTTP]
+
+  The term HTML MIME type is used to refer to the MIME type
+  text/html.
+
+  A resource's critical subresources are those that the resource needs to have
+  available to be correctly processed. Which resources are considered critical or not is defined by
+  the specification that defines the resource's format.
+
+  The term data: URL refers to URLs that use the data: scheme. [RFC2397]
+
+
+  XML
+
+  To ease migration from HTML to XHTML, UAs conforming to this specification
+  will place elements in HTML in the http://www.w3.org/1999/xhtml namespace, at least
+  for the purposes of the DOM and CSS. The term "HTML elements", when used in this
+  specification, refers to any element in that namespace, and thus refers to both HTML and XHTML
+  elements.
+
+  Except where otherwise stated, all elements defined or mentioned in this specification are in
+  the HTML namespace ("http://www.w3.org/1999/xhtml"), and all attributes
+  defined or mentioned in this specification have no namespace.
+
+  The term element type is used to refer to the set of elements that have a given
+  local name and namespace. For example, button elements are elements with the element
+  type button, meaning they have the local name "button" and
+  (implicitly as defined above) the HTML namespace.
+
+  Attribute names are said to be XML-compatible if they match the Name production defined in XML
+  and they contain no U+003A COLON characters (:). [XML]
+
+  The term XML MIME type is used to refer to the MIME
+  types text/xml, application/xml, and any
+  MIME type whose subtype ends with the four characters "+xml".
+  [RFC3023]
+
+
+  DOM trees
+
+  The root element of a Document object is that Document's
+  first element child, if any. If it does not have one then the Document has no root
+  element.
+
+  The term root element, when not referring to a Document object's root
+  element, means the furthest ancestor element node of whatever node is being discussed, or the node
+  itself if it has no ancestors. When the node is a part of the document, then the node's root
+  element is indeed the document's root element; however, if the node is not currently part
+  of the document tree, the root element will be an orphaned node.
+
+  When an element's root element is the root element of a
+  Document object, it is said to be in a Document. An
+  element is said to have been inserted into a
+  document when its root element changes and is now the document's root
+  element. Analogously, an element is said to have been removed from a document when its root element changes from being the
+  document's root element to being another element.
+
+  A node's home subtree is the subtree rooted at that node's root
+  element. When a node is in a Document, its home
+  subtree is that Document's tree.
+
+  The Document of a Node (such as an element) is the
+  Document that the Node's ownerDocument IDL attribute returns. When a
+  Node is in a Document then that Document is
+  always the Node's Document, and the Node's ownerDocument IDL attribute thus always returns that
+  Document.
+
+  The Document of a content attribute is the Document of the
+  attribute's element.
+
+  The term tree order means a pre-order, depth-first traversal of DOM nodes involved
+  (through the parentNode/childNodes relationship).
+
+  When it is stated that some element or attribute is ignored, or
+  treated as some other value, or handled as if it was something else, this refers only to the
+  processing of the node after it is in the DOM. A user agent must not mutate the
+  DOM in such situations.
+
+  A content attribute is said to change value only if its new value is
+  different than its previous value; setting an attribute to a value it already has does not change
+  it.
+
+  The term empty, when used of an attribute value, Text node, or
+  string, means that the length of the text is zero (i.e. not even containing spaces or control
+  characters).
+
+
+  Scripting
+
+  The construction "a Foo object", where Foo is actually an interface,
+  is sometimes used instead of the more accurate "an object implementing the interface
+  Foo".
+
+  An IDL attribute is said to be getting when its value is being retrieved
+  (e.g. by author script), and is said to be setting when a new value is
+  assigned to it.
+
+  If a DOM object is said to be live, then the attributes and methods on that object
+  must operate on the actual underlying data, not a snapshot of the
+  data.
+
+  In the contexts of events, the terms fire and dispatch are used as defined in the
+  DOM specification: firing an event means to create and dispatch it, and dispatching an event means to follow the steps that propagate
+  the event through the tree. The term trusted event is
+  used to refer to events whose isTrusted attribute is
+  initialised to true. [DOM]
+
+
+  Plugins
+
+  The term plugin refers to a user-agent defined set of content handlers used by the
+  user agent that can take part in the user agent's rendering of a Document object, but
+  that neither act as child browsing contexts of the
+  Document nor introduce any Node objects to the Document's
+  DOM.
+
+  Typically such content handlers are provided by third parties, though a user agent can also
+  designate built-in content handlers as plugins.
+
+  
+
+  A user agent must not consider the types text/plain and
+  application/octet-stream as having a registered plugin. 
+
+  
+
+  One example of a plugin would be a PDF viewer that is instantiated in a
+  browsing context when the user navigates to a PDF file. This would count as a plugin
+  regardless of whether the party that implemented the PDF viewer component was the same as that
+  which implemented the user agent itself. However, a PDF viewer application that launches separate
+  from the user agent (as opposed to using the same interface) is not a plugin by this
+  definition.
+
+  This specification does not define a mechanism for interacting with plugins, as it
+  is expected to be user-agent- and platform-specific. Some UAs might opt to support a plugin
+  mechanism such as the Netscape Plugin API; others might use remote content converters or have
+  built-in support for certain types. Indeed, this specification doesn't require user agents to
+  support plugins at all. [NPAPI]
+
+  A plugin can be secured if it honors the semantics of
+  the sandbox attribute.
+
+  For example, a secured plugin would prevent its contents from creating pop-up
+  windows when the plugin is instantiated inside a sandboxed iframe.
+
+  
+
+  Browsers should take extreme care when interacting with external content
+  intended for plugins. When third-party software is run with the same
+  privileges as the user agent itself, vulnerabilities in the third-party software become as
+  dangerous as those in the user agent.
+
+  Since different users having differents sets of plugins provides a
+  fingerprinting vector that increases the chances of users being uniquely identified, user agents
+  are encouraged to support the exact same set of plugins for each
+  user.
+  
+  
+
+  
+
+
+
+  Character encodings
+
+  A character encoding, or just encoding where that is not
+  ambiguous, is a defined way to convert between byte streams and Unicode strings, as defined in the
+  WHATWG Encoding standard. An encoding has an encoding name and one or more
+  encoding labels, referred to as the encoding's name and
+  labels in the Encoding standard. [ENCODING]
+
+  An ASCII-compatible character encoding is a single-byte or variable-length
+  encoding in which the bytes 0x09, 0x0A, 0x0C, 0x0D, 0x20 - 0x22, 0x26, 0x27, 0x2C -
+  0x3F, 0x41 - 0x5A, and 0x61 - 0x7A, ignoring bytes that are the second and later bytes of multibyte
+  sequences, all correspond to single-byte sequences that map to the same Unicode characters as
+  those bytes in Windows-1252. [ENCODING]
+
+  This includes such encodings as Shift_JIS, HZ-GB-2312, and variants of ISO-2022,
+  even though it is possible in these encodings for bytes like 0x70 to be part of longer sequences
+  that are unrelated to their interpretation as ASCII. It excludes UTF-16 variants, as well as
+  obsolete legacy encodings such as UTF-7, GSM03.38, and EBCDIC variants.
+
+  
+
+  The term a UTF-16 encoding refers to any variant of UTF-16: UTF-16LE or UTF-16BE,
+  regardless of the presence or absence of a BOM. [ENCODING]
+
+  The term code unit is used as defined in the Web IDL specification: a 16 bit
+  unsigned integer, the smallest atomic component of a DOMString. (This is a narrower
+  definition than the one used in Unicode, and is not the same as a code point.) [WEBIDL]
+
+  The term Unicode code point means a Unicode scalar value where
+  possible, and an isolated surrogate code point when not. When a conformance requirement is defined
+  in terms of characters or Unicode code points, a pair of code units
+  consisting of a high surrogate followed by a low surrogate must be treated as the single code
+  point represented by the surrogate pair, but isolated surrogates must each be treated as the
+  single code point with the value of the surrogate. [UNICODE]
+
+  In this specification, the term character, when not qualified as Unicode
+  character, is synonymous with the term Unicode code point.
+
+  The term Unicode character is used to mean a Unicode scalar value
+  (i.e. any Unicode code point that is not a surrogate code point). [UNICODE]
+
+  The code-unit length of a string is the number of code
+  units in that string.
+
+  This complexity results from the historical decision to define the DOM API in
+  terms of 16 bit (UTF-16) code units, rather than in terms of Unicode characters.
+
+
+
+  
+
+  Conformance requirements
+
+  All diagrams, examples, and notes in this specification are non-normative, as are all sections
+  explicitly marked non-normative. Everything else in this specification is normative.
+
+  The key words "MUST", "MUST NOT",   "SHOULD", "SHOULD
+  NOT",  "MAY", and "OPTIONAL" in the normative parts of
+  this document are to be interpreted as described in RFC2119. The key word "OPTIONALLY" in the
+  normative parts of this document is to be interpreted with the same normative meaning as "MAY" and
+  "OPTIONAL". For readability, these words do not appear in all uppercase letters in this
+  specification. [RFC2119]
+
+  Requirements phrased in the imperative as part of algorithms (such as "strip any leading space
+  characters" or "return false and abort these steps") are to be interpreted with the meaning of the
+  key word ("must", "should", "may", etc) used in introducing the algorithm.
+
+  
+
+   For example, were the spec to say:
+
+   To eat an orange, the user must:
+1. Peel the orange.
+2. Separate each slice of the orange.
+3. Eat the orange slices.
+
+   ...it would be equivalent to the following:
+
+   To eat an orange:
+1. The user must peel the orange.
+2. The user must separate each slice of the orange.
+3. The user must eat the orange slices.
+
+   Here the key word is "must".
+
+   The former (imperative) style is generally preferred in this specification for stylistic
+   reasons.
+
+  
+
+  Conformance requirements phrased as algorithms or specific steps may be implemented in any
+  manner, so long as the end result is equivalent. (In particular, the algorithms defined in this
+  specification are intended to be easy to follow, and not intended to be performant.)
+
+  
+
+
+
+  
+
+  Conformance classes
+
+  This specification describes the conformance criteria for user agents
+  (relevant to implementors) and documents (relevant to authors and
+  authoring tool implementors).
+
+  Conforming documents are those that comply with all the conformance criteria for
+  documents. For readability, some of these conformance requirements are phrased as conformance
+  requirements on authors; such requirements are implicitly requirements on documents: by
+  definition, all documents are assumed to have had an author. (In some cases, that author may
+  itself be a user agent — such user agents are subject to additional rules, as explained
+  below.)
+
+  For example, if a requirement states that "authors must not use the foobar element", it would imply that documents are not allowed to contain elements
+  named foobar.
+
+  There is no implied relationship between document conformance requirements
+  and implementation conformance requirements. User agents are not free to handle non-conformant
+  documents as they please; the processing model described in this specification applies to
+  implementations regardless of the conformity of the input documents.
+
+  User agents fall into several (overlapping) categories with different conformance
+  requirements.
+
+  
+
+   Web browsers and other interactive user agents
+
+   
+
+    Web browsers that support the XHTML syntax must process elements and attributes
+    from the HTML namespace found in XML documents as described in this specification,
+    so that users can interact with them, unless the semantics of those elements have been
+    overridden by other specifications.
+
+    A conforming XHTML processor would, upon finding an XHTML script
+    element in an XML document, execute the script contained in that element. However, if the
+    element is found within a transformation expressed in XSLT (assuming the user agent also
+    supports XSLT), then the processor would instead treat the script element as an
+    opaque element that forms part of the transform.
+
+    Web browsers that support the HTML syntax must process documents labeled with an
+    HTML MIME type as described in this specification, so that users can interact with
+    them.
+
+    User agents that support scripting must also be conforming implementations of the IDL
+    fragments in this specification, as described in the Web IDL specification. [WEBIDL]
+
+    Unless explicitly stated, specifications that override the semantics of HTML
+    elements do not override the requirements on DOM objects representing those elements. For
+    example, the script element in the example above would still implement the
+    HTMLScriptElement interface.
+
+   
+
+   Non-interactive presentation user agents
+
+   
+
+    User agents that process HTML and XHTML documents purely to render non-interactive versions
+    of them must comply to the same conformance criteria as Web browsers, except that they are
+    exempt from requirements regarding user interaction.
+
+    Typical examples of non-interactive presentation user agents are printers
+    (static UAs) and overhead displays (dynamic UAs). It is expected that most static
+    non-interactive presentation user agents will also opt to lack scripting
+    support.
+
+    A non-interactive but dynamic presentation UA would still execute scripts,
+    allowing forms to be dynamically submitted, and so forth. However, since the concept of "focus"
+    is irrelevant when the user cannot interact with the document, the UA would not need to support
+    any of the focus-related DOM APIs.
+
+   
+
+   Visual user agents that support the suggested default rendering
+
+   
+
+    User agents, whether interactive or not, may be designated (possibly as a user option) as
+    supporting the suggested default rendering defined by this specification.
+
+    This is not required. In particular, even user agents that do implement the suggested default
+    rendering are encouraged to offer settings that override this default to improve the experience
+    for the user, e.g. changing the colour contrast, using different focus styles, or otherwise
+    making the experience more accessible and usable to the user.
+
+    User agents that are designated as supporting the suggested default rendering must, while so
+    designated, implement the rules in the rendering section that that
+    section defines as the behavior that user agents are expected to implement.
+
+   
+
+   User agents with no scripting support
+
+   
+
+    Implementations that do not support scripting (or which have their scripting features
+    disabled entirely) are exempt from supporting the events and DOM interfaces mentioned in this
+    specification. For the parts of this specification that are defined in terms of an events model
+    or in terms of the DOM, such user agents must still act as if events and the DOM were
+    supported.
+
+    Scripting can form an integral part of an application. Web browsers that do not
+    support scripting, or that have scripting disabled, might be unable to fully convey the author's
+    intent.
+
+   
+
+
+   Conformance checkers
+
+   
+
+    Conformance checkers must verify that a document conforms to the applicable conformance
+    criteria described in this specification. Automated conformance checkers are exempt from
+    detecting errors that require interpretation of the author's intent (for example, while a
+    document is non-conforming if the content of a blockquote element is not a quote,
+    conformance checkers running without the input of human judgement do not have to check that
+    blockquote elements only contain quoted material).
+
+    Conformance checkers must check that the input document conforms when parsed without a
+    browsing context (meaning that no scripts are run, and that the parser's
+    scripting flag is disabled), and should also check that the input document conforms
+    when parsed with a browsing context in which scripts execute, and that the scripts
+    never cause non-conforming states to occur other than transiently during script execution
+    itself. (This is only a "SHOULD" and not a "MUST" requirement because it has been proven to be
+    impossible. [COMPUTABLE])
+
+    The term "HTML validator" can be used to refer to a conformance checker that itself conforms
+    to the applicable requirements of this specification.
+
+    
+
+     XML DTDs cannot express all the conformance requirements of this specification. Therefore, a
+     validating XML processor and a DTD cannot constitute a conformance checker. Also, since neither
+     of the two authoring formats defined in this specification are applications of SGML, a
+     validating SGML system cannot constitute a conformance checker either.
+
+     To put it another way, there are three types of conformance criteria:
+
+     
+
+      Criteria that can be expressed in a DTD.
+
+      Criteria that cannot be expressed by a DTD, but can still be checked by a machine.
+
+      Criteria that can only be checked by a human.
+
+     
+
+     A conformance checker must check for the first two. A simple DTD-based validator only checks
+     for the first class of errors and is therefore not a conforming conformance checker according
+     to this specification.
+
+    
+   
+
+
+   Data mining tools
+
+   
+
+    Applications and tools that process HTML and XHTML documents for reasons other than to either
+    render the documents or check them for conformance should act in accordance with the semantics
+    of the documents that they process.
+
+    A tool that generates document outlines but
+    increases the nesting level for each paragraph and does not increase the nesting level for each
+    section would not be conforming.
+
+   
+
+
+   Authoring tools and markup generators
+
+   
+
+    Authoring tools and markup generators must generate conforming documents.
+    Conformance criteria that apply to authors also apply to authoring tools, where appropriate.
+
+    Authoring tools are exempt from the strict requirements of using elements only for their
+    specified purpose, but only to the extent that authoring tools are not yet able to determine
+    author intent. However, authoring tools must not automatically misuse elements or encourage
+    their users to do so.
+
+    For example, it is not conforming to use an address element for
+    arbitrary contact information; that element can only be used for marking up contact information
+    for the author of the document or section. However, since an authoring tool is likely unable to
+    determine the difference, an authoring tool is exempt from that requirement. This does not mean,
+    though, that authoring tools can use address elements for any block of italics text
+    (for instance); it just means that the authoring tool doesn't have to verify that when the user
+    uses a tool for inserting contact information for a section, that the user really is doing that
+    and not inserting something else instead.
+
+    In terms of conformance checking, an editor has to output documents that conform
+    to the same extent that a conformance checker will verify.
+
+    When an authoring tool is used to edit a non-conforming document, it may preserve the
+    conformance errors in sections of the document that were not edited during the editing session
+    (i.e. an editing tool is allowed to round-trip erroneous content). However, an authoring tool
+    must not claim that the output is conformant if errors have been so preserved.
+
+    Authoring tools are expected to come in two broad varieties: tools that work from structure
+    or semantic data, and tools that work on a What-You-See-Is-What-You-Get media-specific editing
+    basis (WYSIWYG).
+
+    The former is the preferred mechanism for tools that author HTML, since the structure in the
+    source information can be used to make informed choices regarding which HTML elements and
+    attributes are most appropriate.
+
+    However, WYSIWYG tools are legitimate. WYSIWYG tools should use elements they know are
+    appropriate, and should not use elements that they do not know to be appropriate. This might in
+    certain extreme cases mean limiting the use of flow elements to just a few elements, like
+    div, b, i, and span and making liberal use
+    of the style attribute.
+
+    All authoring tools, whether WYSIWYG or not, should make a best effort attempt at enabling
+    users to create well-structured, semantically rich, media-independent content.
+
+   
+
+  
+
+  User agents may impose implementation-specific limits on otherwise
+  unconstrained inputs, e.g. to prevent denial of service attacks, to guard against running out of
+  memory, or to work around platform-specific limitations.
+  
+  
+
+  For compatibility with existing content and prior specifications, this specification describes
+  two authoring formats: one based on XML (referred to as the XHTML syntax), and one
+  using a custom format inspired by SGML (referred to as the HTML
+  syntax). Implementations must support at least one of these two formats, although
+  supporting both is encouraged.
+
+  Some conformance requirements are phrased as requirements on elements, attributes, methods or
+  objects. Such requirements fall into two categories: those describing content model restrictions,
+  and those describing implementation behavior. Those in the former category are requirements on
+  documents and authoring tools. Those in the second category are requirements on user agents.
+  Similarly, some conformance requirements are phrased as requirements on authors; such requirements
+  are to be interpreted as conformance requirements on the documents that authors produce. (In other
+  words, this specification does not distinguish between conformance criteria on authors and
+  conformance criteria on documents.)
+
+  
+
+
+  
+
+  Dependencies
+
+  This specification relies on several other underlying specifications.
+
+  
+
+   Unicode and Encoding
+
+   
+
+    The Unicode character set is used to represent textual data, and the WHATWG Encoding standard
+    defines requirements around character encodings. [UNICODE]
+
+    This specification introduces terminology
+    based on the terms defined in those specifications, as described earlier.
+
+    The following terms are used as defined in the WHATWG Encoding standard: [ENCODING]
+
+    
+
+     Getting an encoding
+
+     The encoder and decoder algorithms for various encodings, including
+     the UTF-8 encoder and UTF-8 decoder
+
+     The generic decode algorithm which takes a byte stream and an encoding and
+     returns a character stream
+
+     The UTF-8 decode algorithm which takes a byte stream and returns a character
+     stream, additionally stripping one leading UTF-8 Byte Order Mark (BOM), if any
+
+    
+
+    The UTF-8 decoder is distinct from the UTF-8 decode
+    algorithm. The latter first strips a Byte Order Mark (BOM), if any, and then invokes the
+    former.
+
+    For readability, character encodings are sometimes referenced in this specification with a
+    case that differs from the canonical case given in the WHATWG Encoding standard. (For example,
+    "UTF-16LE" instead of "utf-16le".)
+
+   
+
+
+   XML
+
+   
+
+    Implementations that support the XHTML syntax must support some version of XML,
+    as well as its corresponding namespaces specification, because that syntax uses an XML
+    serialisation with namespaces. [XML] [XMLNS]
+
+   
+
+
+   URLs
+
+   
+
+    The following terms are defined in the WHATWG URL standard: [URL]
+
+    
+     URL
+     Absolute URL
+     Relative URL
+     Relative schemes
+     The URL parser
+     Parsed URL
+     The scheme component of a parsed URL
+     The scheme data component of a parsed URL
+     The username component of a parsed URL
+     The password component of a parsed URL
+     The host component of a parsed URL
+     The port component of a parsed URL
+     The path component of a parsed URL
+     The query component of a parsed URL
+     The fragment component of a parsed URL
+     Parse errors from the URL parser
+     The URL serializer
+     Default encode set
+     Percent encode
+     UTF-8 percent encode
+     Percent decode
+     Decoder error
+     The domain label to ASCII algorithm
+     The domain label to Unicode algorithm
+     URLUtils interface
+     URLUtilsReadOnly interface
+     href attribute
+     protocol attribute
+     The get the base hook for URLUtils
+     The update steps hook for URLUtils
+     The set the input algorithm for URLUtils
+     The query encoding of an URLUtils object
+     The input of an URLUtils object
+     The url of an URLUtils object
+    
+
+   
+
+
+   Cookies
+
+   
+
+    The following terms are defined in the Cookie specification: [COOKIES]
+
+    
+     cookie-string
+     receives a set-cookie-string
+    
+
+   
+
+
+   Fetch
+
+   
+
+    The following terms are defined in the WHATWG Fetch specification: [FETCH]
+
+    
+     cross-origin request
+     cross-origin request status
+     custom request headers
+     simple cross-origin request
+     redirect steps
+     omit credentials flag
+     resource sharing check
+    
+
+    This specification does not yet use the "fetch" algorithm from the WHATWG Fetch
+    specification. It will be updated to do so in due course.
+
+   
+
+
+
+
+   Web IDL
+
+   
+
+    The IDL fragments in this specification must be interpreted as required for conforming IDL
+    fragments, as described in the Web IDL specification. [WEBIDL]
+
+    The terms supported property indices, determine the value of an indexed
+    property, support named properties, supported property names,
+    unenumerable, determine the value of a named property, platform array
+    objects, and read only (when applied to arrays)
+    are used as defined in the Web IDL specification. The algorithm to convert a DOMString to a
+    sequence of Unicode characters is similarly that defined in the Web IDL specification.
+
+    When this specification requires a user agent to create a Date object
+    representing a particular time (which could be the special value Not-a-Number), the milliseconds
+    component of that time, if any, must be truncated to an integer, and the time value of the newly
+    created Date object must represent the resulting truncated time.
+
+    For instance, given the time 23045 millionths of a second after 01:00 UTC on
+    January 1st 2000, i.e. the time 2000-01-01T00:00:00.023045Z, then the Date object
+    created representing that time would represent the same time as that created representing the
+    time 2000-01-01T00:00:00.023Z, 45 millionths earlier. If the given time is NaN, then the result
+    is a Date object that represents a time value NaN (indicating that the object does
+    not represent a specific instant of time).
+
+   
+
+
+   JavaScript
+
+   
+
+    Some parts of the language described by this specification only support JavaScript as the
+    underlying scripting language. [ECMA262]
+
+    The term "JavaScript" is used to refer to ECMA262, rather than the official term
+    ECMAScript, since the term JavaScript is more widely known. Similarly, the MIME
+    type used to refer to JavaScript in this specification is text/javascript, since that is the most commonly used type, despite it being an officially obsoleted type according to RFC 4329. [RFC4329]
+
+    The term JavaScript global environment refers to the global
+    environment concept defined in the ECMAScript specification.
+
+    The ECMAScript SyntaxError exception is also
+    defined in the ECMAScript specification. [ECMA262]
+
+    The ArrayBuffer and related object types and underlying concepts from the
+    ECMAScript Specification are used for several features in this specification. [ECMA262]
+
+    The following helper IDL is used for referring to ArrayBuffer-related types:
+
+    typedef (Int8Array or Uint8Array or Uint8ClampedArray or
+         Int16Array or Uint16Array or
+         Int32Array or Uint32Array or
+         Float32Array or Float64Array or
+         DataView) ArrayBufferView;
+
+    In particular, the Uint8ClampedArray type is used by some 2D canvas APIs, and the WebSocket
+    API uses ArrayBuffer objects for handling binary frames.
+
+   
+
+
+   DOM
+
+   
+
+    The Document Object Model (DOM) is a representation — a model — of a document and
+    its content. The DOM is not just an API; the conformance criteria of HTML implementations are
+    defined, in this specification, in terms of operations on the DOM. [DOM]
+
+    Implementations must support DOM and the events defined in DOM Events, because this
+    specification is defined in terms of the DOM, and some of the features are defined as extensions
+    to the DOM interfaces. [DOM] [DOMEVENTS]
+
+    In particular, the following features are defined in the DOM specification: [DOM] 
+
+    
+
+     Attr interface
+     Comment interface
+     DOMImplementation interface
+     Document interface
+     XMLDocument interface
+     DocumentFragment interface
+     DocumentType interface
+     DOMException interface
+     ChildNode interface
+     Element interface
+     Node interface
+     NodeList interface
+     ProcessingInstruction interface
+     Text interface
+
+     HTMLCollection interface
+     item() method
+     The terms collections and represented by the collection
+
+     DOMTokenList interface
+     DOMSettableTokenList interface
+
+     createDocument() method
+     createHTMLDocument() method
+     createElement() method
+     createElementNS() method
+     getElementById() method
+     insertBefore() method
+
+     ownerDocument attribute
+     childNodes attribute
+     localName attribute
+     parentNode attribute
+     namespaceURI attribute
+     tagName attribute
+     id attribute
+     textContent attribute
+
+     The insert, append, remove, replace, and adopt algorithms for nodes
+     The nodes are inserted and nodes are removed concepts
+     An element's adopting steps
+     The attribute list concept.
+     The data of a text node.
+
+     Event interface
+     EventTarget interface
+     EventInit dictionary type
+     target attribute
+     isTrusted attribute
+     The type of an event
+     The concept of an event listener and the event listeners associated with an EventTarget
+     The concept of a target override
+     The concept of a regular event parent and a cross-boundary event parent 
+
+     The encoding (herein the character encoding) and content type of a Document
+     The distinction between XML documents and HTML documents
+     The terms quirks mode, limited-quirks mode, and no-quirks mode
+     The algorithm to clone a Node, and the concept of cloning steps used by that algorithm
+     The concept of base URL change steps and the definition of what happens when an element is affected by a base URL change
+     The concept of an element's unique identifier (ID)
+
+     The concept of a DOM range, and the terms start, end, and boundary point as applied to ranges.
+
+     MutationObserver interface
+     The invoke MutationObserver objects algorithm
+
+     Promise interface
+     The resolver concept
+     The fulfill and reject algorithms
+
+    
+
+    The term throw in this specification is used as defined in the DOM specification.
+    The following DOMException types are defined in the DOM specification: [DOM]
+
+    
+     IndexSizeError
+     HierarchyRequestError
+     WrongDocumentError
+     InvalidCharacterError
+     NoModificationAllowedError
+     NotFoundError
+     NotSupportedError
+     InvalidStateError
+     SyntaxError
+     InvalidModificationError
+     NamespaceError
+     InvalidAccessError
+     SecurityError
+     NetworkError
+     AbortError
+     URLMismatchError
+     QuotaExceededError
+     TimeoutError
+     InvalidNodeTypeError
+     DataCloneError
+    
+
+    For example, to throw a TimeoutError exception, a user
+    agent would construct a DOMException object whose type was the string "TimeoutError" (and whose code was the number 23, for legacy reasons) and
+    actually throw that object as an exception.
+
+    The following features are defined in the DOM Events specification: [DOMEVENTS]
+
+    
+
+     MouseEvent interface
+     MouseEventInit dictionary type
+
+     The FocusEvent interface and its relatedTarget attribute
+
+     The UIEvent interface's detail attribute
+
+     click event
+     dblclick event
+     mousedown event
+     mouseenter event
+     mouseleave event
+     mousemove event
+     mouseout event
+     mouseover event
+     mouseup event
+     mousewheel event
+
+     keydown event
+     keyup event
+     keypress event
+
+    
+
+    The following features are defined in the Touch Events specification: [TOUCH]
+
+    
+
+     Touch interface
+
+     Touch point concept
+
+    
+
+    This specification sometimes uses the term name to refer to the event's
+    type; as in, "an event named click"
+    or "if the event name is keypress". The terms "name" and "type" for
+    events are synonymous.
+
+    The following features are defined in the DOM Parsing and Serialisation specification: [DOMPARSING]
+
+    
+     innerHTML
+     outerHTML
+    
+
+    User agents are also encouraged to implement the features described in the
+    HTML Editing APIs and UndoManager and DOM Transaction
+    specifications.
+    [EDITING]
+    [UNDO]
+    
+
+    The following parts of the Fullscreen specification are referenced from this specification,
+    in part to define the rendering of dialog elements, and also to define how the
+    Fullscreen API interacts with the sandboxing features in HTML: [FULLSCREEN]
+
+    
+     The top layer concept
+     requestFullscreen()
+     The fullscreen enabled flag
+     The fully exit fullscreen algorithm
+    
+
+   
+
+
+
+   File API
+
+   
+
+    This specification uses the following features defined in the File API specification: [FILEAPI]
+
+    
+
+     Blob
+     File
+     FileList
+     Blob.close()
+     Blob.type
+     The concept of read errors
+    
+
+   
+
+
+   XMLHttpRequest
+
+   
+
+    This specification references the XMLHttpRequest specification to describe how the two
+    specifications interact and to use its ProgressEvent features. The following
+    features and terms are defined in the XMLHttpRequest specification: [XHR]
+
+    
+
+     XMLHttpRequest
+     ProgressEvent
+     Fire a progress event named e
+
+    
+
+   
+
+
+
+
+   Media Queries
+
+   
+
+    Implementations must support the Media Queries language. [MQ]
+
+   
+
+
+   CSS modules
+
+   
+
+    While support for CSS as a whole is not required of implementations of this specification
+    (though it is encouraged, at least for Web browsers), some features are defined in terms of
+    specific CSS requirements.
+
+    In particular, some features require that a string be parsed as a CSS <color>
+    value. When parsing a CSS value, user agents are required by the CSS specifications to
+    apply some error handling rules. These apply to this specification also. [CSSCOLOR] [CSS]
+
+    For example, user agents are required to close all open constructs upon
+    finding the end of a style sheet unexpectedly. Thus, when parsing the string "rgb(0,0,0" (with a missing close-parenthesis) for a colour value, the close
+    parenthesis is implied by this error handling rule, and a value is obtained (the colour 'black').
+    However, the similar construct "rgb(0,0," (with both a missing parenthesis
+    and a missing "blue" value) cannot be parsed, as closing the open construct does not result in a
+    viable value.
+
+    The term CSS element reference identifier is used as defined in the CSS
+    Image Values and Replaced Content specification to define the API that declares
+    identifiers for use with the CSS 'element()' function. [CSSIMAGES]
+
+    Similarly, the term provides a paint source is used as defined in the CSS
+    Image Values and Replaced Content specification to define the interaction of certain HTML
+    elements with the CSS 'element()' function. [CSSIMAGES]
+
+    The term default object size is also defined in the CSS Image Values and
+    Replaced Content specification. [CSSIMAGES]
+
+    Implementations that support scripting must support the CSS Object Model. The following
+    features and terms are defined in the CSSOM specifications: [CSSOM] [CSSOMVIEW]
+
+    
+     Screen
+     LinkStyle
+     CSSStyleDeclaration
+     cssText attribute of CSSStyleDeclaration
+     StyleSheet
+     The terms create a CSS style sheet, remove a CSS style sheet, and associated CSS style sheet
+     CSS style sheets and their properties:
+         type,
+         location,
+         parent CSS style sheet,
+         owner node,
+         owner CSS rule,
+         media,
+         title,
+         alternate flag,
+         disabled flag,
+         CSS rules,
+         origin-clean flag
+     
+     Alternative style sheet sets and the preferred style sheet set
+     Serializing a CSS value
+     Scroll an element into view
+     Scroll to the beginning of the document
+     The resize event
+     The scroll event
+    
+
+    The term environment encoding is defined in the CSS Syntax
+    specifications. [CSSSYNTAX]
+
+    The term CSS styling attribute is defined in the CSS Style Attributes
+    specification. [CSSATTR]
+
+    The CanvasRenderingContext2D object's use of fonts depends on the features
+    described in the CSS Fonts and Font Load Events specifications, including in particular
+    FontLoader. [CSSFONTS] [CSSFONTLOAD]
+
+   
+
+
+
+
+   SVG
+
+   
+
+    The following interface is defined in the SVG specification: [SVG]
+
+    
+     SVGMatrix
+    
+
+    
+
+   
+
+
+   WebGL
+
+   
+
+    The following interface is defined in the WebGL specification: [WEBGL]
+
+    
+     WebGLRenderingContext
+    
+
+   
+
+
+
+
+   
+
+
+
+
+   WebVTT
+
+   
+
+    Implementations may support WebVTT as a text track format for subtitles, captions,
+    chapter titles, metadata, etc, for media resources. [WEBVTT]
+
+    The following terms, used in this specification, are defined in the WebVTT specification:
+
+    
+     WebVTT file
+     WebVTT file using cue text
+     WebVTT file using chapter title text
+     WebVTT file using only nested cues
+     WebVTT parser
+     The rules for updating the display of WebVTT text tracks
+     The rules for interpreting WebVTT cue text
+     The WebVTT text track cue writing direction
+    
+
+   
+
+
+
+
+   The WebSocket protocol
+
+   
+
+    The following terms are defined in the WebSocket protocol specification: [WSP]
+
+    
+
+     establish a WebSocket connection
+     the WebSocket connection is established
+     validate the server's response
+     extensions in use
+     subprotocol in use
+     headers to send appropriate cookies
+     cookies set during the server's opening handshake
+     a WebSocket message has been received
+     send a WebSocket Message
+     fail the WebSocket connection
+     close the WebSocket connection
+     start the WebSocket closing handshake
+     the WebSocket closing handshake is started
+     the WebSocket connection is closed (possibly cleanly)
+     the WebSocket connection close code
+     the WebSocket connection close reason
+
+    
+
+   
+
+
+
+
+   ARIA
+
+   
+
+    The terms strong native semantics is used as defined in the ARIA specification.
+    The term default implicit ARIA semantics has the same meaning as the term implicit
+    WAI-ARIA semantics as used in the ARIA specification. [ARIA]
+
+    The role and aria-*
+    attributes are defined in the ARIA specification. [ARIA]
+
+
+   
+
+
+  
+
+  This specification does not require support of any particular network protocol, style
+  sheet language, scripting language, or any of the DOM specifications beyond those required in the
+  list above. However, the language described by this specification is biased towards CSS as the
+  styling language, JavaScript as the scripting language, and HTTP as the network protocol, and
+  several features assume that those languages and protocols are in use.
+
+  A user agent that implements the HTTP protocol must implement the Web Origin Concept
+  specification and the HTTP State Management Mechanism specification (Cookies) as well. [HTTP] [ORIGIN] [COOKIES]
+
+  This specification might have certain additional requirements on character
+  encodings, image formats, audio formats, and video formats in the respective sections.
+
+  
+
+  
+
+
+  Extensibility
+
+  Vendor-specific proprietary user agent extensions to this specification are strongly
+  discouraged. Documents must not use such extensions, as doing so reduces interoperability and
+  fragments the user base, allowing only users of specific user agents to access the content in
+  question.
+
+  
+
+  If such extensions are nonetheless needed, e.g. for experimental purposes, then vendors are
+  strongly urged to use one of the following extension mechanisms:
+
+  
+
+   For markup-level features that can be limited to the XML serialisation and need not be
+   supported in the HTML serialisation, vendors should use the namespace mechanism to define custom
+   namespaces in which the non-standard elements and attributes are supported.
+
+   
+
+    For markup-level features that are intended for use with the HTML syntax,
+    extensions should be limited to new attributes of the form "x-vendor-feature", where vendor is a
+    short string that identifies the vendor responsible for the extension, and feature is the name of the feature. New element names should not be created.
+    Using attributes for such extensions exclusively allows extensions from multiple vendors to
+    co-exist on the same element, which would not be possible with elements. Using the "x-vendor-feature" form allows extensions
+    to be made without risk of conflicting with future additions to the specification.
+
+    
+
+     For instance, a browser named "FerretBrowser" could use "ferret" as a vendor prefix, while a
+     browser named "Mellblom Browser" could use "mb". If both of these browsers invented extensions
+     that turned elements into scratch-and-sniff areas, an author experimenting with these features
+     could write:
+
+     <p>This smells of lemons!
+<span x-ferret-smellovision x-ferret-smellcode="LEM01"
+      x-mb-outputsmell x-mb-smell="lemon juice"></span></p>
+
+    
+
+   
+
+  
+
+  Attribute names beginning with the two characters "x-" are reserved for
+  user agent use and are guaranteed to never be formally added to the HTML language. For
+  flexibility, attributes names containing underscores (the U+005F LOW LINE character) are also
+  reserved for experimental purposes and are guaranteed to never be formally added to the HTML
+  language.
+
+  Pages that use such attributes are by definition non-conforming.
+
+  For DOM extensions, e.g. new methods and IDL attributes, the new members should be prefixed by
+  vendor-specific strings to prevent clashes with future versions of this specification.
+
+  For events, experimental event types should be prefixed with vendor-specific strings.
+
+  
+
+   For example, if a user agent called "Pleasold" were to add an event to indicate when
+   the user is going up in an elevator, it could use the prefix "pleasold" and
+   thus name the event "pleasoldgoingup", possibly with an event handler
+   attribute named "onpleasoldgoingup".
+
+  
+
+  All extensions must be defined so that the use of extensions neither contradicts nor causes the
+  non-conformance of functionality defined in the specification. 
+
+  
+
+   For example, while strongly discouraged from doing so, an implementation "Foo Browser" could
+   add a new IDL attribute "fooTypeTime" to a control's DOM interface that
+   returned the time it took the user to select the current value of a control (say). On the other
+   hand, defining a new control that appears in a form's elements array would be in violation of the above requirement,
+   as it would violate the definition of elements given in
+   this specification.
+
+  
+
+  When adding new reflecting IDL attributes corresponding to content
+  attributes of the form "x-vendor-feature", the IDL attribute should be named "vendorFeature" (i.e. the "x" is
+  dropped from the IDL attribute's name).
+
+  
+
+  
+
+  When vendor-neutral extensions to this specification are needed, either this specification can
+  be updated accordingly, or an extension specification can be written that overrides the
+  requirements in this specification. When someone applying this specification to their activities
+  decides that they will recognise the requirements of such an extension specification, it becomes
+  an applicable specification for the purposes of
+  conformance requirements in this specification.
+
+  Someone could write a specification that defines any arbitrary byte stream as
+  conforming, and then claim that their random junk is conforming. However, that does not mean that
+  their random junk actually is conforming for everyone's purposes: if someone else decides that
+  that specification does not apply to their work, then they can quite legitimately say that the
+  aforementioned random junk is just that, junk, and not conforming at all. As far as conformance
+  goes, what matters in a particular community is what that community agrees is
+  applicable.
+
+  
+
+  
+
+  User agents must treat elements and attributes that they do not understand as semantically
+  neutral; leaving them in the DOM (for DOM processors), and styling them according to CSS (for CSS
+  processors), but not inferring any meaning from them.
+
+
+  When support for a feature is disabled (e.g. as an emergency measure to mitigate a security
+  problem, or to aid in development, or for performance reasons), user agents must act as if they
+  had no support for the feature whatsoever, and as if the feature was not mentioned in this
+  specification. For example, if a particular feature is accessed via an attribute in a Web IDL
+  interface, the attribute itself would be omitted from the objects that implement that interface
+  — leaving the attribute on the object but making it return null or throw an exception is
+  insufficient.
+
+
+  
+
+
+  
+
+  Interactions with XPath and XSLT
+
+  Implementations of XPath 1.0 that operate on HTML
+  documents parsed or created in the manners described in this specification (e.g. as part of
+  the document.evaluate() API) must act as if the following edit was applied
+  to the XPath 1.0 specification.
+
+  First, remove this paragraph:
+
+  
+
+   A QName in the node test is expanded
+   into an expanded-name
+   using the namespace declarations from the expression context. This is the same way expansion is
+   done for element type names in start and end-tags except that the default namespace declared with
+   xmlns is not used: if the QName does not have a prefix, then the
+   namespace URI is null (this is the same way attribute names are expanded). It is an error if the
+   QName has a prefix for which there is
+   no namespace declaration in the expression context.
+
+  
+
+  Then, insert in its place the following:
+
+  
+
+   A QName in the node test is expanded into an expanded-name using the namespace declarations
+   from the expression context. If the QName has a prefix, then there must be a namespace declaration for this prefix in
+   the expression context, and the corresponding namespace URI is the one that is
+   associated with this prefix. It is an error if the QName has a prefix for which there is no
+   namespace declaration in the expression context. 
+
+   If the QName has no prefix and the principal node type of the axis is element, then the
+   default element namespace is used. Otherwise if the QName has no prefix, the namespace URI is
+   null. The default element namespace is a member of the context for the XPath expression. The
+   value of the default element namespace when executing an XPath expression through the DOM3 XPath
+   API is determined in the following way:
+
+   
+
+    If the context node is from an HTML DOM, the default element namespace is
+    "http://www.w3.org/1999/xhtml".
+
+    Otherwise, the default element namespace URI is null.
+
+   
+
+   This is equivalent to adding the default element namespace feature of XPath 2.0
+   to XPath 1.0, and using the HTML namespace as the default element namespace for HTML documents.
+   It is motivated by the desire to have implementations be compatible with legacy HTML content
+   while still supporting the changes that this specification introduces to HTML regarding the
+   namespace used for HTML elements, and by the desire to use XPath 1.0 rather than XPath 2.0.
+
+  
+
+  This change is a willful violation of the XPath 1.0 specification,
+  motivated by desire to have implementations be compatible with legacy content while still
+  supporting the changes that this specification introduces to HTML regarding which namespace is
+  used for HTML elements. [XPATH10] 
+
+  
+
+  XSLT 1.0 processors outputting to a DOM when the output
+  method is "html" (either explicitly or via the defaulting rule in XSLT 1.0) are affected as
+  follows:
+
+  If the transformation program outputs an element in no namespace, the processor must, prior to
+  constructing the corresponding DOM element node, change the namespace of the element to the
+  HTML namespace, ASCII-lowercase the
+  element's local name, and ASCII-lowercase the
+  names of any non-namespaced attributes on the element.
+
+  This requirement is a willful violation of the XSLT 1.0
+  specification, required because this specification changes the namespaces and case-sensitivity
+  rules of HTML in a manner that would otherwise be incompatible with DOM-based XSLT
+  transformations. (Processors that serialise the output are unaffected.) [XSLT10] 
+
+  
+
+  This specification does not specify precisely how XSLT processing interacts with the HTML
+  parser infrastructure (for example, whether an XSLT processor acts as if it puts any
+  elements into a stack of open elements). However, XSLT processors must stop
+  parsing if they successfully complete, and must set the current document
+  readiness first to "interactive" and then to "complete" if they are aborted.
+
+  
+
+  This specification does not specify how XSLT interacts with the navigation algorithm, how it fits in with the event loop, nor
+  how error pages are to be handled (e.g. whether XSLT errors are to replace an incremental XSLT
+  output, or are rendered inline, etc).
+
+  There are also additional non-normative comments regarding the interaction of XSLT
+  and HTML in the script element section, and of
+  XSLT, XPath, and HTML in the template element
+  section.
+
+  
+
+
+
+
+  Case-sensitivity and string comparison
+
+  Comparing two strings in a case-sensitive manner means comparing them exactly, code
+  point for code point.
+
+  Comparing two strings in an ASCII case-insensitive manner means comparing them
+  exactly, code point for code point, except that the characters in the range U+0041 to U+005A (i.e.
+  LATIN CAPITAL LETTER A to LATIN CAPITAL LETTER Z) and the corresponding characters in the range
+  U+0061 to U+007A (i.e. LATIN SMALL LETTER A to LATIN SMALL LETTER Z) are considered to also
+  match.
+
+  Comparing two strings in a compatibility caseless manner means using the Unicode
+  compatibility caseless match operation to compare the two strings, with no language-specific tailoirings. [UNICODE]
+
+  Except where otherwise stated, string comparisons must be performed in a
+  case-sensitive manner.
+
+
+  
+
+  Converting a string to ASCII uppercase means
+  replacing all characters in the range U+0061 to U+007A (i.e. LATIN SMALL LETTER A to LATIN SMALL
+  LETTER Z) with the corresponding characters in the range U+0041 to U+005A (i.e. LATIN CAPITAL
+  LETTER A to LATIN CAPITAL LETTER Z).
+
+  Converting a string to ASCII lowercase means
+  replacing all characters in the range U+0041 to U+005A (i.e. LATIN CAPITAL LETTER A to LATIN
+  CAPITAL LETTER Z) with the corresponding characters in the range U+0061 to U+007A (i.e. LATIN
+  SMALL LETTER A to LATIN SMALL LETTER Z).
+
+  
+
+
+  A string pattern is a prefix match for a string s when pattern is not longer than s and
+  truncating s to pattern's length leaves the two strings as
+  matches of each other.
+
+
+
+  Common microsyntaxes
+
+  There are various places in HTML that accept particular data types, such as dates or numbers.
+  This section describes what the conformance criteria for content in those formats is, and how to
+  parse them.
+
+  
+
+  Implementors are strongly urged to carefully examine any third-party libraries
+  they might consider using to implement the parsing of syntaxes described below. For example, date
+  libraries are likely to implement error handling behavior that differs from what is required in
+  this specification, since error-handling behavior is often not defined in specifications that
+  describe date syntaxes similar to those used in this specification, and thus implementations tend
+  to vary greatly in how they handle errors.
+
+  
+
+
+  
+
+  Common parser idioms
+
+  
+
+  The space characters, for the purposes of this
+  specification, are U+0020 SPACE, U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED (LF), U+000C
+  FORM FEED (FF), and U+000D CARRIAGE RETURN (CR).
+
+  The White_Space characters are those that have the Unicode
+  property "White_Space" in the Unicode PropList.txt data file. [UNICODE]
+
+  This should not be confused with the "White_Space" value (abbreviated "WS") of the
+  "Bidi_Class" property in the Unicode.txt data file.
+
+  The control characters are those whose Unicode "General_Category" property has the
+  value "Cc" in the Unicode UnicodeData.txt data file. [UNICODE]
+
+  The uppercase ASCII letters are the characters in the range U+0041 LATIN CAPITAL
+  LETTER A to U+005A LATIN CAPITAL LETTER Z.
+
+  The lowercase ASCII letters are the characters in the range U+0061 LATIN SMALL
+  LETTER A to U+007A LATIN SMALL LETTER Z.
+
+  The ASCII digits are the characters in the range U+0030 DIGIT ZERO (0) to U+0039
+  DIGIT NINE (9).
+
+  The alphanumeric ASCII characters are those that are either uppercase ASCII
+  letters, lowercase ASCII letters, or ASCII digits.
+
+  The ASCII hex digits are the characters in the ranges U+0030 DIGIT ZERO (0) to
+  U+0039 DIGIT NINE (9), U+0041 LATIN CAPITAL LETTER A to U+0046 LATIN CAPITAL LETTER F, and U+0061
+  LATIN SMALL LETTER A to U+0066 LATIN SMALL LETTER F.
+
+  The uppercase ASCII hex digits are the characters in the ranges U+0030 DIGIT ZERO (0) to
+  U+0039 DIGIT NINE (9) and U+0041 LATIN CAPITAL LETTER A to U+0046 LATIN CAPITAL LETTER F only.
+
+  The lowercase ASCII hex digits are the characters in the ranges U+0030 DIGIT ZERO
+  (0) to U+0039 DIGIT NINE (9) and U+0061 LATIN SMALL LETTER A to U+0066 LATIN SMALL LETTER F
+  only.
+
+  
+
+  Some of the micro-parsers described below follow the pattern of having an input variable that holds the string being parsed, and having a position variable pointing at the next character to parse in input.
+
+  For parsers based on this pattern, a step that requires the user agent to collect a
+  sequence of characters means that the following algorithm must be run, with characters being the set of characters that can be collected:
+
+  
+
+   Let input and position be the same variables as
+   those of the same name in the algorithm that invoked these steps.
+
+   Let result be the empty string.
+
+   While position doesn't point past the end of input
+   and the character at position is one of the characters,
+   append that character to the end of result and advance position to the next character in input.
+
+   Return result.
+
+  
+
+  The step skip whitespace means that the user agent must collect a sequence of
+  characters that are space characters. The step
+  skip White_Space characters means that the user agent must collect a sequence of
+  characters that are White_Space characters. In both cases, the collected
+  characters are not used. [UNICODE]
+
+  When a user agent is to strip line breaks from a string, the user agent must remove
+  any U+000A LINE FEED (LF) and U+000D CARRIAGE RETURN (CR) characters from that string.
+
+  When a user agent is to strip leading and trailing whitespace from a string, the
+  user agent must remove all space characters that are at the
+  start or end of the string.
+
+  When a user agent is to strip and collapse whitespace in a string, it must replace
+  any sequence of one or more consecutive space characters in
+  that string with a single U+0020 SPACE character, and then strip leading and trailing
+  whitespace from that string.
+
+  When a user agent has to strictly split a string on a particular delimiter character
+  delimiter, it must use the following algorithm:
+
+  
+
+   Let input be the string being parsed.
+
+   Let position be a pointer into input, initially
+   pointing at the start of the string.
+
+   Let tokens be an ordered list of tokens, initially empty.
+
+   While position is not past the end of input:
+
+    
+
+     Collect a sequence of characters that are not the delimiter character.
+
+     Append the string collected in the previous step to tokens.
+
+     Advance position to the next character in input. 
+
+    
+
+   
+
+   Return tokens.
+
+  
+
+  For the special cases of splitting a string on spaces and on commas, this
+  algorithm does not apply (those algorithms also perform whitespace trimming).
+
+  
+
+
+
+  Boolean attributes
+
+  A number of attributes are boolean attributes. The
+  presence of a boolean attribute on an element represents the true value, and the absence of the
+  attribute represents the false value.
+
+  If the attribute is present, its value must either be the empty string or a value that is an
+  ASCII case-insensitive match for the attribute's canonical name, with no leading or
+  trailing whitespace.
+
+  The values "true" and "false" are not allowed on boolean attributes. To represent
+  a false value, the attribute has to be omitted altogether.
+
+  
+
+   Here is an example of a checkbox that is checked and disabled. The checked and disabled
+   attributes are the boolean attributes.
+
+   <label><input type=checkbox checked name=cheese disabled> Cheese</label>
+
+   This could be equivalently written as this:
+
+   <label><input type=checkbox checked=checked name=cheese disabled=disabled> Cheese</label>
+
+   You can also mix styles; the following is still equivalent:
+
+   <label><input type='checkbox' checked name=cheese disabled=""> Cheese</label>
+
+  
+
+
+
+  Keywords and enumerated attributes
+
+  Some attributes are defined as taking one of a finite set of keywords. Such attributes are
+  called enumerated attributes. The keywords are each
+  defined to map to a particular state (several keywords might map to the same state, in
+  which case some of the keywords are synonyms of each other; additionally, some of the keywords can
+  be said to be non-conforming, and are only in the specification for historical reasons). In
+  addition, two default states can be given. The first is the invalid value default, the
+  second is the missing value default.
+
+  If an enumerated attribute is specified, the attribute's value must be an ASCII
+  case-insensitive match for one of the given keywords that are not said to be
+  non-conforming, with no leading or trailing whitespace.
+
+  When the attribute is specified, if its value is an ASCII case-insensitive match
+  for one of the given keywords then that keyword's state is the state that the attribute
+  represents. If the attribute value matches none of the given keywords, but the attribute has an
+  invalid value default, then the attribute represents that state. Otherwise, if the
+  attribute value matches none of the keywords but there is a missing value default state
+  defined, then that is the state represented by the attribute. Otherwise, there is no
+  default, and invalid values mean that there is no state represented.
+
+  When the attribute is not specified, if there is a missing value default state
+  defined, then that is the state represented by the (missing) attribute. Otherwise, the absence of
+  the attribute means that there is no state represented.
+
+  The empty string can be a valid keyword.
+
+
+  Numbers
+
+  Signed integers
+
+  A string is a valid integer if it consists of one or more ASCII digits,
+  optionally prefixed with a U+002D HYPHEN-MINUS character (-).
+
+  A valid integer without a U+002D HYPHEN-MINUS (-) prefix represents the number
+  that is represented in base ten by that string of digits. A valid integer
+  with a U+002D HYPHEN-MINUS (-) prefix represents the number represented in base ten by
+  the string of digits that follows the U+002D HYPHEN-MINUS, subtracted from zero.
+
+  
+
+  The rules for parsing integers are as given in the following algorithm. When
+  invoked, the steps must be followed in the order given, aborting at the first step that returns a
+  value. This algorithm will return either an integer or an error.
+
+  
+
+   Let input be the string being parsed.
+
+   Let position be a pointer into input, initially
+   pointing at the start of the string.
+
+   Let sign have the value "positive".
+
+   Skip whitespace.
+
+   If position is past the end of input, return an
+    error.
+
+   
+
+    If the character indicated by position (the first character) is a U+002D
+    HYPHEN-MINUS character (-):
+
+    
+
+     Let sign be "negative".
+
+     Advance position to the next character.
+
+     If position is past the end of input, return an
+     error.
+
+    
+
+    Otherwise, if the character indicated by position (the first character)
+    is a U+002B PLUS SIGN character (+):
+
+    
+
+     Advance position to the next character. (The "+"
+     is ignored, but it is not conforming.)
+
+     If position is past the end of input, return an
+     error.
+
+    
+
+   
+
+   If the character indicated by position is not an ASCII digit, then return an error.
+
+   
+
+   Collect a sequence of characters that are ASCII digits, and
+   interpret the resulting sequence as a base-ten integer. Let value be that
+   integer.
+
+   If sign is "positive", return value, otherwise return the result of subtracting
+   value from zero.
+
+  
+
+  
+
+
+  Non-negative integers
+
+  A string is a valid non-negative integer if it consists of one or more ASCII
+  digits.
+
+  A valid non-negative integer represents the number that is represented in base ten
+  by that string of digits.
+
+  
+
+  The rules for parsing non-negative integers are as given in the following algorithm.
+  When invoked, the steps must be followed in the order given, aborting at the first step that
+  returns a value. This algorithm will return either zero, a positive integer, or an error.
+
+  
+
+   Let input be the string being parsed.
+
+   Let value be the result of parsing input using the
+   rules for parsing integers.
+
+   If value is an error, return an error.
+
+   If value is less than zero, return an error.
+
+   Return value.
+
+  
+
+  
+
+  
+
+
+  Floating-point numbers
+
+  A string is a valid floating-point number if it consists of:
+
+  
+
+   Optionally, a U+002D HYPHEN-MINUS character (-).
+
+   One or both of the following, in the given order:
+
+    
+
+     A series of one or more ASCII digits.
+
+     
+
+      
+
+       A single U+002E FULL STOP character (.).
+
+       A series of one or more ASCII digits.
+
+      
+
+     
+
+    
+
+   
+
+   Optionally:
+
+    
+
+     Either a U+0065 LATIN SMALL LETTER E character (e) or a U+0045 LATIN CAPITAL LETTER E
+     character (E).
+
+     Optionally, a U+002D HYPHEN-MINUS character (-) or U+002B PLUS SIGN character (+).
+
+     A series of one or more ASCII digits.
+
+    
+
+   
+
+  
+
+  A valid floating-point number represents the number obtained by multiplying the
+  significand by ten raised to the power of the exponent, where the significand is the first number,
+  interpreted as base ten (including the decimal point and the number after the decimal point, if
+  any, and interpreting the significand as a negative number if the whole string starts with a
+  U+002D HYPHEN-MINUS character (-) and the number is not zero), and where the exponent is the
+  number after the E, if any (interpreted as a negative number if there is a U+002D HYPHEN-MINUS
+  character (-) between the E and the number and the number is not zero, or else ignoring a U+002B
+  PLUS SIGN character (+) between the E and the number if there is one). If there is no E, then the
+  exponent is treated as zero.
+
+  The Infinity and Not-a-Number (NaN) values are not valid floating-point numbers.
+
+  
+
+  The best
+  representation of the number n as a floating-point number is the string
+  obtained from applying the JavaScript operator ToString to n. The JavaScript
+  operator ToString is not uniquely determined. When there are multiple possible strings that could
+  be obtained from the JavaScript operator ToString for a particular value, the user agent must
+  always return the same string for that value (though it may differ from the value used by other
+  user agents).
+
+  The rules for parsing floating-point number values are as given in the following
+  algorithm. This algorithm must be aborted at the first step that returns something. This algorithm
+  will return either a number or an error.
+
+  
+
+   Let input be the string being parsed.
+
+   Let position be a pointer into input, initially
+   pointing at the start of the string.
+
+   Let value have the value 1.
+
+   Let divisor have the value 1.
+
+   Let exponent have the value 1.
+
+   Skip whitespace.
+
+   If position is past the end of input, return an
+   error.
+
+   
+
+    If the character indicated by position is a U+002D HYPHEN-MINUS character
+    (-):
+
+    
+
+     Change value and divisor to −1.
+
+     Advance position to the next character.
+
+     If position is past the end of input, return an
+     error.
+
+    
+
+    Otherwise, if the character indicated by position (the first character)
+    is a U+002B PLUS SIGN character (+):
+
+    
+
+     Advance position to the next character. (The "+"
+     is ignored, but it is not conforming.)
+
+     If position is past the end of input, return an
+     error.
+
+    
+
+   
+
+   If the character indicated by position is a U+002E FULL STOP (.), and
+   that is not the last character in input, and the character after the
+   character indicated by position is an ASCII
+   digit, then set value to zero and jump to the step labeled
+   fraction. 
+
+   If the character indicated by position is not an ASCII digit, then return an error.
+
+   Collect a sequence of characters that are ASCII digits, and
+   interpret the resulting sequence as a base-ten integer. Multiply value by
+   that integer.
+
+   If position is past the end of input, jump to the
+   step labeled conversion.
+
+   Fraction: If the character indicated by position is a U+002E
+   FULL STOP (.), run these substeps:
+
+    
+
+     Advance position to the next character.
+
+     If position is past the end of input, or if the
+     character indicated by position is not an ASCII
+     digit, U+0065 LATIN SMALL LETTER E (e), or U+0045 LATIN CAPITAL LETTER E (E), then jump
+     to the step labeled conversion.
+
+     If the character indicated by position is a U+0065 LATIN SMALL
+     LETTER E character (e) or a U+0045 LATIN CAPITAL LETTER E character (E), skip the remainder of
+     these substeps.
+
+     Fraction loop: Multiply divisor by ten.
+
+     Add the value of the character indicated by position, interpreted as a
+     base-ten digit (0..9) and divided by divisor, to value.
+
+     Advance position to the next character.
+
+     If position is past the end of input, then jump
+     to the step labeled conversion.
+
+     If the character indicated by position is an ASCII digit, jump back to the step labeled fraction loop in these
+     substeps.
+
+    
+
+   
+
+   If the character indicated by position is a U+0065 LATIN SMALL LETTER
+   E character (e) or a U+0045 LATIN CAPITAL LETTER E character (E), run these substeps:
+
+    
+
+     Advance position to the next character.
+
+     If position is past the end of input, then jump
+     to the step labeled conversion.
+
+     
+
+      If the character indicated by position is a U+002D HYPHEN-MINUS
+      character (-):
+
+      
+
+       Change exponent to −1.
+
+       Advance position to the next character.
+
+       If position is past the end of input, then
+       jump to the step labeled conversion.
+
+      
+
+      Otherwise, if the character indicated by position is a U+002B PLUS SIGN
+      character (+):
+
+      
+
+       Advance position to the next character.
+
+       If position is past the end of input, then
+       jump to the step labeled conversion.
+
+      
+
+     
+
+     If the character indicated by position is not an ASCII digit, then jump to the step labeled conversion.
+
+     Collect a sequence of characters that are ASCII digits, and
+     interpret the resulting sequence as a base-ten integer. Multiply exponent
+     by that integer.
+
+     Multiply value by ten raised to the exponentth
+     power.
+
+    
+
+   
+
+   Conversion: Let S be the set of finite IEEE 754
+   double-precision floating-point values except −0, but with two special values added: 21024 and −21024.
+
+   Let rounded-value be the number in S that is
+   closest to value, selecting the number with an even significand if there are
+   two equally close values. (The two special values 21024 and −21024 are considered to have even significands for this purpose.)
+
+   If rounded-value is 21024 or −21024, return an error.
+
+   Return rounded-value.
+
+  
+
+  
+
+
+
+  Percentages and lengths
+
+  The rules for parsing dimension values are as given in the following algorithm. When
+  invoked, the steps must be followed in the order given, aborting at the first step that returns a
+  value. This algorithm will return either a number greater than or equal to 1.0, or an error; if a
+  number is returned, then it is further categorised as either a percentage or a length.
+
+  
+
+   Let input be the string being parsed.
+
+   Let position be a pointer into input, initially
+   pointing at the start of the string.
+
+   Skip whitespace.
+
+   If position is past the end of input, return an
+   error.
+
+   If the character indicated by position is a U+002B PLUS SIGN character
+   (+), advance position to the next character.
+
+   Collect a sequence of characters that are U+0030 DIGIT ZERO (0) characters,
+   and discard them.
+
+   If position is past the end of input, return an
+   error.
+
+   If the character indicated by position is not one of U+0031 DIGIT ONE
+   (1) to U+0039 DIGIT NINE (9), then return an error.
+
+   
+
+   Collect a sequence of characters that are ASCII digits, and
+   interpret the resulting sequence as a base-ten integer. Let value be that
+   number.
+
+   If position is past the end of input, return value as a length.
+
+   
+
+    If the character indicated by position is a U+002E FULL STOP character
+    (.):
+
+    
+
+     Advance position to the next character.
+
+     If position is past the end of input, or if the
+     character indicated by position is not an ASCII
+     digit, then return value as a length.
+
+     Let divisor have the value 1.
+
+     Fraction loop: Multiply divisor by ten.
+
+     Add the value of the character indicated by position, interpreted as a
+     base-ten digit (0..9) and divided by divisor, to value.
+
+     Advance position to the next character.
+
+     If position is past the end of input, then
+     return value as a length.
+
+     If the character indicated by position is an ASCII digit, return to the step labeled fraction loop in these
+     substeps.
+
+    
+
+   
+
+   If position is past the end of input, return value as a length.
+
+   If the character indicated by position is a U+0025 PERCENT SIGN
+   character (%), return value as a percentage.
+
+   Return value as a length.
+
+  
+
+  
+
+
+  Lists of integers
+
+  A valid list of integers is a number of valid
+  integers separated by U+002C COMMA characters, with no other characters (e.g. no space characters). In addition, there might be restrictions on the
+  number of integers that can be given, or on the range of values allowed.
+
+  
+
+  The rules for parsing a list of integers are as follows:
+
+  
+
+   Let input be the string being parsed.
+
+   Let position be a pointer into input, initially
+   pointing at the start of the string.
+
+   Let numbers be an initially empty list of integers. This list will be
+   the result of this algorithm.
+
+   If there is a character in the string input at position position, and it is either a U+0020 SPACE, U+002C COMMA, or U+003B SEMICOLON
+   character, then advance position to the next character in input, or to beyond the end of the string if there are no more
+   characters.
+
+   If position points to beyond the end of input,
+   return numbers and abort.
+
+   If the character in the string input at position position is a U+0020 SPACE, U+002C COMMA, or U+003B SEMICOLON character, then
+   return to step 4.
+
+   Let negated be false. Let value be
+   0.
+
+   Let started be false. This variable is set to true when the parser
+   sees a number or a U+002D HYPHEN-MINUS character (-).
+
+   Let got number be false. This variable is set to true when the parser
+   sees a number.
+
+   Let finished be false. This variable is set to true to switch parser
+   into a mode where it ignores characters until the next separator.
+
+   Let bogus be false.
+
+   Parser: If the character in the string input at position position is:
+
+    
+
+     A U+002D HYPHEN-MINUS character
+
+     
+
+      Follow these substeps:
+
+      
+
+       If got number is true, let finished be true.
+
+       If finished is true, skip to the next step in the overall set of
+       steps.
+
+       If started is true, let negated be false.
+
+       Otherwise, if started is false and if bogus is
+       false, let negated be true.
+
+       Let started be true.
+
+      
+
+     
+
+     An ASCII digit
+
+     
+
+      Follow these substeps:
+
+      
+
+       If finished is true, skip to the next step in the overall set of
+       steps.
+
+       Multiply value by ten.
+
+       Add the value of the digit, interpreted in base ten, to value.
+
+       Let started be true.
+
+       Let got number be true.
+
+      
+
+     
+
+
+     A U+0020 SPACE character
+     A U+002C COMMA character
+     A U+003B SEMICOLON character
+
+     
+
+      Follow these substeps:
+
+      
+
+       If got number is false, return the numbers list
+       and abort. This happens if an entry in the list has no digits, as in "1,2,x,4".
+
+       If negated is true, then negate value.
+
+       Append value to the numbers list.
+
+       Jump to step 4 in the overall set of steps.
+
+      
+
+     
+
+
+     
+     A character in the range U+0001 to U+001F,  U+0021 to U+002B,  U+002D to U+002F,  U+003A,  U+003C to U+0040,  U+005B to U+0060,  U+007b to U+007F
+        (i.e. any other non-alphabetic ASCII character)
+
+ 
+
+     
+
+      Follow these substeps:
+
+      
+
+       If got number is true, let finished be true.
+
+       If finished is true, skip to the next step in the overall set of
+       steps.
+
+       Let negated be false.
+
+      
+
+     
+
+
+     Any other character
+     
+
+     
+
+      Follow these substeps:
+
+      
+
+       If finished is true, skip to the next step in the overall set of
+       steps.
+
+       Let negated be false.
+
+       Let bogus be true.
+
+       If started is true, then return the numbers list,
+       and abort. (The value in value is not appended to the list first; it is
+       dropped.)
+
+      
+
+     
+
+    
+
+   
+
+   Advance position to the next character in input,
+   or to beyond the end of the string if there are no more characters.
+
+   If position points to a character (and not to beyond the end of input), jump to the big Parser step above.
+
+   If negated is true, then negate value.
+
+   If got number is true, then append value to the
+   numbers list.
+
+   Return the numbers list and abort.
+
+  
+
+  
+
+
+  
+
+  Lists of dimensions
+
+  
+
+  The rules for parsing a list of dimensions are as follows. These rules return a list
+  of zero or more pairs consisting of a number and a unit, the unit being one of percentage,
+  relative, and absolute.
+
+  
+
+   Let raw input be the string being parsed.
+
+   If the last character in raw input is a U+002C COMMA character (,),
+   then remove that character from raw input.
+
+   Split the string raw input on
+   commas. Let raw tokens be the resulting list of tokens.
+
+   Let result be an empty list of number/unit pairs.
+
+   
+
+    For each token in raw tokens, run the following substeps:
+
+    
+
+     Let input be the token.
+
+     Let position be a pointer into input,
+     initially pointing at the start of the string.
+
+     Let value be the number 0.
+
+     Let unit be absolute.
+
+     If position is past the end of input, set unit to relative and jump to the last substep.
+
+     If the character at position is an ASCII digit, collect a sequence of characters that are ASCII
+     digits, interpret the resulting sequence as an integer in base ten, and increment value by that integer.
+
+     
+
+      If the character at position is a U+002E FULL STOP character (.), run
+      these substeps:
+
+      
+
+       Collect a sequence of characters consisting of space characters and ASCII digits. Let s
+       be the resulting sequence.
+
+       Remove all space characters in s.
+
+       
+
+        If s is not the empty string, run these subsubsteps:
+
+        
+
+         Let length be the number of characters in s (after the spaces were removed).
+
+         Let fraction be the result of interpreting s as a base-ten integer, and then dividing that number by 10length.
+
+         Increment value by fraction.
+
+        
+
+       
+
+      
+
+     
+
+     Skip whitespace.
+
+     
+
+      If the character at position is a U+0025 PERCENT SIGN character (%),
+      then set unit to percentage.
+
+      Otherwise, if the character at position is a U+002A ASTERISK character
+      (*), then set unit to relative.
+
+     
+
+     
+
+     Add an entry to result consisting of the number given by value and the unit given by unit.
+
+    
+
+   
+
+   Return the list result.
+
+  
+
+  
+
+
+  Dates and times
+
+  In the algorithms below, the number of days in month month of year
+  year is: 31 if month is 1, 3, 5, 7, 8,
+  10, or 12; 30 if month is 4, 6, 9, or 11; 29 if month is 2 and year is a number divisible by 400, or if year is a number divisible by 4 but not by 100; and 28 otherwise. This
+  takes into account leap years in the Gregorian calendar. [GREGORIAN]
+
+  When ASCII digits are used in the date and time syntaxes defined in this section,
+  they express numbers in base ten.
+
+  
+
+  While the formats described here are intended to be subsets of the corresponding
+  ISO8601 formats, this specification defines parsing rules in much more detail than ISO8601.
+  Implementors are therefore encouraged to carefully examine any date parsing libraries before using
+  them to implement the parsing rules described below; ISO8601 libraries might not parse dates and
+  times in exactly the same manner. [ISO8601]
+
+  
+
+  Where this specification refers to the proleptic Gregorian calendar, it means the
+  modern Gregorian calendar, extrapolated backwards to year 1. A date in the proleptic
+  Gregorian calendar, sometimes explicitly referred to as a proleptic-Gregorian
+  date, is one that is described using that calendar even if that calendar was not in use at
+  the time (or place) in question. [GREGORIAN]
+
+  The use of the Gregorian calendar as the wire format in this specification is an
+  arbitrary choice resulting from the cultural biases of those involved in the decision. See also
+  the section discussing date, time, and number formats in forms
+  (for authors), implemention notes regarding
+  localization of form controls, and the time element.
+
+
+  Months
+
+  A month consists of a specific proleptic-Gregorian
+  date with no time-zone information and no date information beyond a year and a month. [GREGORIAN]
+
+  A string is a valid month string representing a year year and
+  month month if it consists of the following components in the given order:
+
+  
+
+   Four or more ASCII digits, representing year, where year > 0
+
+   A U+002D HYPHEN-MINUS character (-)
+
+   Two ASCII digits, representing the month month, in the range
+   1 ≤ month ≤ 12
+
+  
+
+  
+
+  The rules to parse a month string are as follows. This will return either a year and
+  month, or nothing. If at any point the algorithm says that it "fails", this means that it is
+  aborted at that point and returns nothing.
+
+  
+
+   Let input be the string being parsed.
+
+   Let position be a pointer into input, initially
+   pointing at the start of the string.
+
+   Parse a month component to obtain year and month. If this returns nothing, then fail.
+
+   If position is not beyond the
+   end of input, then fail.
+
+   Return year and month.
+
+  
+
+  The rules to parse a month component, given an input string and
+  a position, are as follows. This will return either a year and a month, or
+  nothing. If at any point the algorithm says that it "fails", this means that it is aborted at that
+  point and returns nothing.
+
+  
+
+   Collect a sequence of characters that are ASCII digits. If the
+   collected sequence is not at least four characters long, then fail. Otherwise, interpret the
+   resulting sequence as a base-ten integer. Let that number be the year.
+
+   If year is not a number greater than zero, then fail.
+
+   If position is beyond the end of input or if the
+   character at position is not a U+002D HYPHEN-MINUS character, then fail.
+   Otherwise, move position forwards one character.
+
+   Collect a sequence of characters that are ASCII digits. If the
+   collected sequence is not exactly two characters long, then fail. Otherwise, interpret the
+   resulting sequence as a base-ten integer. Let that number be the month.
+
+   If month is not a number in the range 1 ≤ month ≤ 12, then fail.
+
+   Return year and month.
+
+  
+
+  
+
+
+  Dates
+
+  A date consists of a specific proleptic-Gregorian
+  date with no time-zone information, consisting of a year, a month, and a day. [GREGORIAN]
+
+  A string is a valid date string representing a year year, month
+  month, and day day if it consists of the following
+  components in the given order:
+
+  
+
+   A valid month string, representing year and month
+
+   A U+002D HYPHEN-MINUS character (-)
+
+   Two ASCII digits, representing day, in the range
+   1 ≤ day ≤ maxday where maxday is the number of
+   days in the month month and year year
+
+  
+
+  
+
+  The rules to parse a date string are as follows. This will return either a date, or
+  nothing. If at any point the algorithm says that it "fails", this means that it is aborted at that
+  point and returns nothing.
+
+  
+
+   Let input be the string being parsed.
+
+   Let position be a pointer into input, initially
+   pointing at the start of the string.
+
+   Parse a date component to obtain year, month, and day. If this returns nothing, then fail.
+
+   If position is not beyond the end of input, then fail.
+
+   Let date be the date with year year, month month, and day day.
+
+   Return date.
+
+  
+
+  The rules to parse a date component, given an input string and a
+  position, are as follows. This will return either a year, a month, and a day,
+  or nothing. If at any point the algorithm says that it "fails", this means that it is aborted at
+  that point and returns nothing.
+
+  
+
+   Parse a month component to obtain year and month. If this returns nothing, then fail.
+
+   Let maxday be the number of days in month month of year year.
+
+   If position is beyond the end of input or if the
+   character at position is not a U+002D HYPHEN-MINUS character, then fail.
+   Otherwise, move position forwards one character.
+
+   Collect a sequence of characters that are ASCII digits. If the
+   collected sequence is not exactly two characters long, then fail. Otherwise, interpret the
+   resulting sequence as a base-ten integer. Let that number be the day.
+
+   If day is not a number in the range 1 ≤ day ≤ maxday, then fail.
+
+   Return year, month, and day.
+
+  
+
+  
+
+
+  Yearless dates
+
+  A yearless date consists of a Gregorian month and a
+  day within that month, but with no associated year. [GREGORIAN]
+
+  A string is a valid yearless date string representing a month month and a day day if it consists of the following components
+  in the given order:
+
+  
+
+   Optionally, two U+002D HYPHEN-MINUS characters (-)
+
+   Two ASCII digits, representing the month month, in the range
+   1 ≤ month ≤ 12
+
+   A U+002D HYPHEN-MINUS character (-)
+
+   Two ASCII digits, representing day, in the range
+   1 ≤ day ≤ maxday where maxday is the number of
+   days in the month month and any arbitrary leap year (e.g. 4 or
+   2000)
+
+  
+
+  In other words, if the month is "02",
+  meaning February, then the day can be 29, as if the year was a leap year.
+
+  
+
+  The rules to parse a yearless date string are as follows. This will return either a
+  month and a day, or nothing. If at any point the algorithm says that it "fails", this means that
+  it is aborted at that point and returns nothing.
+
+  
+
+   Let input be the string being parsed.
+
+   Let position be a pointer into input, initially
+   pointing at the start of the string.
+
+   Parse a yearless date component to obtain month and day. If this returns nothing, then fail.
+
+   If position is not beyond the end of input, then fail.
+
+   Return month and day.
+
+  
+
+  The rules to parse a yearless date component, given an input
+  string and a position, are as follows. This will return either a month and a
+  day, or nothing. If at any point the algorithm says that it "fails", this means that it is aborted
+  at that point and returns nothing.
+
+  
+
+   Collect a sequence of characters that are U+002D HYPHEN-MINUS characters (-).
+   If the collected sequence is not exactly zero or two characters long, then fail.
+
+   Collect a sequence of characters that are ASCII digits. If the
+   collected sequence is not exactly two characters long, then fail. Otherwise, interpret the
+   resulting sequence as a base-ten integer. Let that number be the month.
+
+   If month is not a number in the range 1 ≤ month ≤ 12, then fail.
+
+   Let maxday be the number of days in month month of any arbitrary leap year (e.g. 4
+   or 2000).
+
+   If position is beyond the end of input or if the
+   character at position is not a U+002D HYPHEN-MINUS character, then fail.
+   Otherwise, move position forwards one character.
+
+   Collect a sequence of characters that are ASCII digits. If the
+   collected sequence is not exactly two characters long, then fail. Otherwise, interpret the
+   resulting sequence as a base-ten integer. Let that number be the day.
+
+   If day is not a number in the range 1 ≤ day ≤ maxday, then fail.
+
+   Return month and day.
+
+  
+
+  
+
+
+  Times
+
+  A time consists of a specific time with no time-zone
+  information, consisting of an hour, a minute, a second, and a fraction of a second.
+
+  A string is a valid time string representing an hour hour, a
+  minute minute, and a second second if it consists of the
+  following components in the given order:
+
+  
+
+   Two ASCII digits, representing hour, in the range
+   0 ≤ hour ≤ 23
+
+   A U+003A COLON character (:)
+
+   Two ASCII digits, representing minute, in the range
+   0 ≤ minute ≤ 59
+
+   If second is non-zero, or optionally if second is
+   zero:
+
+    
+
+     A U+003A COLON character (:)
+
+     Two ASCII digits, representing the integer part of second,
+     in the range 0 ≤ s ≤ 59
+
+     If second is not an integer, or optionally if second is an integer:
+
+      
+
+       A 002E FULL STOP character (.)
+
+       One, two, or three ASCII digits, representing the fractional part of second
+
+      
+
+     
+
+    
+
+   
+
+  
+
+  The second component cannot be 60 or 61; leap seconds cannot
+  be represented.
+
+  
+
+  The rules to parse a time string are as follows. This will return either a time, or
+  nothing. If at any point the algorithm says that it "fails", this means that it is aborted at that
+  point and returns nothing.
+
+  
+
+   Let input be the string being parsed.
+
+   Let position be a pointer into input, initially
+   pointing at the start of the string.
+
+   Parse a time component to obtain hour, minute, and second. If this returns nothing, then fail.
+
+   If position is not beyond the end of input, then fail.
+
+   Let time be the time with hour hour, minute minute, and second second.
+
+   Return time.
+
+  
+
+  The rules to parse a time component, given an input string and a
+  position, are as follows. This will return either an hour, a minute, and a
+  second, or nothing. If at any point the algorithm says that it "fails", this means that it is
+  aborted at that point and returns nothing.
+
+  
+
+   Collect a sequence of characters that are ASCII digits. If the
+   collected sequence is not exactly two characters long, then fail. Otherwise, interpret the
+   resulting sequence as a base-ten integer. Let that number be the hour.
+
+   If hour is not a number in the range 0 ≤ hour ≤ 23, then fail.
+
+   If position is beyond the end of input or if the
+   character at position is not a U+003A COLON character, then fail. Otherwise,
+   move position forwards one character.
+
+   Collect a sequence of characters that are ASCII digits. If the
+   collected sequence is not exactly two characters long, then fail. Otherwise, interpret the
+   resulting sequence as a base-ten integer. Let that number be the minute.
+
+   If minute is not a number in the range 0 ≤ minute ≤ 59, then fail.
+
+   Let second be a string with the value "0".
+
+   
+
+    If position is not beyond the end of input and the
+    character at position is a U+003A COLON, then run these substeps:
+
+    
+
+     Advance position to the next character in input.
+
+     If position is beyond the end of input, or at
+     the last character in input, or if the next two characters in input starting at position are not both ASCII
+     digits, then fail.
+
+     Collect a sequence of characters that are either ASCII digits
+     or U+002E FULL STOP characters. If the collected sequence is three characters long, or if it is
+     longer than three characters long and the third character is not a U+002E FULL STOP character,
+     or if it has more than one U+002E FULL STOP character, then fail. Otherwise, let the collected
+     string be second instead of its previous value.
+
+    
+
+   
+
+   Interpret second as a base-ten number (possibly with a fractional
+   part). Let second be that number instead of the string version.
+
+   If second is not a number in the range 0 ≤ second < 60, then fail.
+
+   Return hour, minute, and second.
+
+  
+
+  
+
+
+  Local dates and times
+
+  A local date and time consists of a specific
+  proleptic-Gregorian date, consisting of a year, a month, and a day, and a time,
+  consisting of an hour, a minute, a second, and a fraction of a second, but expressed without a
+  time zone. [GREGORIAN]
+
+  A string is a valid local date and time string representing a date and time if it
+  consists of the following components in the given order:
+
+  
+
+   A valid date string representing the date
+
+   A U+0054 LATIN CAPITAL LETTER T character (T) or a U+0020 SPACE character
+
+   A valid time string representing the time
+
+  
+
+  A string is a valid normalised local date and time string representing a date and
+  time if it consists of the following components in the given order:
+
+  
+
+   A valid date string representing the date
+
+   A U+0054 LATIN CAPITAL LETTER T character (T)
+
+   A valid time string representing the time, expressed as the shortest possible
+   string for the given time (e.g. omitting the seconds component entirely if the given time is zero
+   seconds past the minute)
+
+  
+
+  
+
+  The rules to parse a local date and time string are as follows. This will return
+  either a date and time, or nothing. If at any point the algorithm says that it "fails", this means

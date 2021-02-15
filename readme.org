@@ -1,0 +1,299 @@
+* os2ds
+
+** features
+*** html-performance
+https://redmine.magenta-aps.dk/issues/37547
+
+Før:
+bla. pfd-filer blev udpakket til individuelle sider. Derefter konverteret med =pdf2text=.
+Se [[https://redmine.magenta-aps.dk/issues/38126][Undgå unødvendige html-konvertering]], hvor der skiftes fra =pdftohtml= til =pdftotext/pdfimages=
+Det er pt. kun =pdf= der konverteres til text. Office filer konverteres stadig til html.
+
+**** redmine related
+https://redmine.magenta-aps.dk/issues/38126
+https://redmine.magenta-aps.dk/issues/30749
+
+**** test
+See [[file:os2ds/src/test_html_conversion.py]]
+
+Based on the two test, I am confident that using =lxml= is an improvement over =bs4=. We are not loosing any body text.
+***** timing
+5 conversions of [[file:os2ds/data/html_benchmark/data/html.html][html.html]]
+
+|   bs4 |     lxml |
+|-------+----------|
+| 1.008 | 0.060507 |
+
+***** compare output of the two parsers
+The output from =bs4= does not preserve linebreaks, thus to compare, we use
+=wdiff=: it's a front-end to diff which produces word-by-word comparisons.
+
+#+begin_src sh
+apt install wdiff colordiff
+wdiff -n html_bs4.txt html_lxml.txt | colordiff | bat
+# OR show only difference
+wdiff -3 html_bs4.txt html_lxml.txt
+#+end_src
+
+From the output, it seems the only difference is in the unicode for =>/<=, etc. symbols
+#+BEGIN_SRC text
+======================================================================
+ [-<font color="">-]
+    {+<font color="">+}
+======================================================================
+ [-year > 0-] {+year > 0+}
+======================================================================
+ [-1 ≤ month ≤ 12-]
+   {+1 ≤ month ≤ 12+}
+======================================================================
+ [-1 ≤ month ≤ 12,-] {+1 ≤ month ≤ 12,+}
+======================================================================
+ [-1 ≤ day ≤ maxday-]
+   {+1 ≤ day ≤ maxday+}
+======================================================================
+ [-1 ≤ day ≤ maxday,-] {+1 ≤ day ≤ maxday,+}
+======================================================================
+ [-1 ≤ month ≤ 12-]
+   {+1 ≤ month ≤ 12+}
+======================================================================
+ [-1 ≤ day ≤ maxday-]
+   {+1 ≤ day ≤ maxday+}
+======================================================================
+ [-1 ≤ month ≤ 12,-] {+1 ≤ month ≤ 12,+}
+======================================================================
+ [-1 ≤ day ≤ maxday,-] {+1 ≤ day ≤ maxday,+}
+======================================================================
+ [-0 ≤ hour ≤ 23-]
+   {+0 ≤ hour ≤ 23+}
+======================================================================
+ [-0 ≤ minute ≤ 59-]
+   {+0 ≤ minute ≤ 59+}
+======================================================================
+ [-0 ≤ s ≤ 59-] {+0 ≤ s ≤ 59+}
+======================================================================
+ [-0 ≤ hour ≤ 23,-] {+0 ≤ hour ≤ 23,+}
+======================================================================
+ [-0 ≤ minute ≤ 59,-] {+0 ≤ minute ≤ 59,+}
+======================================================================
+ [-0 ≤ second < 60,-] {+0 ≤ second < 60,+}
+======================================================================
+#+end_src
+
+fx. from line around 4000 in =text.html=
+#+begin_src html
+<li><p>If <var data-x="">month</var> is not a number in the range 1&nbsp;&le;&nbsp;<var
+4791   │    data-x="">month</var>&nbsp;&le;&nbsp;12, then fail.</p></li>
+#+end_src
+
+*** Swedish CPR
+https://redmine.magenta-aps.dk/issues/40876
+
+either 10 or 12 digit, last digit is a checksum, ie very similar to danish cpr
+format:
+#+begin_src text
+yymmdd-xxxx
+yyyymmdd-xxxx
+#+end_src
+
+info
+https://en.wikipedia.org/wiki/Personal_identity_number_(Sweden)
+https://sv.wikipedia.org/wiki/Personnummer_i_Sverige
+
+regex
+https://regex101.com/r/OuIbMa/2
+ie. we modify danish CPR to match either {yy} OR {yyyy}, as per this [[https://stackoverflow.com/a/8177150][SO]].
+: "\b(\d{2}(?:\d{2})?[\s]?\d{2}[\s]?\d{2})(?:[\s\-/\.]|\s\-\s)?(\d{4})\b"
+
+**** test
+Download the wiki page
+#+begin_src sh
+wget --mirror --convert-links https://sv.wikipedia.org/wiki/Personnummer_i_Sverige
+tree
+└── sv.wikipedia.org
+   ├── robots.txt
+   └── wiki
+      └── Personnummer_i_Sverige
+
+# Eller hvis samtlige filer skal ligge lokalt.
+wget -E -H -k -K -p -e robots=off  https://sv.wikipedia.org/wiki/Personnummer_i_Sverige
+#+end_src
+
+*** Implementer nave- og adresseregler
+https://redmine.magenta-aps.dk/issues/34001
+
+Alec code
+https://git.magenta.dk/os2datascanner/os2datascanner/-/tree/feature/34001_name_and_address
+
+
+
+** data
+[[file:os2ds/data/vst-lokalplan-20200416.pdf][pdf der udpakker til ca 3.000 filer]], sikkert pga embedded vektor grafik
+
+** structure
+https://os2datascanner.readthedocs.io/en/latest/pages/overview.html
+https://labs.docs.magenta.dk/decision-log/2020/os2datascanner-saas.html
+
+OS2datascanner consists of the following core services:
+
+- OS2datascanner admin web application: Django application used for defining and starting scans.
+- OS2datascanner admin services: A number of services used for scheduling jobs, collecting information from the queue, etc.
+- OS2datascanner report web application: Django application used for displaying scan results.
+- OS2datascanner report services: A number of services used for collecting information from the queue, etc.
+- OS2datascanner engine components: Python based workers used to process data in order to perform scans.
+
+All of which are packaged as Docker containers, with automatic builds and releases using a continuous integration and delivery pipeline.
+
+In addition, these backing services are used:
+
+- PostgreSQL databases - one for each web application
+- RabbitMQ for communication between services
+- File storage for web application uploads
+- Load balancing (reverse proxy)
+- Transactional email service
+
+*** engine
+=engine-module= or scanner engine - also known as the Pipeline™...
+- engine_explorer
+- engine_processor
+- engine_matcher
+- engine_tagger
+- engine_exporter
+
+** docs
+download [[https://git.magenta.dk/os2datascanner/os2datascanner/-/blob/development/doc/pipeline-architecture.svg][pipeline-architecture.svg]], print it as pdf using the browser and crop it
+#+begin_src sh
+# wget https://git.magenta.dk/os2datascanner/os2datascanner/-/raw/development/doc/pipeline-architecture.svg
+sudo apt-get install texlive-extra-utils
+pdfcrop pipeline-architecture.pdf pipeline-architecture.pdf
+#+end_src
+
+** setup
+*** local setup without docker
+Install both system- and python packages
+
+Run =install.sh= to install system- and python packages. Below is shown how to do it using =poetry= (another python =env= manager).
+
+To get tab-completion in =ipython=, run
+: pip install jedi==0.17.2
+[[https://stackoverflow.com/a/65465682][ipython autocomplete does not work]]
+
+Install debug tools
+: pip install debugpy
+
+**** run
+different pipelines to run
+#+begin_src sh
+python -m os2datascanner.engine2.pipeline.explorer
+python -m os2datascanner.engine2.pipeline.processor
+python -m os2datascanner.engine2.pipeline.matcher
+python -m os2datascanner.engine2.pipeline.tagger
+python -m os2datascanner.engine2.pipeline.exporter
+#+end_src
+
+**** export variables
+#+begin_src sh
+os2ds=~/git/os2datascanner
+export OS2DS_ENGINE_USER_CONFIG_PATH="$os2ds/contrib/config/engine-module/user-settings.toml" PYTHONPATH="$os2ds/src"
+python -m os2datascanner.engine2.pipeline.explorer
+#+end_src
+
+or automatic loading of env's from =.envrc= file
+#+begin_src sh
+apt install direnv
+direnv allow
+#+end_src
+
+#+begin_src sh
+cat > .envrc << EOF
+# https://direnv.net/man/direnv-stdlib.1.html
+# root_dir=$(expand_path .)
+root_dir=~/git/os2datascanner
+export OS2DS_ENGINE_USER_CONFIG_PATH="$root_dir/contrib/config/engine-module/user-settings.toml" PYTHONPATH="$root_dir/src"
+EOF
+#+end_src
+
+Here is a alternative, non-automatic way
+https://stackoverflow.com/a/30969768
+
+*** docker
+**** ports
+https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
+- queue (rabbitmq)
+  - 5672:5672, default =RABBITMQ_NODE_PORT= variable. Main port
+  - 8030:15672
+- admin_application
+  - depends on: db, admin_frontend, queue
+  - 8020:5000
+- report_application
+  - depends on: db,m report_frontend, queue
+  - 8040:5000
+- prometheus
+  - 8050:9090
+- grafana
+  - 8060:3000
+- idp
+  - 8080:8080
+
+
+**** debug template for docker, using DAP
+See templates
+https://github.com/ztlevi/LSP-Debug/blob/master/dap-config.el
+
+
+*** poetry
+[[https://python-poetry.org/][poetry]] is a another virt. env. manager for python.
+
+#+begin_src sh
+sudo apt install $(cat requirements/sys-requirements/sys-requirements-engine.txt | grep -E '^[^# ]' | xargs )
+
+# create python env.
+pyenv local 3.6.4
+poetry init -n
+
+# add -n 1 to xargs if it is important that only one line is given each time
+cat requirements/python-requirements/requirements-common.in | grep -E '^[^-# ]' | xargs poetry add
+cat requirements/python-requirements/requirements-engine.in | grep -E '^[^-# ]' | xargs poetry add
+
+# dev
+cat requirements/python-requirements/requirements-test.in | grep -E '^[^-# ]' | xargs poetry add -D
+cat requirements/python-requirements/requirements-lint.in | grep -E '^[^-# ]' | xargs poetry add -D
+
+# ptvsd is deprecated in favor of debugpy
+# poetry add --dev ptvsd
+pip install jedi==0.17.2
+
+# start the env
+poetry shell
+#+end_src
+
+[[https://stackoverflow.com/a/64672646][Import requirements.txt into poetry]]
+
+* random
+** Pipeline projekt oversigt
+https://docs.google.com/spreadsheets/d/1WylHagXFc2rXuB2qEfnPng4an78U49WiiP8lJWMCc2Y/edit#gid=281544569
+
+** get requirements.txt
+Brug pip-tools og en requirements.in. Den spytter en requirements.txt der fungere som lock file. Det er bagudkompatibelt med alting.
+
+** debug'ing of docker container (not app debug'ing)
+https://udvikler.docs.magenta.dk/docker/debugging.html
+https://udvikler.docs.magenta.dk/docker/commands.html
+
+** users uid/gid
+https://git.magenta.dk/labs/salt-automation/-/blob/master/states/global/service_accounts.sls
+
+** git hooks
+https://udvikler.docs.magenta.dk/git/hooks.html
+
+Vi vil meget gerne have Redmine-ticketnumre i vores githistorik for at gøre det lettere at tracke et linje kodes oprindelse.
+
+Da det ikke bør være op til den enkelte udviklers hukommelse og nidkærhed at sikre, at dette altid sker, anbefales det at anvende et githook til at automatisere det ud fra branchnavnet. Altså vil det være tilstrækkeligt at give sin branch det rigtige navn, hvorefter et githook kan gøre resten af arbejdet.
+
+Der er udviklet to hooks til formålet. Det ene kaldes, når man invokerer git commit uden argumenter, mens det andet kaldes efter man har skrevet en commitbesked, f.eks. vha. git commit -m "En besked uden ticketnummer".
+
+*** Installation
+De to hooks spænder ikke ben for hinanden og kan fint anvendes samtidigt. De kan enten installeres per projekt eller globalt.
+
+Hooks kan installeres per projekt ved at kopiere ovenstående til en fil i .git/hooks/ uden endelse og gøre den eksekverbar.
+
+Hooks kan installeres globalt med kommandoen git config --global core.hooksPath <sti til mappe med hooks>.
