@@ -1,0 +1,6 @@
+
+* html
+https://github.com/html5lib/html5lib-python/tree/master/benchmarks
+* name_adr_rule
+https://github.com/mariomka/regex-benchmark/blob/master/input-text.txt
+

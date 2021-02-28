@@ -14,7 +14,7 @@ https://redmine.magenta-aps.dk/issues/38126
 https://redmine.magenta-aps.dk/issues/30749
 
 **** test
-See [[file:os2ds/src/test_html_conversion.py]]
+See [[file:os2ds/src/html_conversion/test_html_conversion.py]]
 
 Based on the two test, I am confident that using =lxml= is an improvement over =bs4=. We are not loosing any body text.
 ***** timing
@@ -118,11 +118,81 @@ tree
 wget -E -H -k -K -p -e robots=off  https://sv.wikipedia.org/wiki/Personnummer_i_Sverige
 #+end_src
 
-*** Implementer nave- og adresseregler
+*** Implementer nave- og adresseregler, 34001
 https://redmine.magenta-aps.dk/issues/34001
 
-Alec code
-https://git.magenta.dk/os2datascanner/os2datascanner/-/tree/feature/34001_name_and_address
+[[https://git.magenta.dk/os2datascanner/os2datascanner/-/tree/feature/34001_name_and_address][Alec preliminary code]]
+Which is a refactoring of the code from the old [[https://git.magenta.dk/os2datascanner/os2datascanner-prototypes/-/tree/new-datascanner/scrapy-webscanner/scanners/rules][webscanner]] (see =address.py= / =name.py=)
+
+We encode all datafiles as =utf8=.
+
+**** conversion to utf8
+from =iso-8859-1= to utf8
+: iconv -f ISO-8859-1 gadenavne.txt -t UTF-8 -o da_addresses.txt
+
+
+From =ascii= (7-bit subset of utf8) with unicode characters (fx =\u00d8->ø=) to 'real' utf8.
+=C-x C-e= is your friend here.
+#+begin_src sh
+#!/usr/bin/env bash
+set -euo pipefail
+
+for filename in *.jsonl; do
+    [ -e "$filename" ] || continue
+    cat "$filename" | jq > "$filename".tmp
+    rm "$filename"
+    mv "$filename"{.tmp,}
+done
+#+end_src
+
+or in case somethings break and we need to rewrite the extension, fx. =test.jsonl.tmp= -> =test.json=.
+see [[https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html][Shell parameter expansion]] and an [[https://stackoverflow.com/a/965069][SO example]]
+#+begin_src sh
+for file in *.tmp; do
+    mv "$file" "${file%.*}"
+done
+#+end_src
+or use [[https://github.com/sharkdp/fd][fd-find]]
+
+Here is a regex using [[https://www.regular-expressions.info/lookaround.html][negative lookahead]]
+#+begin_src sh
+^(?!.*(jsonl)).*$
+#+end_src
+
+
+**** conversion to jsonl
+https://jsonlines.org/
+JSON Lines text format, also called newline-delimited JSON.
+
+#+begin_src python
+#!/usr/bin/env python3
+
+import json
+
+filename = 'da_addresses.txt'
+with open(filename, 'r') as fin:
+    fileout = filename.rsplit('.', 1)[0] + '.jsonl'
+    with open(fileout, 'w') as fout:
+        for line in fin:
+            # strip to ensure \n is not part of the string sorrounded by ""
+            json.dump(line.rstrip(), fout, ensure_ascii=False)
+            fout.write('\n')
+#+end_src
+
+**** regex
+[[https://stackoverflow.com/questions/22937618/reference-what-does-this-regex-mean/22944075][SO wiki on regex]] and info about [[https://www.regular-expressions.info/unicode.html#category][regex unicode categories]], fx. =\p{Lu}=: uppercase letter.
+[[https://www.regular-expressions.info/modifiers.html][regex modifiers]], fx =(?i)= for ignore case.
+
+Regex can be slow to fail as [[https://www.regular-expressions.info/catastrophic.html][this simple example]] shows.
+[[https://www.regexbuddy.com/download.html][RegexBuddy]](windows app) can debug the regex step-by-step and maybe help to optimize.
+https://1337x.to/torrent/4257525/RegexBuddy-v4-10-Crack-FTUApps/
+
+**** test
+For name regex
+https://regex101.com/r/nT9wL5/8
+
+For address regex
+https://regex101.com/r/zJBsXw/9
 
 
 
