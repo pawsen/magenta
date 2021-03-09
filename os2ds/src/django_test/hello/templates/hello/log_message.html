@@ -1,0 +1,12 @@
+{% extends "hello/layout.html" %}
+{% block title %}
+    Log a message
+{% endblock %}
+<!-- Note: Django's {% csrf_token %} tag provides protection from cross-site request forgeries.  -->
+{% block content %}
+    <form method="POST" class="log-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default">Log</button>
+    </form>
+{% endblock %}

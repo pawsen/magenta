@@ -1,0 +1,38 @@
+From
+https://code.visualstudio.com/docs/python/tutorial-django
+
+Run the app, http://localhost:8000
+: python manage.py runserver
+
+* models
+After changing the data base models in [[file:hello/models.py][models.py]], run the following to make the migration.
+
+#+begin_src sh
+python manage.py makemigrations
+python manage.py migrate
+#+end_src
+* sqlite
+
+#+begin_src sh
+sudo apt install sqlitebrowser
+#+end_src
+* debug
+List all open ports
+: sudo lsof -i -P -n | grep LISTEN
+
+dap-variant of launch.json
+https://github.com/emacs-lsp/dap-mode/issues/229
+#+begin_src lisp
+(dap-register-debug-template "Python: Django"
+  (list :type "python"
+        :args "runserver --noreload"
+        :cwd "/home/paw/git/magenta/os2ds/src/django_test"
+        :module nil
+        :console "integratedTerminal"
+        :env '(("DEBUG" . "1"))
+        :program "manage.py"
+        :django t
+        :request "launch"
+        :name "Python: Django"))
+#+end_src
+
