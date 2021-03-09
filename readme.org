@@ -195,7 +195,11 @@ For address regex
 https://regex101.com/r/zJBsXw/9
 
 
+*** Externe link til WebSource, 35210
+https://redmine.magenta-aps.dk/issues/35210
 
+*** Håndtering af døde links, 35236
+https://redmine.magenta-aps.dk/issues/35236
 ** data
 [[file:os2ds/data/vst-lokalplan-20200416.pdf][pdf der udpakker til ca 3.000 filer]], sikkert pga embedded vektor grafik
 
@@ -238,6 +242,18 @@ pdfcrop pipeline-architecture.pdf pipeline-architecture.pdf
 #+end_src
 
 ** setup
+https://git.magenta.dk/os2datascanner/os2datascanner/-/blob/development/README.rst
+
+#+begin_src sh
+git clone git@git.magenta.dk:os2datascanner/os2datascanner.git
+cd os2datascanner
+
+# make dirs writeable
+chmod -R o+w src/os2datascanner/projects/report/locale
+chmod -R o+w src/os2datascanner/projects/report/reportapp/migrations
+chmod -R o+w src/os2datascanner/projects/admin/locale
+#+end_src
+
 *** local setup without docker
 Install both system- and python packages
 
@@ -286,6 +302,51 @@ Here is a alternative, non-automatic way
 https://stackoverflow.com/a/30969768
 
 *** docker
+
+Se [[https://udvikler.docs.magenta.dk/docker/index.html][udviklerhåndbogen]] for flere kommandoer
+
+Build the containers
+#+begin_src sh
+docker-compose up --build
+docker-compose exec admin_application python manage.py createsuperuser --username test --email test@test
+docker-compose exec report_application python manage.py createsuperuser --username test --email test@test
+#+end_src
+
+Interfaces - Admin/rabbitMQ/report/Prometheus/grafana/API/swagger UI
+http://localhost:8020/
+http://localhost:8030/
+http://localhost:8040/
+http://localhost:8050
+http://localhost:8060
+http://localhost:8070/
+http://localhost:8075/
+
+http://localhost:8070/openapi.yaml
+
+docker logs --timestamps --follow os2datascanner_engine_worker_1
+
+pass for rabbitMQ is in =dev-environment/rabbitmq.env=
+#+begin_src sh
+RABBITMQ_DEFAULT_USER=os2ds
+RABBITMQ_DEFAULT_PASS=os2ds
+#+end_src
+Default user and password for grafana is =admin= & =admin= as from [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/docker-compose.yml#L200][docker-compose.yml]]
+
+From =django 3.0= we can use [[https://docs.djangoproject.com/en/3.0/ref/django-admin/#django-admin-createsuperuser][environment variables]]
+#+begin_src sh
+DJANGO_SUPERUSER_PASSWORD=test DJANGO_SUPERUSER_USERNAME=test DJANGO_SUPERUSER_EMAIL=test@test docker-compose exec admin_application python manage.py createsuperuser --noinput
+#+end_src
+
+**** useful docker commands
+#+begin_src sh
+docker network inspect os2datascanner_default
+docker-compose logs | bat
+docker logs -f mycontainer
+docker stop $(docker ps -aq)
+docker rm $(docker ps -aq)
+docker system prune --all
+#+end_src
+
 **** ports
 https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
 - queue (rabbitmq)
@@ -303,7 +364,6 @@ https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
   - 8060:3000
 - idp
   - 8080:8080
-
 
 **** debug template for docker, using DAP
 See templates
@@ -337,6 +397,45 @@ poetry shell
 #+end_src
 
 [[https://stackoverflow.com/a/64672646][Import requirements.txt into poetry]]
+** API
+[[https://git.magenta.dk/os2datascanner/os2datascanner/-/blob/development/doc/api.rst][docs]], [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/src/os2datascanner/server/wsgi.py][src]] OR http://localhost:8070/openapi.yaml
+
+We need to set the API token in =dev-environment/api/dev-settings.toml=. It is in the format of a [[https://swagger.io/docs/specification/authentication/bearer-authentication/][bearer authentication]] as a pre-shared-key(bpsk), and we just set
+#+begin_src conf
+[server]
+token = "os2ds"
+#+end_src
+Then we can interact with the API endpoints {=openapi.yaml=, =dummy/1=, =scan/1=}
+
+The best way to test it, is to use swaggerUI
+http://localhost:8075
+
+Or with the CLI
+#+begin_src sh
+sudo apt install httpie
+
+http localhost:8070/openapi.yaml -d
+http POST localhost:8070/dummy/1 AUTHORIZATION:'Bearer os2ds'
+echo '{"rule":{"type":"regex","expression":"[Tt]est"},"source":{"type":"data","content":"VGhpcyBpcyBvbmx5IGEgdGVzdA==","mime":"text/plain"}}' | http
+ post localhost:8070/scan/1 AUTHORIZATION:'Bearer os2ds'
+# OR
+curl -X POST "http://localhost:8070/scan/1" -H  "accept: application/jsonl" -H  "Authorization: Bearer os2ds" -H  "Content-Type: application/json" -d '{"rule":{"type":"regex","expression":"[Tt]est"},"source":{"type":"data","content":"VGhpcyBpcyBvbmx5IGEgdGVzdA==","mime":"text/plain"}}'
+
+echo '{"rule":{"type":"regex","expression":"[Mm]orten"},"source":{"type":"web","url":"https://www.magenta.dk"}}' | http post localhost:8070/scan/1 AUTHORIZATION:'Bearer os2ds'
+#+end_src
+
+The content is =base64= encoded
+#+begin_src sh
+echo -n "This is only a test" | base64
+VGhpcyBpcyBvbmx5IGEgdGVzdA==
+
+echo 'VGhpcyBpcyBvbmx5IGEgdGVzdA==' | base64 --decode
+#+end_src
+
+Follow the logs
+#+begin_src sh
+docker-compose logs --follow api_server
+#+end_src
 
 * random
 ** Pipeline projekt oversigt
