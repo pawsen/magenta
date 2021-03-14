@@ -1,3 +1,18 @@
+* Content :TOC:
+- [[#os2ds][os2ds]]
+  - [[#features][features]]
+  - [[#data][data]]
+  - [[#structure][structure]]
+  - [[#docker][docker]]
+  - [[#api][API]]
+  - [[#local-setup][local setup]]
+- [[#random][random]]
+  - [[#pipeline-projekt-oversigt][Pipeline projekt oversigt]]
+  - [[#get-requirementstxt][get requirements.txt]]
+  - [[#debuging-of-docker-container-not-app-debuging][debug'ing of docker container (not app debug'ing)]]
+  - [[#users-uidgid][users uid/gid]]
+  - [[#git-hooks][git hooks]]
+
 * os2ds
 
 ** features
@@ -194,12 +209,18 @@ https://regex101.com/r/nT9wL5/8
 For address regex
 https://regex101.com/r/zJBsXw/9
 
-
 *** Externe link til WebSource, 35210
 https://redmine.magenta-aps.dk/issues/35210
 
 *** Håndtering af døde links, 35236
 https://redmine.magenta-aps.dk/issues/35236
+*** Grafana alarm - overvågning af pipelinetrin, 42002
+https://redmine.magenta-aps.dk/issues/42002
+
+Vi mangler overvågning af de enkelte pipeline trin i scannermotoren.
+- Hvis rabbitmq oplever timeout fra en af pipeline trinene.
+- Hvis et pipelinetrin går i stå og ikke spiser flere beskeder fra en fyldt kø.
+
 ** data
 [[file:os2ds/data/vst-lokalplan-20200416.pdf][pdf der udpakker til ca 3.000 filer]], sikkert pga embedded vektor grafik
 
@@ -233,7 +254,7 @@ In addition, these backing services are used:
 - engine_tagger
 - engine_exporter
 
-** docs
+
 download [[https://git.magenta.dk/os2datascanner/os2datascanner/-/blob/development/doc/pipeline-architecture.svg][pipeline-architecture.svg]], print it as pdf using the browser and crop it
 #+begin_src sh
 # wget https://git.magenta.dk/os2datascanner/os2datascanner/-/raw/development/doc/pipeline-architecture.svg
@@ -241,76 +262,9 @@ sudo apt-get install texlive-extra-utils
 pdfcrop pipeline-architecture.pdf pipeline-architecture.pdf
 #+end_src
 
-** setup
-https://git.magenta.dk/os2datascanner/os2datascanner/-/blob/development/README.rst
-
-#+begin_src sh
-git clone git@git.magenta.dk:os2datascanner/os2datascanner.git
-cd os2datascanner
-
-# make dirs writeable
-chmod -R o+w src/os2datascanner/projects/report/locale
-chmod -R o+w src/os2datascanner/projects/report/reportapp/migrations
-chmod -R o+w src/os2datascanner/projects/admin/locale
-#+end_src
-
-*** local setup without docker
-Install both system- and python packages
-
-Run =install.sh= to install system- and python packages. Below is shown how to do it using =poetry= (another python =env= manager).
-
-To get tab-completion in =ipython=, run
-: pip install jedi==0.17.2
-[[https://stackoverflow.com/a/65465682][ipython autocomplete does not work]]
-
-Install debug tools
-: pip install debugpy
-
-**** run
-different pipelines to run
-#+begin_src sh
-python -m os2datascanner.engine2.pipeline.explorer
-python -m os2datascanner.engine2.pipeline.processor
-python -m os2datascanner.engine2.pipeline.matcher
-python -m os2datascanner.engine2.pipeline.tagger
-python -m os2datascanner.engine2.pipeline.exporter
-#+end_src
-
-**** export variables
-#+begin_src sh
-os2ds=~/git/os2datascanner
-export OS2DS_ENGINE_USER_CONFIG_PATH="$os2ds/contrib/config/engine-module/user-settings.toml" PYTHONPATH="$os2ds/src"
-python -m os2datascanner.engine2.pipeline.explorer
-#+end_src
-
-or automatic loading of env's from =.envrc= file
-#+begin_src sh
-apt install direnv
-direnv allow
-#+end_src
-
-#+begin_src sh
-cat > .envrc << EOF
-# https://direnv.net/man/direnv-stdlib.1.html
-# root_dir=$(expand_path .)
-root_dir=~/git/os2datascanner
-export OS2DS_ENGINE_USER_CONFIG_PATH="$root_dir/contrib/config/engine-module/user-settings.toml" PYTHONPATH="$root_dir/src"
-EOF
-#+end_src
-
-Here is a alternative, non-automatic way
-https://stackoverflow.com/a/30969768
-
-*** docker
-
-Se [[https://udvikler.docs.magenta.dk/docker/index.html][udviklerhåndbogen]] for flere kommandoer
-
-Build the containers
-#+begin_src sh
-docker-compose up --build
-docker-compose exec admin_application python manage.py createsuperuser --username test --email test@test
-docker-compose exec report_application python manage.py createsuperuser --username test --email test@test
-#+end_src
+** docker
+Start all docker containers
+: docker-compose up -d
 
 Interfaces - Admin/rabbitMQ/report/Prometheus/grafana/API/swagger UI
 http://localhost:8020/
@@ -323,7 +277,33 @@ http://localhost:8075/
 
 http://localhost:8070/openapi.yaml
 
-docker logs --timestamps --follow os2datascanner_engine_worker_1
+show listening ports
+: sudo ss -tulpn
+
+*** setup
+https://git.magenta.dk/os2datascanner/os2datascanner/-/blob/development/README.rst
+
+Make dirs for static files writable.
+#+begin_src sh
+git clone git@git.magenta.dk:os2datascanner/os2datascanner.git
+cd os2datascanner
+
+chmod -R o+w src/os2datascanner/projects/report/locale
+chmod -R o+w src/os2datascanner/projects/report/reportapp/migrations
+chmod -R o+w src/os2datascanner/projects/admin/locale
+#+end_src
+
+
+Se [[https://udvikler.docs.magenta.dk/docker/index.html][udviklerhåndbogen]] for flere kommandoer
+
+Build the containers
+#+begin_src sh
+docker-compose up --build -d
+docker-compose exec admin_application python manage.py createsuperuser --username test --email test@test
+docker-compose exec report_application python manage.py createsuperuser --username test --email test@test
+#+end_src
+
+: docker logs --timestamps --follow os2datascanner_engine_worker_1
 
 pass for rabbitMQ is in =dev-environment/rabbitmq.env=
 #+begin_src sh
@@ -369,34 +349,144 @@ https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
 See templates
 https://github.com/ztlevi/LSP-Debug/blob/master/dap-config.el
 
+*** db
+In the Dockerfile for the image, =ENTRYPOINT= is set to [[https://github.com/docker-library/postgres/blob/master/12/alpine/docker-entrypoint.sh#L307][docker-entrypoint.sh]],
+which sources all files =docker-compose.yml= copies to the container path
+=/docker-entrypoint-initdb.d/=
 
-*** poetry
-[[https://python-poetry.org/][poetry]] is a another virt. env. manager for python.
+See the [[https://docs.docker.com/engine/reference/builder/#entrypoint][docs for entrypoint]]
+*** report
+The docker container sets [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/docker/docker-entrypoint-django.sh][docker-entrypoint-django.sh]] as =ENTRYPOINT=.
+*** run things
+The settings are copied into the containers from =./dev_enviroment/admin/dev-settings.toml=, =./dev_enviroment/admin/dev-settings.toml= and =./dev-environment/rabbitmq.env=
 
+os2ds sends and receives messages to =RabbitMQ= using the =pika= module. The =.toml= settings are reads by [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/src/os2datascanner/utils/pika_settings.py#L17-24][pika-settings.py]] using the =OS2DS=s =env= variables. *NOTE:* =pike-settings.py= does not know which app(report, admin or engine) is being run and try to read the =env= in the following order and stops when it encounter the first set variable, assuming that it correspond to the app.
+- =OS2DS_ADMIN_USER_CONFIG_PATH=
+- =OS2DS_ENGINE_USER_CONFIG_PATH=
+- =OS2DS_REPORT_USER_CONFIG_PATH=
+
+With =db= and =queue= running in docker, we can start the other apps locally. First =queue= needs to be mapped to =localhost=
 #+begin_src sh
-sudo apt install $(cat requirements/sys-requirements/sys-requirements-engine.txt | grep -E '^[^# ]' | xargs )
-
-# create python env.
-pyenv local 3.6.4
-poetry init -n
-
-# add -n 1 to xargs if it is important that only one line is given each time
-cat requirements/python-requirements/requirements-common.in | grep -E '^[^-# ]' | xargs poetry add
-cat requirements/python-requirements/requirements-engine.in | grep -E '^[^-# ]' | xargs poetry add
-
-# dev
-cat requirements/python-requirements/requirements-test.in | grep -E '^[^-# ]' | xargs poetry add -D
-cat requirements/python-requirements/requirements-lint.in | grep -E '^[^-# ]' | xargs poetry add -D
-
-# ptvsd is deprecated in favor of debugpy
-# poetry add --dev ptvsd
-pip install jedi==0.17.2
-
-# start the env
-poetry shell
+# insert in 3'nd line in file (2i)
+sudo sed -i "3i127.0.1.1\tqueue db" /etc/hosts
+# and remove 3'nd line
+sudo sed -i "3d" /etc/hosts
+#+end_src
+as per the =[amqp]= section in eg. [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/dev-environment/report/dev-settings.toml][./dev_enviroment/admin/dev-settings.toml]].
+#+begin_src yaml
+[amqp]
+# Nested amqp settings are picked up by the common amqp utility module
+AMQP_HOST = "queue"
+AMQP_USER = "os2ds"
+AMQP_PWD = "os2ds"
 #+end_src
 
-[[https://stackoverflow.com/a/64672646][Import requirements.txt into poetry]]
+Start the different components(remember to unset unneeded =env='s), eg. by prepending with
+: O2DS_ENGINE_USER_CONFIG_PATH=
+
+**** report
+Report module - before starting the webserver generate static files and translations as per [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/docker/docker-entrypoint-django.sh#L27-30][docker-entrypoint-django.sh]]
+#+begin_src sh
+OS2DS_REPORT_USER_CONFIG_PATH=dev-environment/report/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.report.settings python -m os2datascanner.projects.report.manage pipeline_collector
+
+# before starting the server, generate static files and translates
+OS2DS_REPORT_USER_CONFIG_PATH=dev-environment/report/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.report.settings python -m os2datascanner.projects.report.manage collectstatic --no-input --clear --dry-run
+OS2DS_REPORT_USER_CONFIG_PATH=dev-environment/report/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.report.settings python -m os2datascanner.projects.report.manage compilemessages
+
+OS2DS_REPORT_USER_CONFIG_PATH=dev-environment/report/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.report.settings python -m os2datascanner.projects.report.manage runserver 0.0.0.0:8040
+
+OS2DS_REPORT_USER_CONFIG_PATH=dev-environment/report/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.report.settings GUNICORN_WORKERS=2 gunicorn --config docker/gunicorn-settings.py --reload os2datascanner.projects.report.wsgi
+#+end_src
+
+**** Admin
+#+begin_src sh
+OS2DS_ADMIN_USER_CONFIG_PATH=dev-environment/admin/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.admin.settings python -m os2datascanner.projects.admin.manage pipeline_collector
+
+# before starting the server, generate static files and translates
+OS2DS_ADMIN_USER_CONFIG_PATH=dev-environment/admin/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.admin.settings python -m os2datascanner.projects.admin.manage collectstatic --no-input --clear --dry-run
+OS2DS_ADMIN_USER_CONFIG_PATH=dev-environment/admin/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.admin.settings python -m os2datascanner.projects.admin.manage compilemessages
+
+OS2DS_ADMIN_USER_CONFIG_PATH=dev-environment/admin/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.admin.settings python -m os2datascanner.projects.admin.manage runserver 0.0.0.0:8040
+
+OS2DS_ADMIN_USER_CONFIG_PATH=dev-environment/admin/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.admin.settings GUNICORN_WORKERS=2 gunicorn --config docker/gunicorn-settings.py --reload os2datascanner.projects.admin.wsgi
+#+end_src
+
+**** engine
+See the [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/src/os2datascanner/engine2/pipeline/README.md][README.md]] for info about the stages and messages sent between them
+#+begin_src sh
+OS2DS_ENGINE_USER_CONFIG_PATH=dev-environment/engine/dev-settings.toml  python -m os2datascanner.engine2.pipeline.run_stage explorer --debug --enable-metric
+OS2DS_ENGINE_USER_CONFIG_PATH=dev-environment/engine/dev-settings.toml  python -m os2datascanner.engine2.pipeline.run_stage processor --debug --enable-metric
+OS2DS_ENGINE_USER_CONFIG_PATH=dev-environment/engine/dev-settings.toml  python -m os2datascanner.engine2.pipeline.run_stage matcher --debug --enable-metric
+OS2DS_ENGINE_USER_CONFIG_PATH=dev-environment/engine/dev-settings.toml  python -m os2datascanner.engine2.pipeline.run_stage tagger --debug --enable-metric
+OS2DS_ENGINE_USER_CONFIG_PATH=dev-environment/engine/dev-settings.toml  python -m os2datascanner.engine2.pipeline.run_stage exporter --debug --enable-metric
+#+end_src
+*** backup volumes
+The persistent data is stored in a mounted data volume.
+
+#+begin_src sh
+docker inspect os2datascanner_db_1
+"Mounts": [
+    {
+        "Type": "volume",
+        "Name": "os2datascanner_postgres-data",
+        "Source": "/var/lib/docker/volumes/os2datascanner_postgres-data/_data",
+        "Destination": "/var/lib/postgresql/data",
+        "Driver": "local",
+        "Mode": "rw",
+        "RW": true,
+        "Propagation": ""
+    },
+#+end_src
+
+[[https://stackoverflow.com/a/23778599][Backup]]
+#+begin_src sh
+docker run --rm --volumes-from os2datascanner_db_1 -v $(pwd):/backup busybox tar cvf /backup/backup.tar /var/lib/postgresql/data
+#+end_src
+- =--rm=: remove the container when it exits
+- =--volumes-from os2ds_db_1=: attach to the volumes shared by the os2ds_db_1 container
+- =-v $(pwd):/backup=: bind mount the current directory into the container; to write the tar file to
+- =busybox=: a small simpler image - good for quick maintenance
+- =tar cvf /backup/backup.tar /var/lib/...=: creates an uncompressed tar file of all the files in the /var/lib... directory
+Thus a =backup.tar= file is created in the current directory.
+
+Restore -- Not complete
+#+begin_src sh
+# create a new data container
+docker create -v /data --name DATA2 busybox true
+# untar the backup files into the new container᾿s data volume
+docker run --rm --volumes-from DATA2 -v $(pwd):/backup busybox tar xvf /backup/backup.tar
+#+end_src
+
+*** gunicorn
+Gunicorn is app server, taking with the web server and the python app. In general:
+
+Nginx will face the outside world and receive an request. It will serve media files (images, CSS, etc) directly from the file system. However, it can't talk directly to Django applications; it needs something that will run the application, feed it requests from the web, and return responses.
+
+That's Gunicorn's job. Gunicorn will create a Unix socket, and serve responses to nginx via the wsgi protocol - the socket passes data in both directions:
+#+begin_quote
+The outside world <-> Nginx <-> The socket <-> Gunicorn <-> Django
+#+end_quote
+(Note: nginx and gunicorn can talk using tcp connections as well, if they are on separate machines. But there is less overhead with a socket than a tcp connection.)
+
+In a development setup we can use djangos web server directly with =python -m manage.py runserver 0.0.0.0:8000=, but in production this is not [[https://github.com/django/channels/issues/142#issuecomment-216051605][not recommended]]. For more see [[https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html#concept][this nginx+uwsgi tutorial]].
+
+*** inspect docker settings
+
+Useful commands for inspecting
+#+begin_src sh
+docker-compose ls
+docker inspect ID
+docker inspect --format='{{json .Config}}' ID | jq
+docker ps -q | xargs docker inspect --format '{{.State.Pid}}, {{.ID}}, {{.Config.Image}}'
+#+end_src
+*** docker_overwrite.yml
+#+begin_src yaml
+version: "3"
+services:
+    db:
+      ports:
+        - "5432:5432"
+#+end_src
 ** API
 [[https://git.magenta.dk/os2datascanner/os2datascanner/-/blob/development/doc/api.rst][docs]], [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/src/os2datascanner/server/wsgi.py][src]] OR http://localhost:8070/openapi.yaml
 
@@ -436,7 +526,87 @@ Follow the logs
 #+begin_src sh
 docker-compose logs --follow api_server
 #+end_src
+** local setup
+*** local setup without docker
+Install both system- and python packages
 
+Run =install.sh= to install system- and python packages or run this
+#+begin_src sh
+fd -e txt . requirements/python-requirements -x pip install -r
+#+end_src
+
+Below is shown how to do it using =poetry= (another python =env= manager).
+
+To get tab-completion in =ipython=, run
+: pip install jedi==0.17.2
+[[https://stackoverflow.com/a/65465682][ipython autocomplete does not work]]
+
+Install debug tools
+: pip install debugpy
+
+**** run
+different pipelines to run -- NOTE deprecated. use =pipeline.run_stage <stage>= instead
+#+begin_src sh
+python -m os2datascanner.engine2.pipeline.explorer
+python -m os2datascanner.engine2.pipeline.processor
+python -m os2datascanner.engine2.pipeline.matcher
+python -m os2datascanner.engine2.pipeline.tagger
+python -m os2datascanner.engine2.pipeline.exporter
+#+end_src
+
+**** export variables
+Be careful with setting the =OS2DS= env's like this. See [[*run things][run things]]
+#+begin_src sh
+os2ds=~/git/os2datascanner
+export OS2DS_ENGINE_USER_CONFIG_PATH="$os2ds/contrib/config/engine-module/user-settings.toml" PYTHONPATH="$os2ds/src"
+python -m os2datascanner.engine2.pipeline.explorer
+#+end_src
+
+or automatic loading of env's from =.envrc= file
+#+begin_src sh
+apt install direnv
+direnv allow
+#+end_src
+
+#+begin_src sh
+cat > .envrc << EOF
+# https://direnv.net/man/direnv-stdlib.1.html
+root_dir=$(expand_path .)
+# root_dir=~/git/os2datascanner
+export OS2DS_ENGINE_USER_CONFIG_PATH="$root_dir/contrib/config/engine-module/user-settings.toml" PYTHONPATH="$root_dir/src"
+EOF
+#+end_src
+
+Here is a alternative, non-automatic way
+https://stackoverflow.com/a/30969768
+
+*** poetry
+[[https://python-poetry.org/][poetry]] is a another virt. env. manager for python.
+
+#+begin_src sh
+sudo apt install $(cat requirements/sys-requirements/sys-requirements-engine.txt | grep -E '^[^# ]' | xargs )
+
+# create python env.
+pyenv local 3.6.4
+poetry init -n
+
+# add -n 1 to xargs if it is important that only one line is given each time
+cat requirements/python-requirements/requirements-common.in | grep -E '^[^-# ]' | xargs poetry add
+cat requirements/python-requirements/requirements-engine.in | grep -E '^[^-# ]' | xargs poetry add
+
+# dev
+cat requirements/python-requirements/requirements-test.in | grep -E '^[^-# ]' | xargs poetry add -D
+cat requirements/python-requirements/requirements-lint.in | grep -E '^[^-# ]' | xargs poetry add -D
+
+# ptvsd is deprecated in favor of debugpy
+# poetry add --dev ptvsd
+pip install jedi==0.17.2
+
+# start the env
+poetry shell
+#+end_src
+
+[[https://stackoverflow.com/a/64672646][Import requirements.txt into poetry]]
 * random
 ** Pipeline projekt oversigt
 https://docs.google.com/spreadsheets/d/1WylHagXFc2rXuB2qEfnPng4an78U49WiiP8lJWMCc2Y/edit#gid=281544569
