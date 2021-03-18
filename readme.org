@@ -6,6 +6,7 @@
   - [[#docker][docker]]
   - [[#api][API]]
   - [[#local-setup][local setup]]
+  - [[#app][app]]
 - [[#random][random]]
   - [[#pipeline-projekt-oversigt][Pipeline projekt oversigt]]
   - [[#get-requirementstxt][get requirements.txt]]
@@ -406,6 +407,8 @@ dropdb -U postgres os2datascanner_report
 dropdb -U postgres os2datascanner_admin
 #+end_src
 
+[[file:os2ds/data/db/][DB backup files]]
+
 *** report
 The docker container sets [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/docker/docker-entrypoint-django.sh][docker-entrypoint-django.sh]] as =ENTRYPOINT=.
 *** run things
@@ -478,6 +481,12 @@ OS2DS_ENGINE_USER_CONFIG_PATH=dev-environment/engine/dev-settings.toml  python -
 OS2DS_ENGINE_USER_CONFIG_PATH=dev-environment/engine/dev-settings.toml  python -m os2datascanner.engine2.pipeline.run_stage exporter --debug --enable-metric
 #+end_src
 **** tmux
+
+Start by stopping relevant containers
+#+begin_src sh
+docker-compose stop engine_worker engine_exporter engine_explorer admin_collector report_collector
+#+end_src
+
 hackish script to run engine in tmux.
 #+begin_src sh
 #!/usr/bin/env bash
@@ -713,6 +722,14 @@ poetry shell
 #+end_src
 
 [[https://stackoverflow.com/a/64672646][Import requirements.txt into poetry]]
+** app
+*** multi containers
+Open http://localhost:8020 and http://localhost:8040 (admin and report app) in different [[https://support.mozilla.org/en-US/kb/containers][Firefox multi-containers]].
+This allows us to be logged in both instances.
+
+Maybe useful extensions(check the first one)
+https://addons.mozilla.org/en-US/firefox/addon/containerise
+https://addons.mozilla.org/en-US/firefox/addon/containers-sync
 * random
 ** Pipeline projekt oversigt
 https://docs.google.com/spreadsheets/d/1WylHagXFc2rXuB2qEfnPng4an78U49WiiP8lJWMCc2Y/edit#gid=281544569
