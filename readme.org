@@ -355,6 +355,57 @@ which sources all files =docker-compose.yml= copies to the container path
 =/docker-entrypoint-initdb.d/=
 
 See the [[https://docs.docker.com/engine/reference/builder/#entrypoint][docs for entrypoint]]
+
+
+**** pgAdmin4
+Connect to =db= (or =127.0.0.1= if =db= is not mapped in =/etc/hosts=). Connect as superuser
+
+#+begin_src conf
+user=postgres
+password=os2datascanner
+#+end_src
+as specified in [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/feature/35236_show_dead_links/dev-environment/db.env][db.env]]
+
+Right click on table, select =View/Edit Data=
+
+**** backup
+As per this [[https://stackoverflow.com/a/63934857][SO]]
+Let =pg_dump= write to a file inside the Docker container, then copy that out to the host
+
+Backup. Maybe include =-c/--clean= (clean (drop) database objects before recreating)
+#+begin_src sh
+pg_dumpall --globals-only -U postgres > /globals.sql
+pg_dump -Fc -U postgres os2datascanner_report > /dbc_report.dump
+pg_dump -Fc -U postgres os2datascanner_admin > /dbc_admin.dump
+# or dump all (text mode)
+pg_dumpall -U postgres --clean > /db.dump
+
+# Run with docker
+docker exec -ti os2datascanner_db_1 bash -c 'pg_dumpall -U postgres --clean > /db.dump'
+docker cp os2datascanner_db_1:/db.dump db.dump
+#+end_src
+
+Restore
+#+begin_src sh
+psql -U postgres -f globals.sql
+# if dumped with -Fc flag (Format custom/binary)
+pg_restore -U postgres -c -d os2datascanner_report db_report.dump
+pg_restore -U postgres -c -d os2datascanner_admin db_admin.dump
+
+# otherwise, if dumped as text
+psql -U postgres < db.dump
+
+# run with docker
+docker cp db.dump os2datascanner_db_1:/db.dump
+docker exec -ti os2datascanner_db_1 bash -c 'psql -U postgres < /db.dump'
+#+end_src
+
+Drop DB
+#+begin_src sh
+dropdb -U postgres os2datascanner_report
+dropdb -U postgres os2datascanner_admin
+#+end_src
+
 *** report
 The docker container sets [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/docker/docker-entrypoint-django.sh][docker-entrypoint-django.sh]] as =ENTRYPOINT=.
 *** run things
@@ -383,6 +434,12 @@ AMQP_PWD = "os2ds"
 
 Start the different components(remember to unset unneeded =env='s), eg. by prepending with
 : O2DS_ENGINE_USER_CONFIG_PATH=
+
+#+begin_src sh
+OS2DS_ENGINE_USER_CONFIG_PATH=dev-environment/engine/dev-settings.toml
+OS2DS_ADMIN_USER_CONFIG_PATH=dev-environment/admin/dev-settings.toml
+OS2DS_REPORT_USER_CONFIG_PATH=dev-environment/report/dev-settings.toml
+#+end_src
 
 **** report
 Report module - before starting the webserver generate static files and translations as per [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/docker/docker-entrypoint-django.sh#L27-30][docker-entrypoint-django.sh]]
@@ -419,6 +476,55 @@ OS2DS_ENGINE_USER_CONFIG_PATH=dev-environment/engine/dev-settings.toml  python -
 OS2DS_ENGINE_USER_CONFIG_PATH=dev-environment/engine/dev-settings.toml  python -m os2datascanner.engine2.pipeline.run_stage matcher --debug --enable-metric
 OS2DS_ENGINE_USER_CONFIG_PATH=dev-environment/engine/dev-settings.toml  python -m os2datascanner.engine2.pipeline.run_stage tagger --debug --enable-metric
 OS2DS_ENGINE_USER_CONFIG_PATH=dev-environment/engine/dev-settings.toml  python -m os2datascanner.engine2.pipeline.run_stage exporter --debug --enable-metric
+#+end_src
+**** tmux
+hackish script to run engine in tmux.
+#+begin_src sh
+#!/usr/bin/env bash
+
+# set -euo pipefail
+
+OS2DS_PATH="$HOME/git/os2datascanner"
+OS2DS_ENGINE_USER_CONFIG_PATH=$OS2DS_PATH/dev-environment/engine/dev-settings.toml
+OS2DS_ADMIN_USER_CONFIG_PATH=$OS2DS_PATH/dev-environment/admin/dev-settings.toml
+OS2DS_REPORT_USER_CONFIG_PATH=$OS2DS_PATH/dev-environment/report/dev-settings.toml
+
+ENGINE_FLAGS="--debug"
+
+ENGINE_MODULES=('explorer' 'processor' 'matcher' 'tagger' 'exporter')
+DJANGO_MODULES=('report' 'admin')
+
+# Set Session Name
+SESSION="os2ds"
+SESSIONEXISTS=$(tmux list-sessions | grep $SESSION)
+
+# Only create tmux session if it doesn't already exist
+if [ "$SESSIONEXISTS" = "" ]
+then
+    # create new detached session
+    tmux new-session -d -s $SESSION -c "$OS2DS_PATH"
+    #tmux rename-window -t $SESSION "$module"
+
+    # index is given as: -t {session_name}:{window_index}.{pane_index}.
+    for module in "${ENGINE_MODULES[@]}"; do
+        tmux new-window -t $SESSION: -c $OS2DS_PATH -n "$module"
+        tmux send-keys -t "$module" "OS2DS_ENGINE_USER_CONFIG_PATH=$OS2DS_ENGINE_USER_CONFIG_PATH python -m os2datascanner.engine2.pipeline.run_stage $module $ENGINE_FLAGS" C-m
+    done
+
+    for module in "${DJANGO_MODULES[@]}"; do
+        #capitalize module
+        mod_cap=$(tr '/a-z/' '/A-Z/' <<< $module)
+        tmux new-window -t $SESSION: -c $OS2DS_PATH -n "$module"
+        tmux send-keys -t "$module" "OS2DS_${mod_cap}_USER_CONFIG_PATH=dev-environment/${module}/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.${module}.settings python -m os2datascanner.projects.${module}.manage pipeline_collector" C-m
+    done
+
+    # kill the first window
+    tmux kill-window -t $SESSION:1
+fi
+
+
+# Attach Session. with :, attach to last created/active window
+#tmux attach-session -t $SESSION:
 #+end_src
 *** backup volumes
 The persistent data is stored in a mounted data volume.
