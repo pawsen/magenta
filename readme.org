@@ -5,8 +5,10 @@
   - [[#structure][structure]]
   - [[#docker][docker]]
   - [[#api][API]]
-  - [[#local-setup][local setup]]
   - [[#app][app]]
+  - [[#promethues][promethues]]
+  - [[#grafana][grafana]]
+  - [[#local-setup][local setup]]
 - [[#random][random]]
   - [[#pipeline-projekt-oversigt][Pipeline projekt oversigt]]
   - [[#get-requirementstxt][get requirements.txt]]
@@ -641,6 +643,52 @@ Follow the logs
 #+begin_src sh
 docker-compose logs --follow api_server
 #+end_src
+** app
+*** multi containers
+Open http://localhost:8020 and http://localhost:8040 (admin and report app) in different [[https://support.mozilla.org/en-US/kb/containers][Firefox multi-containers]].
+This allows us to be logged in both instances.
+
+Maybe useful extensions(check the first one)
+https://addons.mozilla.org/en-US/firefox/addon/containerise
+https://addons.mozilla.org/en-US/firefox/addon/containers-sync
+** promethues
+Prometheus collects metrics from the engine modules, using a =http pull= model(server is scraping target). This means that each module, when started with the =--metric= flag, also starts a prometheus web server (=start_http_server(args.prometheus_port)= in [[https://git.magenta.dk/os2datascanner/os2datascanner/-/blob/development/src/os2datascanner/engine2/pipeline/run_stage.py#L67-68][run_stage.py]]) and corresponding =prometheus_summary= decorator providing the metrics.
+
+http://localhost:8050
+
+Prometheus is configured in [[https://git.magenta.dk/os2datascanner/os2datascanner/-/blob/development/dev-environment/prometheus.yml][prometheus.yml]]. See http://localhost:8050/targets for status of targets(as set in =prometheus.yml=). http://localhost:8050/graph allows to query the pull'ed data. Start by typing =os2= to get fuzzy matching or click =Classic UI/insert metric at cursor= to see all available metrics.
+
+The [[https://github.com/prometheus/prometheus/blob/main/Dockerfile][prometheus Dockerfile]] is based on busybox, so attach to it like(no =/bin/bash/=)
+: docker exec -ti os2datascanner_prometheus_1 /bin/sh
+
+The data is stored persistent on the mounted volume.
+: docker inspect os2datascanner_prometheus_1| jq
+
+Login to a engine container, check the http server is listening and query it
+#+begin_src sh
+docker exec -ti os2datascanner_engine_explorer_1 /bin/bash
+ss -tupnl
+curl http://localhost:9091/metric
+#+end_src
+
+=ss= should output something like
+: tcp	LISTEN	0	5	0.0.0.0:9091	0.0.0.0:*	users:(("python",pid=1,fd=3))
+indicating that the webserver is listening on port =9091=.
+
+For local machine metrics, there is `apt install prometheus-node-exporter` which is a prometheus exporter for kernel and related metrics.
+
+[[https://wikitech.wikimedia.org/wiki/Prometheus][https://wikitech.wikimedia.org/wiki/Prometheus]] might contain useful information.
+
+** grafana
+Grafana is web app, showing the data series collected by =prometheus=. For at showcase of what grafana can do, see [[https://grafana.wikimedia.org/][https://grafana.wikimedia.org/]] and the [[https://wikitech.wikimedia.org/wiki/Prometheus#/media/File:Prometheus_single_server.][architecture overview.png]].
+
+http://localhost:8060
+user/pass: =admin/admin= as from [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/docker-compose.yml#L200][docker-compose.yml]]
+
+Grafana connects to prometheus server on port =9090=, as per [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/dev-environment/grafana/datasources.yml#L8][datasources.yml]]. The dashboard is setup in [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/dev-environment/grafana/dashboards/engine.json#L163][engine.json.]]
+
+[[https://wikitech.wikimedia.org/wiki/Grafana.wikimedia.org][https://wikitech.wikimedia.org/wiki/Grafana.wikimedia.org]] might contain useful information.
+
 ** local setup
 *** local setup without docker
 Install both system- and python packages
@@ -722,14 +770,6 @@ poetry shell
 #+end_src
 
 [[https://stackoverflow.com/a/64672646][Import requirements.txt into poetry]]
-** app
-*** multi containers
-Open http://localhost:8020 and http://localhost:8040 (admin and report app) in different [[https://support.mozilla.org/en-US/kb/containers][Firefox multi-containers]].
-This allows us to be logged in both instances.
-
-Maybe useful extensions(check the first one)
-https://addons.mozilla.org/en-US/firefox/addon/containerise
-https://addons.mozilla.org/en-US/firefox/addon/containers-sync
 * random
 ** Pipeline projekt oversigt
 https://docs.google.com/spreadsheets/d/1WylHagXFc2rXuB2qEfnPng4an78U49WiiP8lJWMCc2Y/edit#gid=281544569
