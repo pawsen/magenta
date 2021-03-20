@@ -1,172 +1,376 @@
-
+* Content :toc_3:
+- [[#json-messages][json messages]]
+  - [[#messages-received-by-exporterpy][Messages received by exporter.py]]
+    - [[#queue--os2ds_matches][queue = =os2ds_matches=]]
+    - [[#queue--os2ds_problems][queue = =os2ds_problems=]]
+  - [[#message-imported-by-report-pipeline_collectorpy][Message imported by report pipeline_collector.py]]
+    - [[#medarbejderesoftwareudviklerdanni-data-als]["medarbejdere/softwareudvikler/danni-data-als/"]]
+    - [[#huset-magenta-it-leverandor-danmark-siden-1999]["huset-magenta-it-leverandor-danmark-siden-1999/"]]
+    - [[#jobopslagpraktikprogramkommunikationspraktikant]["jobopslag/praktikprogram/kommunikationspraktikant/"]]
 
 * json messages
-Use [[http://jsonviewer.stack.hu/][http://jsonviewer.stack.hu/]] to convert between formatted and 'no whitespace' layout.
+Use [[http://jsonviewer.stack.hu/][http://jsonviewer.stack.hu/]] to convert between formatted and "no whitespace" layout.
 
 
-Messages received by [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/src/os2datascanner/engine2/pipeline/exporter.py][exporter.py]]
+** Messages received by [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/src/os2datascanner/engine2/pipeline/exporter.py][exporter.py]]
 
-queue = =os2ds_matches=
-"medarbejdere/softwareudvikler/danni-data-als/"
+*** queue = =os2ds_matches=
+**** "medarbejdere/softwareudvikler/danni-data-als/"
 #+begin_src json
 {
-  'scan_spec': {
-    'scan_tag': {
-      'time': '2021-03-20T12:22:43-05:00',
-      'user': 'test',
-      'scanner': {
-        'pk': 1,
-        'name': 'danni magenta'
+  "scan_spec": {
+    "scan_tag": {
+      "time": "2021-03-20T12:22:43-05:00",
+      "user": "test",
+      "scanner": {
+        "pk": 1,
+        "name": "danni magenta"
       },
-      'organisation': {
-        'name': 'paws org',
-        'uuid': 'aa1aa88a-f249-4487-a166-00c4ca816ca7'
+      "organisation": {
+        "name": "paws org",
+        "uuid": "aa1aa88a-f249-4487-a166-00c4ca816ca7"
       },
-      'destination': 'pipeline_collector'
+      "destination": "pipeline_collector"
     },
-    'source': {
-      'type': 'web',
-      'url': 'https://www.magenta.dk',
-      'sitemap': 'https://www.magenta.dk/sitemap.xml'
+    "source": {
+      "type": "web",
+      "url": "https://www.magenta.dk",
+      "sitemap": "https://www.magenta.dk/sitemap.xml"
     },
-    'rule': {
-      'type': 'and',
-      'sensitivity': None,
-      'name': None,
-      'components': [
+    "rule": {
+      "type": "and",
+      "sensitivity": None,
+      "name": None,
+      "components": [
         {
-          'type': 'or',
-          'sensitivity': None,
-          'name': None,
-          'components': [
+          "type": "or",
+          "sensitivity": None,
+          "name": None,
+          "components": [
             {
-              'type': 'and',
-              'sensitivity': None,
-              'name': None,
-              'components': [
+              "type": "and",
+              "sensitivity": None,
+              "name": None,
+              "components": [
                 {
-                  'type': 'conversion',
-                  'sensitivity': None,
-                  'name': None,
-                  'target': 'image-dimensions'
+                  "type": "conversion",
+                  "sensitivity": None,
+                  "name": None,
+                  "target": "image-dimensions"
                 },
                 {
-                  'type': 'dimensions',
-                  'sensitivity': None,
-                  'name': None,
-                  'width': [
+                  "type": "dimensions",
+                  "sensitivity": None,
+                  "name": None,
+                  "width": [
                     32,
                     16385
                   ],
-                  'height': [
+                  "height": [
                     32,
                     16385
                   ],
-                  'minimum': 128
+                  "minimum": 128
                 }
               ]
             },
             {
-              'type': 'not',
-              'sensitivity': None,
-              'name': None,
-              'rule': {
-                'type': 'conversion',
-                'sensitivity': None,
-                'name': None,
-                'target': 'image-dimensions'
+              "type": "not",
+              "sensitivity": None,
+              "name": None,
+              "rule": {
+                "type": "conversion",
+                "sensitivity": None,
+                "name": None,
+                "target": "image-dimensions"
               }
             }
           ]
         },
         {
-          'type': 'or',
-          'sensitivity': None,
-          'name': None,
-          'components': [
+          "type": "or",
+          "sensitivity": None,
+          "name": None,
+          "components": [
             {
-              'type': 'regex',
-              'sensitivity': 750,
-              'name': None,
-              'expression': '[Dd]anni'
+              "type": "regex",
+              "sensitivity": 750,
+              "name": None,
+              "expression": "[Dd]anni"
             },
             {
-              'type': 'cpr',
-              'sensitivity': 1000,
-              'name': None,
-              'modulus_11': True,
-              'ignore_irrelevant': True
+              "type": "cpr",
+              "sensitivity": 1000,
+              "name": None,
+              "modulus_11": True,
+              "ignore_irrelevant": True
             }
           ]
         }
       ]
     },
-    'configuration': {
+    "configuration": {
 
     },
-    'progress': None
+    "progress": None
   },
-  'handle': {
-    'type': 'web',
-    'source': {
-      'type': 'web',
-      'url': 'https://www.magenta.dk',
-      'sitemap': 'https://www.magenta.dk/sitemap.xml'
+  "handle": {
+    "type": "web",
+    "source": {
+      "type": "web",
+      "url": "https://www.magenta.dk",
+      "sitemap": "https://www.magenta.dk/sitemap.xml"
     },
-    'path': '/medarbejdere/softwareudvikler/danni-data-als/',
-    'last_modified': '2020-03-13T17:14:30+0100'
+    "path": "/medarbejdere/softwareudvikler/danni-data-als/",
+    "last_modified": "2020-03-13T17:14:30+0100"
   },
-  'matched': True,
-  'matches': [
+  "matched": True,
+  "matches": [
     {
-      'rule': {
-        'type': 'conversion',
-        'sensitivity': None,
-        'name': None,
-        'target': 'image-dimensions'
+      "rule": {
+        "type": "conversion",
+        "sensitivity": None,
+        "name": None,
+        "target": "image-dimensions"
       },
-      'matches': None
+      "matches": None
     },
     {
-      'rule': {
-        'type': 'conversion',
-        'sensitivity': None,
-        'name': None,
-        'target': 'image-dimensions'
+      "rule": {
+        "type": "conversion",
+        "sensitivity": None,
+        "name": None,
+        "target": "image-dimensions"
       },
-      'matches': None
+      "matches": None
     },
     {
-      'rule': {
-        'type': 'regex',
-        'sensitivity': 750,
-        'name': None,
-        'expression': '[Dd]anni'
+      "rule": {
+        "type": "regex",
+        "sensitivity": 750,
+        "name": None,
+        "expression": "[Dd]anni"
       },
-      'matches': [
+      "matches": [
         {
-          'offset': 920,
-          'match': 'Danni'
+          "offset": 920,
+          "match": "Danni"
         },
         {
-          'offset': 929,
-          'match': 'Danni'
+          "offset": 929,
+          "match": "Danni"
         },
         {
-          'offset': 956,
-          'match': 'danni'
+          "offset": 956,
+          "match": "danni"
         },
         {
-          'offset': 973,
-          'match': 'Danni'
+          "offset": 973,
+          "match": "Danni"
         },
         {
-          'offset': 4477,
-          'match': 'Danni'
+          "offset": 4477,
+          "match": "Danni"
         },
         {
-          'offset': 4615,
-          'match': 'danni'
+          "offset": 4615,
+          "match": "danni"
+        }
+      ]
+    }
+  ]
+}
+#+end_src
+**** "medarbejdere/softwareudvikler/danni-data-als/"
+#+begin_src json
+{
+  "scan_spec": {
+    "scan_tag": {
+      "time": "2021-03-20T13:44:11-05:00",
+      "user": "test",
+      "scanner": {
+        "pk": 3,
+        "name": "danni magenta"
+      },
+      "organisation": {
+        "name": "OS2datascanner",
+        "uuid": "8c27d4fc-a425-447d-b276-8f717263fa73"
+      },
+      "destination": "pipeline_collector"
+    },
+    "source": {
+      "type": "web",
+      "url": "https://www.magenta.dk/",
+      "sitemap": "https://www.magenta.dk/sitemap.xml"
+    },
+    "rule": {
+      "type": "or",
+      "sensitivity": None,
+      "name": None,
+      "components": [
+        {
+          "type": "cpr",
+          "sensitivity": 1000,
+          "name": None,
+          "modulus_11": True,
+          "ignore_irrelevant": True
+        },
+        {
+          "type": "regex",
+          "sensitivity": 750,
+          "name": None,
+          "expression": "[Dd]anni"
+        }
+      ]
+    },
+    "configuration": {
+      "skip_mime_types": [
+        "image/*"
+      ]
+    },
+    "progress": None
+  },
+  "handle": {
+    "type": "web",
+    "source": {
+      "type": "web",
+      "url": "https://www.magenta.dk/",
+      "sitemap": "https://www.magenta.dk/sitemap.xml"
+    },
+    "path": "medarbejdere/softwareudvikler/danni-data-als/",
+    "last_modified": "2020-03-13T17:14:30+0100"
+  },
+  "matched": True,
+  "matches": [
+    {
+      "rule": {
+        "type": "cpr",
+        "sensitivity": 1000,
+        "name": None,
+        "modulus_11": True,
+        "ignore_irrelevant": True
+      },
+      "matches": None
+    },
+    {
+      "rule": {
+        "type": "regex",
+        "sensitivity": 750,
+        "name": None,
+        "expression": "[Dd]anni"
+      },
+      "matches": [
+        {
+          "offset": 920,
+          "match": "Danni"
+        },
+        {
+          "offset": 929,
+          "match": "Danni"
+        },
+        {
+          "offset": 956,
+          "match": "danni"
+        },
+        {
+          "offset": 973,
+          "match": "Danni"
+        },
+        {
+          "offset": 4477,
+          "match": "Danni"
+        },
+        {
+          "offset": 4615,
+          "match": "danni"
+        }
+      ]
+    }
+  ]
+}
+#+end_src
+**** "huset-magenta-it-leverandor-danmark-siden-1999/"
+#+begin_src json
+{
+  "scan_spec": {
+    "scan_tag": {
+      "time": "2021-03-20T13:44:11-05:00",
+      "user": "test",
+      "scanner": {
+        "pk": 3,
+        "name": "danni magenta"
+      },
+      "organisation": {
+        "name": "OS2datascanner",
+        "uuid": "8c27d4fc-a425-447d-b276-8f717263fa73"
+      },
+      "destination": "pipeline_collector"
+    },
+    "source": {
+      "type": "web",
+      "url": "https://www.magenta.dk/",
+      "sitemap": "https://www.magenta.dk/sitemap.xml"
+    },
+    "rule": {
+      "type": "or",
+      "sensitivity": None,
+      "name": None,
+      "components": [
+        {
+          "type": "cpr",
+          "sensitivity": 1000,
+          "name": None,
+          "modulus_11": True,
+          "ignore_irrelevant": True
+        },
+        {
+          "type": "regex",
+          "sensitivity": 750,
+          "name": None,
+          "expression": "[Dd]anni"
+        }
+      ]
+    },
+    "configuration": {
+      "skip_mime_types": [
+        "image/*"
+      ]
+    },
+    "progress": None
+  },
+  "handle": {
+    "type": "web",
+    "source": {
+      "type": "web",
+      "url": "https://www.magenta.dk/",
+      "sitemap": "https://www.magenta.dk/sitemap.xml"
+    },
+    "path": "huset-magenta-it-leverandor-danmark-siden-1999/",
+    "last_modified": "2021-03-10T09:26:33+0100"
+  },
+  "matched": True,
+  "matches": [
+    {
+      "rule": {
+        "type": "cpr",
+        "sensitivity": 1000,
+        "name": None,
+        "modulus_11": True,
+        "ignore_irrelevant": True
+      },
+      "matches": None
+    },
+    {
+      "rule": {
+        "type": "regex",
+        "sensitivity": 750,
+        "name": None,
+        "expression": "[Dd]anni"
+      },
+      "matches": [
+        {
+          "offset": 3192,
+          "match": "Danni"
         }
       ]
     }
@@ -174,241 +378,41 @@ queue = =os2ds_matches=
 }
 #+end_src
 
-"medarbejdere/softwareudvikler/danni-data-als/"
+*** queue = =os2ds_problems=
+**** "jobopslag/praktikprogram/kommunikationspraktikant/"
 #+begin_src json
 {
-  'scan_spec': {
-    'scan_tag': {
-      'time': '2021-03-20T13:44:11-05:00',
-      'user': 'test',
-      'scanner': {
-        'pk': 3,
-        'name': 'danni magenta'
-      },
-      'organisation': {
-        'name': 'OS2datascanner',
-        'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
-      },
-      'destination': 'pipeline_collector'
+  "scan_tag": {
+    "time": "2021-03-20T13:44:11-05:00",
+    "user": "test",
+    "scanner": {
+      "pk": 3,
+      "name": "danni magenta"
     },
-    'source': {
-      'type': 'web',
-      'url': 'https://www.magenta.dk/',
-      'sitemap': 'https://www.magenta.dk/sitemap.xml'
+    "organisation": {
+      "name": "OS2datascanner",
+      "uuid": "8c27d4fc-a425-447d-b276-8f717263fa73"
     },
-    'rule': {
-      'type': 'or',
-      'sensitivity': None,
-      'name': None,
-      'components': [
-        {
-          'type': 'cpr',
-          'sensitivity': 1000,
-          'name': None,
-          'modulus_11': True,
-          'ignore_irrelevant': True
-        },
-        {
-          'type': 'regex',
-          'sensitivity': 750,
-          'name': None,
-          'expression': '[Dd]anni'
-        }
-      ]
-    },
-    'configuration': {
-      'skip_mime_types': [
-        'image/*'
-      ]
-    },
-    'progress': None
+    "destination": "pipeline_collector"
   },
-  'handle': {
-    'type': 'web',
-    'source': {
-      'type': 'web',
-      'url': 'https://www.magenta.dk/',
-      'sitemap': 'https://www.magenta.dk/sitemap.xml'
+  "source": None,
+  "handle": {
+    "type": "web",
+    "source": {
+      "type": "web",
+      "url": "https://www.magenta.dk/",
+      "sitemap": "https://www.magenta.dk/sitemap.xml"
     },
-    'path': 'medarbejdere/softwareudvikler/danni-data-als/',
-    'last_modified': '2020-03-13T17:14:30+0100'
+    "path": "jobopslag/praktikprogram/kommunikationspraktikant/",
+    "last_modified": None
   },
-  'matched': True,
-  'matches': [
-    {
-      'rule': {
-        'type': 'cpr',
-        'sensitivity': 1000,
-        'name': None,
-        'modulus_11': True,
-        'ignore_irrelevant': True
-      },
-      'matches': None
-    },
-    {
-      'rule': {
-        'type': 'regex',
-        'sensitivity': 750,
-        'name': None,
-        'expression': '[Dd]anni'
-      },
-      'matches': [
-        {
-          'offset': 920,
-          'match': 'Danni'
-        },
-        {
-          'offset': 929,
-          'match': 'Danni'
-        },
-        {
-          'offset': 956,
-          'match': 'danni'
-        },
-        {
-          'offset': 973,
-          'match': 'Danni'
-        },
-        {
-          'offset': 4477,
-          'match': 'Danni'
-        },
-        {
-          'offset': 4615,
-          'match': 'danni'
-        }
-      ]
-    }
-  ]
+  "message": "Resource check failed",
+  "missing": True
 }
 #+end_src
 
-"huset-magenta-it-leverandor-danmark-siden-1999/"
-#+begin_src json
-{
-  'scan_spec': {
-    'scan_tag': {
-      'time': '2021-03-20T13:44:11-05:00',
-      'user': 'test',
-      'scanner': {
-        'pk': 3,
-        'name': 'danni magenta'
-      },
-      'organisation': {
-        'name': 'OS2datascanner',
-        'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
-      },
-      'destination': 'pipeline_collector'
-    },
-    'source': {
-      'type': 'web',
-      'url': 'https://www.magenta.dk/',
-      'sitemap': 'https://www.magenta.dk/sitemap.xml'
-    },
-    'rule': {
-      'type': 'or',
-      'sensitivity': None,
-      'name': None,
-      'components': [
-        {
-          'type': 'cpr',
-          'sensitivity': 1000,
-          'name': None,
-          'modulus_11': True,
-          'ignore_irrelevant': True
-        },
-        {
-          'type': 'regex',
-          'sensitivity': 750,
-          'name': None,
-          'expression': '[Dd]anni'
-        }
-      ]
-    },
-    'configuration': {
-      'skip_mime_types': [
-        'image/*'
-      ]
-    },
-    'progress': None
-  },
-  'handle': {
-    'type': 'web',
-    'source': {
-      'type': 'web',
-      'url': 'https://www.magenta.dk/',
-      'sitemap': 'https://www.magenta.dk/sitemap.xml'
-    },
-    'path': 'huset-magenta-it-leverandor-danmark-siden-1999/',
-    'last_modified': '2021-03-10T09:26:33+0100'
-  },
-  'matched': True,
-  'matches': [
-    {
-      'rule': {
-        'type': 'cpr',
-        'sensitivity': 1000,
-        'name': None,
-        'modulus_11': True,
-        'ignore_irrelevant': True
-      },
-      'matches': None
-    },
-    {
-      'rule': {
-        'type': 'regex',
-        'sensitivity': 750,
-        'name': None,
-        'expression': '[Dd]anni'
-      },
-      'matches': [
-        {
-          'offset': 3192,
-          'match': 'Danni'
-        }
-      ]
-    }
-  ]
-}
-#+end_src
-
-
-queue = =os2ds_problems=
-"jobopslag/praktikprogram/kommunikationspraktikant/"
-#+begin_src json
-{
-  'scan_tag': {
-    'time': '2021-03-20T13:44:11-05:00',
-    'user': 'test',
-    'scanner': {
-      'pk': 3,
-      'name': 'danni magenta'
-    },
-    'organisation': {
-      'name': 'OS2datascanner',
-      'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
-    },
-    'destination': 'pipeline_collector'
-  },
-  'source': None,
-  'handle': {
-    'type': 'web',
-    'source': {
-      'type': 'web',
-      'url': 'https://www.magenta.dk/',
-      'sitemap': 'https://www.magenta.dk/sitemap.xml'
-    },
-    'path': 'jobopslag/praktikprogram/kommunikationspraktikant/',
-    'last_modified': None
-  },
-  'message': 'Resource check failed',
-  'missing': True
-}
-#+end_src
-
-Message imported by [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/src/os2datascanner/projects/report/reportapp/management/commands/pipeline_collector.py][report pipeline_collector.py]]
-
-"medarbejdere/softwareudvikler/danni-data-als/"
+** Message imported by [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/src/os2datascanner/projects/report/reportapp/management/commands/pipeline_collector.py][report pipeline_collector.py]]
+*** "medarbejdere/softwareudvikler/danni-data-als/"
 #+begin_src json
 {
     "matches": {
@@ -562,7 +566,7 @@ Message imported by [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/
     }
 }
 #+end_src
-"huset-magenta-it-leverandor-danmark-siden-1999/"
+*** "huset-magenta-it-leverandor-danmark-siden-1999/"
 #+begin_src json
 {
     "matches": {
@@ -696,7 +700,8 @@ Message imported by [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/
     }
 }
 #+end_src
-"jobopslag/praktikprogram/kommunikationspraktikant/"
+
+*** "jobopslag/praktikprogram/kommunikationspraktikant/"
 #+begin_src json
 {
     "problem": {
