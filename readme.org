@@ -238,6 +238,9 @@ https://redmine.magenta-aps.dk/issues/35210
 
 *** Håndtering af døde links, 35236
 https://redmine.magenta-aps.dk/issues/35236
+
+See [[file:os2ds/src/dead_links/readme.org][dead_links readme.org]] for example of json messages.
+
 *** Grafana alarm - overvågning af pipelinetrin, 42002
 https://redmine.magenta-aps.dk/issues/42002
 
@@ -427,6 +430,10 @@ psql -U postgres < db.dump
 # run with docker
 docker cp db.dump os2datascanner_db_1:/db.dump
 docker exec -ti os2datascanner_db_1 bash -c 'psql -U postgres < /db.dump'
+
+# OR
+docker cp dbc_admin.dump os2datascanner_db_1:/
+
 #+end_src
 
 Drop DB
