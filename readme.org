@@ -1,20 +1,41 @@
-* Content :TOC:
+* Content :TOC_3:
 - [[#os2ds][os2ds]]
   - [[#features][features]]
+    - [[#html-performance][html-performance]]
+    - [[#swedish-cpr][Swedish CPR]]
+    - [[#implementer-nave--og-adresseregler-34001][Implementer nave- og adresseregler, 34001]]
+    - [[#externe-link-til-websource-35210][Externe link til WebSource, 35210]]
+    - [[#håndtering-af-døde-links-35236][Håndtering af døde links, 35236]]
+    - [[#grafana-alarm---overvågning-af-pipelinetrin-42002][Grafana alarm - overvågning af pipelinetrin, 42002]]
   - [[#data][data]]
   - [[#structure][structure]]
+    - [[#engine][engine]]
   - [[#docker][docker]]
+    - [[#setup][setup]]
+    - [[#db][db]]
+    - [[#network][network]]
+    - [[#admin][admin]]
+    - [[#report][report]]
+    - [[#run-things][run things]]
+    - [[#backup-volumes][backup volumes]]
+    - [[#gunicorn][gunicorn]]
+    - [[#inspect-docker-settings][inspect docker settings]]
+    - [[#docker_overwriteyml][docker_overwrite.yml]]
   - [[#api][API]]
   - [[#app][app]]
+    - [[#multi-containers][multi containers]]
   - [[#promethues][promethues]]
   - [[#grafana][grafana]]
   - [[#local-setup][local setup]]
+    - [[#local-setup-without-docker][local setup without docker]]
+    - [[#poetry][poetry]]
 - [[#random][random]]
   - [[#pipeline-projekt-oversigt][Pipeline projekt oversigt]]
   - [[#get-requirementstxt][get requirements.txt]]
   - [[#debuging-of-docker-container-not-app-debuging][debug'ing of docker container (not app debug'ing)]]
   - [[#users-uidgid][users uid/gid]]
   - [[#git-hooks][git hooks]]
+    - [[#installation][Installation]]
 
 * os2ds
 
@@ -266,6 +287,9 @@ pdfcrop pipeline-architecture.pdf pipeline-architecture.pdf
 #+end_src
 
 ** docker
+Install docker-compose
+: pipx install docker-compose
+
 Start all docker containers
 : docker-compose up -d
 
@@ -280,8 +304,11 @@ http://localhost:8075/
 
 http://localhost:8070/openapi.yaml
 
+Default user and password for grafana is =admin= & =admin= as from [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/docker-compose.yml#L200][docker-compose.yml]]
+
 show listening ports
 : sudo ss -tulpn
+
 
 *** setup
 https://git.magenta.dk/os2datascanner/os2datascanner/-/blob/development/README.rst
@@ -313,7 +340,6 @@ pass for rabbitMQ is in =dev-environment/rabbitmq.env=
 RABBITMQ_DEFAULT_USER=os2ds
 RABBITMQ_DEFAULT_PASS=os2ds
 #+end_src
-Default user and password for grafana is =admin= & =admin= as from [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/docker-compose.yml#L200][docker-compose.yml]]
 
 From =django 3.0= we can use [[https://docs.djangoproject.com/en/3.0/ref/django-admin/#django-admin-createsuperuser][environment variables]]
 #+begin_src sh
@@ -409,7 +435,54 @@ dropdb -U postgres os2datascanner_report
 dropdb -U postgres os2datascanner_admin
 #+end_src
 
-[[file:os2ds/data/db/][DB backup files]]
+Various DB backup files can be found [[file:os2ds/data/db/][here]].
+
+*** network
+Inspect network and find the IPs of the containers
+#+begin_src sh
+docker network inspect os2datascanner_default | grep -B 3 '172.19.0'
+#+end_src
+
+Find connections to container
+#+begin_src sh
+docker exec -ti os2datascanner_db_1 /bin/bash
+
+# install ss
+apt update
+apt install iproute2
+
+ss -tupnl
+ss -natu
+#+end_src
+Thus for the =db= container, we might find that =admin_collector= and =report_collector= is connected, preventing us from restoring the =db=
+
+: docker stop os2datascanner_report_collector_1 os2datascanner_admin_collector_1
+
+*** admin
+[[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/src/os2datascanner/projects/admin/adminapp/models/scannerjobs/scanner_model.py][Scanner]] is the main class for scanner models. It's =run= method is responsible for submitting a message to the pipeline. The pipeline is given in [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/src/os2datascanner/projects/admin/default-settings.toml#L140-142][default-settings.toml]]
+#+begin_src conf
+AMQP_PIPELINE_TARGET = "os2ds_scan_specs"
+AMQP_CONVERSION_TARGET = "os2ds_conversions"
+AMQP_EVENTS_TARGET = "os2ds_events"
+#+end_src
+queue =scan_spec= is read by =explorer.py=.
+
+A =scan_spec= message might look like
+#+begin_src json
+{
+    "time": "2021-03-20T09:10:22-05:00",
+    "user": "test",
+    "scanner": {
+        "pk": 1,
+        "name": "danni magenta"
+    },
+    "destination": "pipeline_collector",
+    "organisation": {
+        "name": "paws org",
+        "uuid": "aa1aa88a-f249-4487-a166-00c4ca816ca7"
+    }
+}
+#+end_src
 
 *** report
 The docker container sets [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/docker/docker-entrypoint-django.sh][docker-entrypoint-django.sh]] as =ENTRYPOINT=.
@@ -555,7 +628,7 @@ docker inspect os2datascanner_db_1
     },
 #+end_src
 
-[[https://stackoverflow.com/a/23778599][Backup]]
+As per this [[https://stackoverflow.com/a/23778599][SO]]
 #+begin_src sh
 docker run --rm --volumes-from os2datascanner_db_1 -v $(pwd):/backup busybox tar cvf /backup/backup.tar /var/lib/postgresql/data
 #+end_src
@@ -597,6 +670,16 @@ docker inspect --format='{{json .Config}}' ID | jq
 docker ps -q | xargs docker inspect --format '{{.State.Pid}}, {{.ID}}, {{.Config.Image}}'
 #+end_src
 *** docker_overwrite.yml
+Be sure to have at least =docker-compose= version =1.28=, which supports [[https://docs.docker.com/compose/profiles/][profiles]]. Link or copy the [[file:os2ds/docs/docker-compose.override.yml][docker-compose.override.yml]] file
+: ln -s ~/git/magenta/os2ds/docs/docker-compose.override.yml ~/git/os2datascanner/
+
+Start the individual engine modules using the =debug= profile and *REMEMBER* to stop the =engine_worker= container.
+#+begin_src sh
+docker-compose --profile debug up -d
+docker-compose stop engine_worker
+#+end_src
+
+An example of =docker-compose.override.yml=, exposing the postgres port.
 #+begin_src yaml
 version: "3"
 services:

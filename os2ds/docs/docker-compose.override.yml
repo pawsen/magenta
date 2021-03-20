@@ -1,0 +1,57 @@
+version: "3"
+services:
+    # let postgres listen to host
+    db:
+      ports:
+        - "5432:5432"
+
+    engine_explorer:
+      command: explorer --enable-metrics --debug
+    engine_exporter:
+      command: exporter --enable-metrics --debug
+    engine_worker:
+      command: worker --enable-metrics --debug
+
+    # It seems it is not possible to have two entries for the same container.
+    # After `docker-compose --profile debug up -d` you must stop the worker,
+    # `docker-compose stop engine_worker`
+    # engine_worker:
+    #   profiles: ["debug"]
+    #   entrypoint: ["echo", "Service worker disabled"]
+
+    engine_processor:
+      profiles: ["debug"]
+      build:
+        context: .
+        dockerfile: docker/engine/Dockerfile
+        target: engine
+      command: processor --enable-metrics --debug
+      volumes:
+        - ./dev-environment/engine/dev-settings.toml:/user-settings.toml
+        - ./src/os2datascanner:/code/src/os2datascanner
+      depends_on:
+        - queue
+    engine_matcher:
+      profiles: ["debug"]
+      build:
+        context: .
+        dockerfile: docker/engine/Dockerfile
+        target: engine
+      command: matcher --enable-metrics --debug
+      volumes:
+        - ./dev-environment/engine/dev-settings.toml:/user-settings.toml
+        - ./src/os2datascanner:/code/src/os2datascanner
+      depends_on:
+        - queue
+    engine_tagger:
+      profiles: ["debug"]
+      build:
+        context: .
+        dockerfile: docker/engine/Dockerfile
+        target: engine
+      command: tagger --enable-metrics --debug
+      volumes:
+        - ./dev-environment/engine/dev-settings.toml:/user-settings.toml
+        - ./src/os2datascanner:/code/src/os2datascanner
+      depends_on:
+        - queue
