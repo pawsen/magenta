@@ -569,54 +569,7 @@ Start by stopping relevant containers
 docker-compose stop engine_worker engine_exporter engine_explorer admin_collector report_collector
 #+end_src
 
-hackish script to run engine in tmux.
-#+begin_src sh
-#!/usr/bin/env bash
-
-# set -euo pipefail
-
-OS2DS_PATH="$HOME/git/os2datascanner"
-OS2DS_ENGINE_USER_CONFIG_PATH=$OS2DS_PATH/dev-environment/engine/dev-settings.toml
-OS2DS_ADMIN_USER_CONFIG_PATH=$OS2DS_PATH/dev-environment/admin/dev-settings.toml
-OS2DS_REPORT_USER_CONFIG_PATH=$OS2DS_PATH/dev-environment/report/dev-settings.toml
-
-ENGINE_FLAGS="--debug"
-
-ENGINE_MODULES=('explorer' 'processor' 'matcher' 'tagger' 'exporter')
-DJANGO_MODULES=('report' 'admin')
-
-# Set Session Name
-SESSION="os2ds"
-SESSIONEXISTS=$(tmux list-sessions | grep $SESSION)
-
-# Only create tmux session if it doesn't already exist
-if [ "$SESSIONEXISTS" = "" ]
-then
-    # create new detached session
-    tmux new-session -d -s $SESSION -c "$OS2DS_PATH"
-    #tmux rename-window -t $SESSION "$module"
-
-    # index is given as: -t {session_name}:{window_index}.{pane_index}.
-    for module in "${ENGINE_MODULES[@]}"; do
-        tmux new-window -t $SESSION: -c $OS2DS_PATH -n "$module"
-        tmux send-keys -t "$module" "OS2DS_ENGINE_USER_CONFIG_PATH=$OS2DS_ENGINE_USER_CONFIG_PATH python -m os2datascanner.engine2.pipeline.run_stage $module $ENGINE_FLAGS" C-m
-    done
-
-    for module in "${DJANGO_MODULES[@]}"; do
-        #capitalize module
-        mod_cap=$(tr '/a-z/' '/A-Z/' <<< $module)
-        tmux new-window -t $SESSION: -c $OS2DS_PATH -n "$module"
-        tmux send-keys -t "$module" "OS2DS_${mod_cap}_USER_CONFIG_PATH=dev-environment/${module}/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.${module}.settings python -m os2datascanner.projects.${module}.manage pipeline_collector" C-m
-    done
-
-    # kill the first window
-    tmux kill-window -t $SESSION:1
-fi
-
-
-# Attach Session. with :, attach to last created/active window
-#tmux attach-session -t $SESSION:
-#+end_src
+[[file:os2ds/bin/os2_tmux.sh][hackish script to run engine in tmux.]]
 *** backup volumes
 The persistent data is stored in a mounted data volume.
 
