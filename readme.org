@@ -433,7 +433,8 @@ docker exec -ti os2datascanner_db_1 bash -c 'psql -U postgres < /db.dump'
 
 # OR
 docker cp dbc_admin.dump os2datascanner_db_1:/
-
+docker exec -ti os2datascanner_db_1 bash -c 'pg_restore -U postgres -c -d os2datascanner_admin dbc_admin.dump'
+docker exec -ti os2datascanner_db_1 bash -c 'pg_restore -U postgres -c -d os2datascanner_report dbc_report.dump'
 #+end_src
 
 Drop DB
