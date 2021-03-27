@@ -1,0 +1,23 @@
+#+TITLE: Readme
+
+This fails on =gitlab=
+#+begin_src python
+with PipelineTestRunner(read="os2ds_scan_specs", heartbeat=6000) as ppr:
+    ppr.channel.basic_consume("os2ds_scan_specs", result_received)
+#+end_src
+
+
+XXX: this does not work as intented, as this only update the instance value in this context and is not stored in the db.
+
+run runs jobs in 15min slots. Set the Scanner start time to `now + CRON_BUFFER_MINUTES`, to allow for small delays.
+#+begin_src python
+CRON_BUFFER_MINUTES = 5
+added_minutes = (15 * (self.magenta_scanner.pk %
+                        self.magenta_scanner.STARTTIME_QUARTERS) +
+                    CRON_BUFFER_MINUTES)
+added_hours = int(added_minutes / 60)
+added_minutes -= added_hours * 60
+added_time = timedelta(hours=added_hours, minutes=added_minutes)
+self.magenta_scanner.FIRST_START_TIME = \
+    (time_now().replace(second=0) - added_time).time()
+#+end_src

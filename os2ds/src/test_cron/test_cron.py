@@ -21,6 +21,19 @@ from os2datascanner.projects.admin.adminapp.models.sensitivity_level import \
     Sensitivity
 from os2datascanner.utils.system_utilities import time_now
 
+"""Test if cron runs scheduled models
+
+The models are only suppposed to run if they are scheduled (with
+django-recurrence) for today. Models are hardcoded to run at 18h00 (or later,
+depending on their `pk`). To circumvent this cron is supplied with `--now`,
+causing it to run models scheduled for 'today', no matter the time.
+
+The models are (only the first is supposed to run)
+- reccurence daily. ie. supposed to run with `--now`
+- recurrence weekly, byday tomorrow.
+- no recurrence
+
+"""
 
 class StopHandling(Exception):
     pass
