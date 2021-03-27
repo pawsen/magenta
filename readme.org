@@ -14,8 +14,6 @@
     - [[#setup][setup]]
     - [[#db][db]]
     - [[#network][network]]
-    - [[#admin][admin]]
-    - [[#report][report]]
     - [[#run-things][run things]]
     - [[#backup-volumes][backup volumes]]
     - [[#gunicorn][gunicorn]]
@@ -23,6 +21,9 @@
     - [[#docker_overwriteyml][docker_overwrite.yml]]
   - [[#api][API]]
   - [[#app][app]]
+    - [[#django][django]]
+    - [[#admin][admin]]
+    - [[#report][report]]
     - [[#multi-containers][multi containers]]
   - [[#promethues][promethues]]
   - [[#grafana][grafana]]
@@ -466,34 +467,6 @@ Thus for the =db= container, we might find that =admin_collector= and =report_co
 
 : docker stop os2datascanner_report_collector_1 os2datascanner_admin_collector_1
 
-*** admin
-[[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/src/os2datascanner/projects/admin/adminapp/models/scannerjobs/scanner_model.py][Scanner]] is the main class for scanner models. It's =run= method is responsible for submitting a message to the pipeline. The pipeline is given in [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/src/os2datascanner/projects/admin/default-settings.toml#L140-142][default-settings.toml]]
-#+begin_src conf
-AMQP_PIPELINE_TARGET = "os2ds_scan_specs"
-AMQP_CONVERSION_TARGET = "os2ds_conversions"
-AMQP_EVENTS_TARGET = "os2ds_events"
-#+end_src
-queue =scan_spec= is read by =explorer.py=.
-
-A =scan_spec= message might look like
-#+begin_src json
-{
-    "time": "2021-03-20T09:10:22-05:00",
-    "user": "test",
-    "scanner": {
-        "pk": 1,
-        "name": "danni magenta"
-    },
-    "destination": "pipeline_collector",
-    "organisation": {
-        "name": "paws org",
-        "uuid": "aa1aa88a-f249-4487-a166-00c4ca816ca7"
-    }
-}
-#+end_src
-
-*** report
-The docker container sets [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/docker/docker-entrypoint-django.sh][docker-entrypoint-django.sh]] as =ENTRYPOINT=.
 *** run things
 The settings are copied into the containers from =./dev_enviroment/admin/dev-settings.toml=, =./dev_enviroment/admin/dev-settings.toml= and =./dev-environment/rabbitmq.env=
 
@@ -688,6 +661,94 @@ Follow the logs
 docker-compose logs --follow api_server
 #+end_src
 ** app
+*** django
+
+**** docs
+For django 2.2
+[[https://ccbv.co.uk/projects/django/2.2/][Classy Class-Based Views]]
+[[https://docs.djangoproject.com/en/2.2/][docs.djangoproject.com]]
+
+**** django_extensions
+[[https://github.com/django-extensions/django-extensions][django_extensions]] is a collection of extensions providing extra functionality to the =manage.py= command.
+
+To generate a map of the database like [[file:os2ds/docs/report_database.png][report_database.png]], =graphviz= is required
+#+begin_src sh
+sudo apt-get install graphviz graphviz-dev
+pip install django_extensions pygraphviz
+#+end_src
+
+Then add =django_extensions= to =INSTALLED_APPS= list in =src/os2datascanner/projects/report/default-settings.toml=. If added to =dev-environment/report/dev-settings.toml=, the list in =default-settings.toml= will be overwritten.
+
+Useful extension commands
+#+begin_src sh
+export OS2DS_REPORT_USER_CONFIG_PATH=~/git/os2datascanner/dev-environment/report/dev-settings.toml
+./manage.py graph_models -a -o report_database.png
+./manage.py show_urls
+./manage.py shell_plus  # auto-import all models
+./manage.py print_settings
+#+end_src
+
+See all available commands with
+: ./manage.py
+
+**** debug
+How to use developer tools
+https://developer.mozilla.org/en-US/docs/Tools/Migrating_from_Firebug
+
+#+begin_src python
+from django.http import HttpResponse
+
+def default(request):
+    return HttpResponse("Foo says %d" % ni, mimetype="text/plain")
+#+end_src
+
+Maybe useful
+- https://github.com/jazzband/django-debug-toolbar
+- https://github.com/edoburu/django-debugtools
+
+***** template tags
+#+begin_src python
+@register.filter
+def pdb(element):
+    import pdb; pdb.set_trace()
+    return element
+#+end_src
+
+**** migrations
+migrate(apply) between database layouts
+#+begin_src sh
+./manage.py migrate os2datascanner_report 0025_documentreport_created_timestamp
+./manage.py migrate os2datascanner_report
+#+end_src
+
+*** admin
+[[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/src/os2datascanner/projects/admin/adminapp/models/scannerjobs/scanner_model.py][Scanner]] is the main class for scanner models. It's =run= method is responsible for submitting a message to the pipeline. The pipeline is given in [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/src/os2datascanner/projects/admin/default-settings.toml#L140-142][default-settings.toml]]
+#+begin_src conf
+AMQP_PIPELINE_TARGET = "os2ds_scan_specs"
+AMQP_CONVERSION_TARGET = "os2ds_conversions"
+AMQP_EVENTS_TARGET = "os2ds_events"
+#+end_src
+queue =scan_spec= is read by =explorer.py=.
+
+A =scan_spec= message might look like
+#+begin_src json
+{
+    "time": "2021-03-20T09:10:22-05:00",
+    "user": "test",
+    "scanner": {
+        "pk": 1,
+        "name": "danni magenta"
+    },
+    "destination": "pipeline_collector",
+    "organisation": {
+        "name": "paws org",
+        "uuid": "aa1aa88a-f249-4487-a166-00c4ca816ca7"
+    }
+}
+#+end_src
+
+*** report
+The docker container sets [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/development/docker/docker-entrypoint-django.sh][docker-entrypoint-django.sh]] as =ENTRYPOINT=.
 *** multi containers
 Open http://localhost:8020 and http://localhost:8040 (admin and report app) in different [[https://support.mozilla.org/en-US/kb/containers][Firefox multi-containers]].
 This allows us to be logged in both instances.

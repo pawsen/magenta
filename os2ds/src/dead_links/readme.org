@@ -1,4 +1,6 @@
 * Content :toc_3:
+- [[#explorer][explorer]]
+- [[#httppy][http.py]]
 - [[#json-messages][json messages]]
   - [[#messages-received-by-exporterpy][Messages received by exporter.py]]
     - [[#queue--os2ds_matches][queue = =os2ds_matches=]]
@@ -7,6 +9,84 @@
     - [[#medarbejderesoftwareudviklerdanni-data-als]["medarbejdere/softwareudvikler/danni-data-als/"]]
     - [[#huset-magenta-it-leverandor-danmark-siden-1999]["huset-magenta-it-leverandor-danmark-siden-1999/"]]
     - [[#jobopslagpraktikprogramkommunikationspraktikant]["jobopslag/praktikprogram/kommunikationspraktikant/"]]
+
+* explorer
+
+From =explorer.py=
+#+begin_example
+os2ds_scan_specs {'scan_tag': {'time': '2021-03-22T10:17:32-05:00', 'user': 'test', 'scanner': {'pk': 4, 'name': 'localhost'}, 'organisation': {'name': 'OS2datascanner', 'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'}, 'destination': 'pipeline_collector'}, 'source': {'type': 'web', 'url': 'http://127.0.0.1:64346', 'sitemap': 'http://127.0.0.1:64346/sitemap.xml'}, 'rule': {'type': 'and', 'sensitivity': None, 'name': None, 'components': [{'type': 'last-modified', 'sensitivity': None, 'name': None, 'after': '2021-03-22T15:15:00+0000'}, {'type': 'or', 'sensitivity': None, 'name': None, 'components': [{'type': 'cpr', 'sensitivity': 1000, 'name': None, 'modulus_11': True, 'ignore_irrelevant': True}, {'type': 'regex', 'sensitivity': 750, 'name': None, 'expression': '[Dd]anni'}]}]}, 'configuration': {'skip_mime_types': ['image/*']}, 'progress': None}
+handle	 http://127.0.0.1:64346/
+handle_cens http://127.0.0.1:64346/
+referer set()
+handle	 http://127.0.0.1:64346//vstkom.png
+handle_cens http://127.0.0.1:64346//vstkom.png
+referer {'http://127.0.0.1:64346/', 'http://127.0.0.1:64346//'}
+handle	 http://127.0.0.1:64346//kontakt.html
+handle_cens http://127.0.0.1:64346//kontakt.html
+referer {'http://127.0.0.1:64346/', 'http://127.0.0.1:64346//'}
+#+end_example
+
+* http.py
+            if n_scheme == scheme and n_netloc == netloc:
+    here: None
+  ▸ known_addresses: {<os2datascanner.engi...016...
+    lm_hint: None
+    n_netloc: 'localhost:64346'
+    n_path: '/'
+    n_query: ''
+    n_scheme: 'http'
+    netloc: 'localhost:64346'
+    new_url: 'http://localhost:64346/'
+  ▸ referrer_map: {'http://localhost:64346/':...
+    scheme: 'http'
+  ▸ self: <os2datascanner.engine2.mod...
+  ▸ to_visit: [<os2datascanner.engi...016...
+
+      here: None
+  ▸ known_addresses: {<os2datascanner.engi...ac9...
+    lm_hint: None
+    n_netloc: 'localhost:64346'
+    n_path: '/kontakt.html'
+    n_query: ''
+    n_scheme: 'http'
+    netloc: 'localhost:64346'
+    new_url: 'http://localhost:64346/kon...
+  ▸ referrer_map: {'http://localhost:64346/':...
+    scheme: 'http'
+  ▸ self: <os2datascanner.engine2.mod...
+  ▸ to_visit: [<os2datascanner.engi...ac9...
+
+      here: 'http://localhost:64346/'
+  ▸ known_addresses: {<os2datascanner.engi...8ee...
+    lm_hint: None
+    n_netloc: 'localhost:64346'
+    n_path: '/kontakt.html'
+    n_query: ''
+    n_scheme: 'http'
+    netloc: 'localhost:64346'
+    new_url: 'http://localhost:64346/kon...
+  ▸ referrer_map: {'http://localhost:64346/':...
+    scheme: 'http'
+  ▸ self: <os2datascanner.engine2.mod...
+  ▸ to_visit: [<os2datascanner.engi...8ef...
+    _: ''
+
+
+    here: 'http://localhost:64346/'
+  ▸ known_addresses: {<os2datascanner.engi...155...
+    lm_hint: None
+    n_netloc: 'localhost:64346'
+    n_path: '/side.html'
+    n_query: ''
+    n_scheme: 'http'
+    netloc: 'localhost:64346'
+    new_url: 'http://localhost:64346/sid...
+  ▸ referrer_map: {'http://localhost:64346/':...
+    scheme: 'http'
+  ▸ self: <os2datascanner.engine2.mod...
+  ▸ to_visit: [<os2datascanner.engi...167...
+    _: ''
+
 
 * json messages
 Use [[http://jsonviewer.stack.hu/][http://jsonviewer.stack.hu/]] to convert between formatted and "no whitespace" layout.
