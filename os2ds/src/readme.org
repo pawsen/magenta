@@ -1,0 +1,1335 @@
+#+TITLE: Readme
+* Content :TOC_3:
+- [[#understanding-last_modified-rule][Understanding =last_modified= rule]]
+  - [[#no-timestap-checking][No =timestap= checking]]
+    - [[#explorer][explorer]]
+    - [[#processor][processor]]
+    - [[#matcher][matcher]]
+    - [[#tagger][tagger]]
+    - [[#exporter][exporter]]
+
+* Understanding =last_modified= rule
+
+** No =timestap= checking
+*** explorer
+
+Received from [[file:~/git/os2datascanner/src/os2datascanner/projects/admin/adminapp/models/scannerjobs/scanner_model.py::with PikaPipelineSender(write={queue for queue, _ in outbox}) as pps:
+ for queue, message in outbox:
+ pps.publish_message(queue, message.to_json_object())][scanner-model.py]] by =scan_spec= queue
+#+begin_src js
+{
+  "scan_tag": {
+    "time": "2021-04-02T03:24:38-05:00",
+    "user": "test",
+    "scanner": {
+      "pk": 11,
+      "name": "localhost filscanner"
+    },
+    "organisation": {
+      "name": "OS2datascanner",
+      "uuid": "8c27d4fc-a425-447d-b276-8f717263fa73"
+    },
+    "destination": "pipeline_collector"
+  },
+  "source": {
+    "type": "smbc",
+    "unc": "//127.0.0.1/os2-data",
+    "user": "guest",
+    "password": "guest",
+    "domain": "",
+    "driveletter": ""
+  },
+  "rule": {
+    "type": "or",
+    "sensitivity": None,
+    "name": None,
+    "components": [
+      {
+        "type": "cpr",
+        "sensitivity": 250,
+        "name": None,
+        "modulus_11": True,
+        "ignore_irrelevant": True
+      },
+      {
+        "type": "regex",
+        "sensitivity": 750,
+        "name": None,
+        "expression": "[Dd]anni"
+      }
+    ]
+  },
+  "configuration": {
+    "skip_mime_types": [
+      "image/*"
+    ]
+  },
+  "progress": None
+}
+#+end_src
+
+yielded from explorer to =conversion=
+#+begin_src js
+{
+  'scan_spec': {
+    'scan_tag': {
+      'time': '2021-04-02T04:34:50-05:00',
+      'user': 'test',
+      'scanner': {
+        'pk': 11,
+        'name': 'localhost filscanner'
+      },
+      'organisation': {
+        'name': 'OS2datascanner',
+        'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
+      },
+      'destination': 'pipeline_collector'
+    },
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'rule': {
+      'type': 'or',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'cpr',
+          'sensitivity': 250,
+          'name': None,
+          'modulus_11': True,
+          'ignore_irrelevant': True
+        },
+        {
+          'type': 'regex',
+          'sensitivity': 750,
+          'name': None,
+          'expression': '[Dd]anni'
+        }
+      ]
+    },
+    'configuration': {
+      'skip_mime_types': [
+        'image/*'
+      ]
+    },
+    'progress': None
+  },
+  'handle': {
+    'type': 'smbc',
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'path': 'false_positive.txt'
+  },
+  'progress': {
+    'rule': {
+      'type': 'or',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'cpr',
+          'sensitivity': 250,
+          'name': None,
+          'modulus_11': True,
+          'ignore_irrelevant': True
+        },
+        {
+          'type': 'regex',
+          'sensitivity': 750,
+          'name': None,
+          'expression': '[Dd]anni'
+        }
+      ]
+    },
+    'matches': [
+
+    ]
+  }
+}
+#+end_src
+*** processor
+
+**** 1 rule
+Received from explorer by =conversion= queue
+#+begin_src js
+{
+  'scan_spec': {
+    'scan_tag': {
+      'time': '2021-04-02T04:34:50-05:00',
+      'user': 'test',
+      'scanner': {
+        'pk': 11,
+        'name': 'localhost filscanner'
+      },
+      'organisation': {
+        'name': 'OS2datascanner',
+        'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
+      },
+      'destination': 'pipeline_collector'
+    },
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'rule': {
+      'type': 'or',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'cpr',
+          'sensitivity': 250,
+          'name': None,
+          'modulus_11': True,
+          'ignore_irrelevant': True
+        },
+        {
+          'type': 'regex',
+          'sensitivity': 750,
+          'name': None,
+          'expression': '[Dd]anni'
+        }
+      ]
+    },
+    'configuration': {
+      'skip_mime_types': [
+        'image/*'
+      ]
+    },
+    'progress': None
+  },
+  'handle': {
+    'type': 'smbc',
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'path': 'false_positive.txt'
+  },
+  'progress': {
+    'rule': {
+      'type': 'and',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'last-modified',
+          'sensitivity': None,
+          'name': None,
+          'after': '2021-03-31T13:45:26+0000'
+        },
+        {
+          'type': 'or',
+          'sensitivity': None,
+          'name': None,
+          'components': [
+            {
+              'type': 'cpr',
+              'sensitivity': 250,
+              'name': None,
+              'modulus_11': True,
+              'ignore_irrelevant': True
+            },
+            {
+              'type': 'regex',
+              'sensitivity': 750,
+              'name': None,
+              'expression': '[Dd]anni'
+            }
+          ]
+        }
+      ]
+    },
+    'matches': [
+
+    ]
+  }
+}
+#+end_src
+
+Yielded to =representation= queue
+#+begin_src js
+{
+  'scan_spec': {
+    'scan_tag': {
+      'time': '2021-04-02T04:34:50-05:00',
+      'user': 'test',
+      'scanner': {
+        'pk': 11,
+        'name': 'localhost filscanner'
+      },
+      'organisation': {
+        'name': 'OS2datascanner',
+        'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
+      },
+      'destination': 'pipeline_collector'
+    },
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'rule': {
+      'type': 'or',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'cpr',
+          'sensitivity': 250,
+          'name': None,
+          'modulus_11': True,
+          'ignore_irrelevant': True
+        },
+        {
+          'type': 'regex',
+          'sensitivity': 750,
+          'name': None,
+          'expression': '[Dd]anni'
+        }
+      ]
+    },
+    'configuration': {
+      'skip_mime_types': [
+        'image/*'
+      ]
+    },
+    'progress': None
+  },
+  'handle': {
+    'type': 'smbc',
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'path': 'false_positive.txt'
+  },
+  'progress': {
+    'rule': {
+      'type': 'and',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'last-modified',
+          'sensitivity': None,
+          'name': None,
+          'after': '2021-03-31T13:45:26+0000'
+        },
+        {
+          'type': 'or',
+          'sensitivity': None,
+          'name': None,
+          'components': [
+            {
+              'type': 'cpr',
+              'sensitivity': 250,
+              'name': None,
+              'modulus_11': True,
+              'ignore_irrelevant': True
+            },
+            {
+              'type': 'regex',
+              'sensitivity': 750,
+              'name': None,
+              'expression': '[Dd]anni'
+            }
+          ]
+        }
+      ]
+    },
+    'matches': [
+
+    ]
+  },
+  'representations': {
+    'last-modified': '2021-03-31T14:16:53+0200'
+  }
+}
+#+end_src
+
+**** 2 rule
+
+Received from explorer by =conversion= queue
+#+begin_src js
+{
+  'scan_spec': {
+    'scan_tag': {
+      'time': '2021-04-02T04:34:50-05:00',
+      'user': 'test',
+      'scanner': {
+        'pk': 11,
+        'name': 'localhost filscanner'
+      },
+      'organisation': {
+        'name': 'OS2datascanner',
+        'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
+      },
+      'destination': 'pipeline_collector'
+    },
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'rule': {
+      'type': 'or',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'cpr',
+          'sensitivity': 250,
+          'name': None,
+          'modulus_11': True,
+          'ignore_irrelevant': True
+        },
+        {
+          'type': 'regex',
+          'sensitivity': 750,
+          'name': None,
+          'expression': '[Dd]anni'
+        }
+      ]
+    },
+    'configuration': {
+      'skip_mime_types': [
+        'image/*'
+      ]
+    },
+    'progress': None
+  },
+  'handle': {
+    'type': 'smbc',
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'path': 'false_positive.txt'
+  },
+  'progress': {
+    'rule': {
+      'type': 'or',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'cpr',
+          'sensitivity': 250,
+          'name': None,
+          'modulus_11': True,
+          'ignore_irrelevant': True
+        },
+        {
+          'type': 'regex',
+          'sensitivity': 750,
+          'name': None,
+          'expression': '[Dd]anni'
+        }
+      ]
+    },
+    'matches': [
+
+    ]
+  }
+}
+#+end_src
+
+Yielded to =representation= queue
+#+begin_src js
+{
+  'scan_spec': {
+    'scan_tag': {
+      'time': '2021-04-02T04:34:50-05:00',
+      'user': 'test',
+      'scanner': {
+        'pk': 11,
+        'name': 'localhost filscanner'
+      },
+      'organisation': {
+        'name': 'OS2datascanner',
+        'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
+      },
+      'destination': 'pipeline_collector'
+    },
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'rule': {
+      'type': 'or',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'cpr',
+          'sensitivity': 250,
+          'name': None,
+          'modulus_11': True,
+          'ignore_irrelevant': True
+        },
+        {
+          'type': 'regex',
+          'sensitivity': 750,
+          'name': None,
+          'expression': '[Dd]anni'
+        }
+      ]
+    },
+    'configuration': {
+      'skip_mime_types': [
+        'image/*'
+      ]
+    },
+    'progress': None
+  },
+  'handle': {
+    'type': 'smbc',
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'path': 'false_positive.txt'
+  },
+  'progress': {
+    'rule': {
+      'type': 'or',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'cpr',
+          'sensitivity': 250,
+          'name': None,
+          'modulus_11': True,
+          'ignore_irrelevant': True
+        },
+        {
+          'type': 'regex',
+          'sensitivity': 750,
+          'name': None,
+          'expression': '[Dd]anni'
+        }
+      ]
+    },
+    'matches': [
+
+    ]
+  },
+  'representations': {
+    'text': '\nDanni Als\nValid cpr: 1111111118\nInvalid cpr: 1111111119\n\n### VALID CPRs\n[...], "HOST/ARB08B200319.intra.coop"], "uSNChanged": [111111-1118], "uSNCreated": [662950], "userAccountControl": [[...]\n\n\n[...]oop"], "uSNChanged": [111111-1118], "uSNCreated": [111111-1118], "userAccountControl": [4096], "userCertificate"[...]\n\n\n\n[...]730400 0 0 WET} {111111-1118 3600 1 WEST} {111111-1118 0 0 WET} {111111-1118 3600 1 WEST} {213762[...]\n\n\n[...]16768 0 LMT} {-111111-1118 -18000 0 ACT} {-111111-1118 -14400 1 ACST} {-111111-1118 -18000 0 ACT} [...]\n\n\n### INVALID CPRs\n[...] 31500 0 CWST} {111111-1119 35100 1 CWST} {111111-1119 31500 0 CWST} {111111-1119 35100 1 CWST} {[...]\n\n\n[...]l) { {-9223372036854775808 38388 0 LMT} {-111111-1119 39600 0 SBT} } [...]\n\n\n[...]25200 1 NOVST} {111111-1119 21600 0 NOVT} {111111-1119 25200 0 NOVT} } [...]\n'
+  }
+}
+#+end_src
+
+*** matcher
+**** 1. rule
+Received from processor by =representation= queue
+
+#+begin_src js
+{
+  'scan_spec': {
+    'scan_tag': {
+      'time': '2021-04-02T04:34:50-05:00',
+      'user': 'test',
+      'scanner': {
+        'pk': 11,
+        'name': 'localhost filscanner'
+      },
+      'organisation': {
+        'name': 'OS2datascanner',
+        'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
+      },
+      'destination': 'pipeline_collector'
+    },
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'rule': {
+      'type': 'or',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'cpr',
+          'sensitivity': 250,
+          'name': None,
+          'modulus_11': True,
+          'ignore_irrelevant': True
+        },
+        {
+          'type': 'regex',
+          'sensitivity': 750,
+          'name': None,
+          'expression': '[Dd]anni'
+        }
+      ]
+    },
+    'configuration': {
+      'skip_mime_types': [
+        'image/*'
+      ]
+    },
+    'progress': None
+  },
+  'handle': {
+    'type': 'smbc',
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'path': 'false_positive.txt'
+  },
+  'progress': {
+    'rule': {
+      'type': 'and',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'last-modified',
+          'sensitivity': None,
+          'name': None,
+          'after': '2021-03-31T13:45:26+0000'
+        },
+        {
+          'type': 'or',
+          'sensitivity': None,
+          'name': None,
+          'components': [
+            {
+              'type': 'cpr',
+              'sensitivity': 250,
+              'name': None,
+              'modulus_11': True,
+              'ignore_irrelevant': True
+            },
+            {
+              'type': 'regex',
+              'sensitivity': 750,
+              'name': None,
+              'expression': '[Dd]anni'
+            }
+          ]
+        }
+      ]
+    },
+    'matches': [
+
+    ]
+  },
+  'representations': {
+    'last-modified': '2021-03-31T14:16:53+0200'
+  }
+}
+#+end_src
+
+yielded to =processor= by =conversion= queue
+#+begin_src js
+{
+  'scan_spec': {
+    'scan_tag': {
+      'time': '2021-04-02T04:34:50-05:00',
+      'user': 'test',
+      'scanner': {
+        'pk': 11,
+        'name': 'localhost filscanner'
+      },
+      'organisation': {
+        'name': 'OS2datascanner',
+        'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
+      },
+      'destination': 'pipeline_collector'
+    },
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'rule': {
+      'type': 'or',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'cpr',
+          'sensitivity': 250,
+          'name': None,
+          'modulus_11': True,
+          'ignore_irrelevant': True
+        },
+        {
+          'type': 'regex',
+          'sensitivity': 750,
+          'name': None,
+          'expression': '[Dd]anni'
+        }
+      ]
+    },
+    'configuration': {
+      'skip_mime_types': [
+        'image/*'
+      ]
+    },
+    'progress': None
+  },
+  'handle': {
+    'type': 'smbc',
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'path': 'false_positive.txt'
+  },
+  'matched': False,
+  'matches': [
+    {
+      'rule': {
+        'type': 'last-modified',
+        'sensitivity': None,
+        'name': None,
+        'after': '2021-03-31T13:45:26+0000'
+      },
+      'matches': None
+    }
+  ]
+}
+#+end_src
+**** 2. rule
+
+Received from processor by =representation= queue
+#+begin_src js
+{
+  'scan_spec': {
+    'scan_tag': {
+      'time': '2021-04-02T04:34:50-05:00',
+      'user': 'test',
+      'scanner': {
+        'pk': 11,
+        'name': 'localhost filscanner'
+      },
+      'organisation': {
+        'name': 'OS2datascanner',
+        'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
+      },
+      'destination': 'pipeline_collector'
+    },
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'rule': {
+      'type': 'or',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'cpr',
+          'sensitivity': 250,
+          'name': None,
+          'modulus_11': True,
+          'ignore_irrelevant': True
+        },
+        {
+          'type': 'regex',
+          'sensitivity': 750,
+          'name': None,
+          'expression': '[Dd]anni'
+        }
+      ]
+    },
+    'configuration': {
+      'skip_mime_types': [
+        'image/*'
+      ]
+    },
+    'progress': None
+  },
+  'handle': {
+    'type': 'smbc',
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'path': 'false_positive.txt'
+  },
+  'progress': {
+    'rule': {
+      'type': 'or',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'cpr',
+          'sensitivity': 250,
+          'name': None,
+          'modulus_11': True,
+          'ignore_irrelevant': True
+        },
+        {
+          'type': 'regex',
+          'sensitivity': 750,
+          'name': None,
+          'expression': '[Dd]anni'
+        }
+      ]
+    },
+    'matches': [
+
+    ]
+  },
+  'representations': {
+    'text': '\nDanni Als\nValid cpr: 1111111118\nInvalid cpr: 1111111119\n\n### VALID CPRs\n[...], "HOST/ARB08B200319.intra.coop"], "uSNChanged": [111111-1118], "uSNCreated": [662950], "userAccountControl": [[...]\n\n\n[...]oop"], "uSNChanged": [111111-1118], "uSNCreated": [111111-1118], "userAccountControl": [4096], "userCertificate"[...]\n\n\n\n[...]730400 0 0 WET} {111111-1118 3600 1 WEST} {111111-1118 0 0 WET} {111111-1118 3600 1 WEST} {213762[...]\n\n\n[...]16768 0 LMT} {-111111-1118 -18000 0 ACT} {-111111-1118 -14400 1 ACST} {-111111-1118 -18000 0 ACT} [...]\n\n\n### INVALID CPRs\n[...] 31500 0 CWST} {111111-1119 35100 1 CWST} {111111-1119 31500 0 CWST} {111111-1119 35100 1 CWST} {[...]\n\n\n[...]l) { {-9223372036854775808 38388 0 LMT} {-111111-1119 39600 0 SBT} } [...]\n\n\n[...]25200 1 NOVST} {111111-1119 21600 0 NOVT} {111111-1119 25200 0 NOVT} } [...]\n'
+  }
+}
+#+end_src
+
+
+yielded to =exporter= by =matches= queue
+#+begin_src js
+{
+  'scan_spec': {
+    'scan_tag': {
+      'time': '2021-04-02T04:34:50-05:00',
+      'user': 'test',
+      'scanner': {
+        'pk': 11,
+        'name': 'localhost filscanner'
+      },
+      'organisation': {
+        'name': 'OS2datascanner',
+        'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
+      },
+      'destination': 'pipeline_collector'
+    },
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'rule': {
+      'type': 'or',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'cpr',
+          'sensitivity': 250,
+          'name': None,
+          'modulus_11': True,
+          'ignore_irrelevant': True
+        },
+        {
+          'type': 'regex',
+          'sensitivity': 750,
+          'name': None,
+          'expression': '[Dd]anni'
+        }
+      ]
+    },
+    'configuration': {
+      'skip_mime_types': [
+        'image/*'
+      ]
+    },
+    'progress': None
+  },
+  'handle': {
+    'type': 'smbc',
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'path': 'false_positive.txt'
+  },
+  'matched': True,
+  'matches': [
+    {
+      'rule': {
+        'type': 'cpr',
+        'sensitivity': 250,
+        'name': None,
+        'modulus_11': True,
+        'ignore_irrelevant': True
+      },
+      'matches': [
+        {
+          'offset': 22,
+          'match': '1111XXXXXX',
+          'context': '\nDanni Als\nValid cpr: XXXXXX-XXXX\nInvalid cpr: XXXXXX-XXXX\n\n### VALID CPRs\n[...], "H',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 128,
+          'match': '1111XXXXXX',
+          'context': ', "HOST/ARB08B200319.intra.coop"], "uSNChanged": [XXXXXX-XXXX], "uSNCreated": [662950], "userAccountControl": [',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 224,
+          'match': '1111XXXXXX',
+          'context': 'ountControl": [[...]\n\n\n[...]oop"], "uSNChanged": [XXXXXX-XXXX], "uSNCreated": [XXXXXX-XXXX], "userAccountContro',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 253,
+          'match': '1111XXXXXX',
+          'context': 'op"], "uSNChanged": [XXXXXX-XXXX], "uSNCreated": [XXXXXX-XXXX], "userAccountControl": [4096], "userCertificate"',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 345,
+          'match': '1111XXXXXX',
+          'context': ', "userCertificate"[...]\n\n\n\n[...]730400 0 0 WET} {XXXXXX-XXXX 3600 1 WEST} {XXXXXX-XXXX 0 0 WET} {XXXXXX-XXXX 3',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 371,
+          'match': '1111XXXXXX',
+          'context': '\n\n[...]730400 0 0 WET} {XXXXXX-XXXX 3600 1 WEST} {XXXXXX-XXXX 0 0 WET} {XXXXXX-XXXX 3600 1 WEST} {213762[...]\n\n',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 393,
+          'match': '1111XXXXXX',
+          'context': ' {XXXXXX-XXXX 3600 1 WEST} {XXXXXX-XXXX 0 0 WET} {XXXXXX-XXXX 3600 1 WEST} {213762[...]\n\n\n[...]16768 0 LMT} {-1',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 453,
+          'match': '1111XXXXXX',
+          'context': '8 3600 1 WEST} {213762[...]\n\n\n[...]16768 0 LMT} {-XXXXXX-XXXX -18000 0 ACT} {-XXXXXX-XXXX -14400 1 ACST} {-1111',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 481,
+          'match': '1111XXXXXX',
+          'context': '\n\n[...]16768 0 LMT} {-XXXXXX-XXXX -18000 0 ACT} {-XXXXXX-XXXX -14400 1 ACST} {-XXXXXX-XXXX -18000 0 ACT} [...]\n',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 510,
+          'match': '1111XXXXXX',
+          'context': '1118 -18000 0 ACT} {-XXXXXX-XXXX -14400 1 ACST} {-XXXXXX-XXXX -18000 0 ACT} [...]\n\n\n### INVALID CPRs\n[...] 3150',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        }
+      ]
+    }
+  ]
+}
+#+end_src
+*** tagger
+
+Received from =matcher= by =handles= queue
+#+begin_src js
+{
+  'scan_tag': {
+    'time': '2021-04-02T04:34:50-05:00',
+    'user': 'test',
+    'scanner': {
+      'pk': 11,
+      'name': 'localhost filscanner'
+    },
+    'organisation': {
+      'name': 'OS2datascanner',
+      'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
+    },
+    'destination': 'pipeline_collector'
+  },
+  'handle': {
+    'type': 'smbc',
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'path': 'false_positive.txt'
+  }
+}
+#+end_src
+
+Which resulted in
+
+#+begin_src sh
+warning: Resource.get_metadata: continuing after unexpected exception
+Traceback (most recent call last):
+  File "/home/paw/git/os2datascanner/src/os2datascanner/engine2/model/core/resource.py", line 66, in get_metadata
+    for k, v in self._generate_metadata():
+  File "/home/paw/git/os2datascanner/src/os2datascanner/engine2/model/smbc.py", line 174, in _generate_metadata
+    yield "filesystem-owner-sid", self.get_owner_sid()
+  File "/home/paw/git/os2datascanner/src/os2datascanner/engine2/model/smbc.py", line 226, in get_owner_sid
+    return self.get_xattr("system.nt_sec_desc.owner")
+  File "/home/paw/git/os2datascanner/src/os2datascanner/engine2/model/smbc.py", line 202, in get_xattr
+    return run_with_backoff(_get_xattr, smbc.TimedOutError)[0]
+  File "/home/paw/git/os2datascanner/src/os2datascanner/engine2/utilities/backoff.py", line 29, in run_with_backoff
+    return (op(), dict(
+  File "/home/paw/git/os2datascanner/src/os2datascanner/engine2/model/smbc.py", line 201, in _get_xattr
+    return context.getxattr(self._make_url(), attr)
+RuntimeError: (61, 'No data available')
+#+end_src
+*** exporter
+Received from =matcher= by =matched= queue
+#+begin_src js
+{
+  'scan_spec': {
+    'scan_tag': {
+      'time': '2021-04-02T04:34:50-05:00',
+      'user': 'test',
+      'scanner': {
+        'pk': 11,
+        'name': 'localhost filscanner'
+      },
+      'organisation': {
+        'name': 'OS2datascanner',
+        'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
+      },
+      'destination': 'pipeline_collector'
+    },
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'rule': {
+      'type': 'or',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'cpr',
+          'sensitivity': 250,
+          'name': None,
+          'modulus_11': True,
+          'ignore_irrelevant': True
+        },
+        {
+          'type': 'regex',
+          'sensitivity': 750,
+          'name': None,
+          'expression': '[Dd]anni'
+        }
+      ]
+    },
+    'configuration': {
+      'skip_mime_types': [
+        'image/*'
+      ]
+    },
+    'progress': None
+  },
+  'handle': {
+    'type': 'smbc',
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'path': 'false_positive.txt'
+  },
+  'matched': False,
+  'matches': [
+    {
+      'rule': {
+        'type': 'last-modified',
+        'sensitivity': None,
+        'name': None,
+        'after': '2021-03-31T13:45:26+0000'
+      },
+      'matches': None
+    }
+  ]
+}os2ds_matches{
+  'scan_spec': {
+    'scan_tag': {
+      'time': '2021-04-02T04:34:50-05:00',
+      'user': 'test',
+      'scanner': {
+        'pk': 11,
+        'name': 'localhost filscanner'
+      },
+      'organisation': {
+        'name': 'OS2datascanner',
+        'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
+      },
+      'destination': 'pipeline_collector'
+    },
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'rule': {
+      'type': 'or',
+      'sensitivity': None,
+      'name': None,
+      'components': [
+        {
+          'type': 'cpr',
+          'sensitivity': 250,
+          'name': None,
+          'modulus_11': True,
+          'ignore_irrelevant': True
+        },
+        {
+          'type': 'regex',
+          'sensitivity': 750,
+          'name': None,
+          'expression': '[Dd]anni'
+        }
+      ]
+    },
+    'configuration': {
+      'skip_mime_types': [
+        'image/*'
+      ]
+    },
+    'progress': None
+  },
+  'handle': {
+    'type': 'smbc',
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'path': 'false_positive.txt'
+  },
+  'matched': True,
+  'matches': [
+    {
+      'rule': {
+        'type': 'cpr',
+        'sensitivity': 250,
+        'name': None,
+        'modulus_11': True,
+        'ignore_irrelevant': True
+      },
+      'matches': [
+        {
+          'offset': 22,
+          'match': '1111XXXXXX',
+          'context': '\nDanni Als\nValid cpr: XXXXXX-XXXX\nInvalid cpr: XXXXXX-XXXX\n\n### VALID CPRs\n[...], "H',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 128,
+          'match': '1111XXXXXX',
+          'context': ', "HOST/ARB08B200319.intra.coop"], "uSNChanged": [XXXXXX-XXXX], "uSNCreated": [662950], "userAccountControl": [',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 224,
+          'match': '1111XXXXXX',
+          'context': 'ountControl": [[...]\n\n\n[...]oop"], "uSNChanged": [XXXXXX-XXXX], "uSNCreated": [XXXXXX-XXXX], "userAccountContro',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 253,
+          'match': '1111XXXXXX',
+          'context': 'op"], "uSNChanged": [XXXXXX-XXXX], "uSNCreated": [XXXXXX-XXXX], "userAccountControl": [4096], "userCertificate"',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 345,
+          'match': '1111XXXXXX',
+          'context': ', "userCertificate"[...]\n\n\n\n[...]730400 0 0 WET} {XXXXXX-XXXX 3600 1 WEST} {XXXXXX-XXXX 0 0 WET} {XXXXXX-XXXX 3',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 371,
+          'match': '1111XXXXXX',
+          'context': '\n\n[...]730400 0 0 WET} {XXXXXX-XXXX 3600 1 WEST} {XXXXXX-XXXX 0 0 WET} {XXXXXX-XXXX 3600 1 WEST} {213762[...]\n\n',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 393,
+          'match': '1111XXXXXX',
+          'context': ' {XXXXXX-XXXX 3600 1 WEST} {XXXXXX-XXXX 0 0 WET} {XXXXXX-XXXX 3600 1 WEST} {213762[...]\n\n\n[...]16768 0 LMT} {-1',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 453,
+          'match': '1111XXXXXX',
+          'context': '8 3600 1 WEST} {213762[...]\n\n\n[...]16768 0 LMT} {-XXXXXX-XXXX -18000 0 ACT} {-XXXXXX-XXXX -14400 1 ACST} {-1111',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 481,
+          'match': '1111XXXXXX',
+          'context': '\n\n[...]16768 0 LMT} {-XXXXXX-XXXX -18000 0 ACT} {-XXXXXX-XXXX -14400 1 ACST} {-XXXXXX-XXXX -18000 0 ACT} [...]\n',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        },
+        {
+          'offset': 510,
+          'match': '1111XXXXXX',
+          'context': '1118 -18000 0 ACT} {-XXXXXX-XXXX -14400 1 ACST} {-XXXXXX-XXXX -18000 0 ACT} [...]\n\n\n### INVALID CPRs\n[...] 3150',
+          'context_offset': 0,
+          'sensitivity': 250,
+          'probability': 1.0
+        }
+      ]
+    }
+  ]
+}
+#+end_src
+
+
+Received from =tagger= by =metadata= queue
+#+begin_src js
+{
+  'scan_tag': {
+    'time': '2021-04-02T04:34:50-05:00',
+    'user': 'test',
+    'scanner': {
+      'pk': 11,
+      'name': 'localhost filscanner'
+    },
+    'organisation': {
+      'name': 'OS2datascanner',
+      'uuid': '8c27d4fc-a425-447d-b276-8f717263fa73'
+    },
+    'destination': 'pipeline_collector'
+  },
+  'handle': {
+    'type': 'smbc',
+    'source': {
+      'type': 'smbc',
+      'unc': '//127.0.0.1/os2-data',
+      'user': 'guest',
+      'password': 'guest',
+      'domain': '',
+      'driveletter': ''
+    },
+    'path': 'false_positive.txt'
+  },
+  'metadata': {
+    'last-modified': '2021-03-31T14:16:53+0200'
+  }
+}
+#+end_src

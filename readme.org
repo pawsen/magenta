@@ -7,6 +7,7 @@
     - [[#externe-link-til-websource-35210][Externe link til WebSource, 35210]]
     - [[#håndtering-af-døde-links-35236][Håndtering af døde links, 35236]]
     - [[#grafana-alarm---overvågning-af-pipelinetrin-42002][Grafana alarm - overvågning af pipelinetrin, 42002]]
+    - [[#cpr-nummer-forbedring-39173][CPR-nummer forbedring, 39173]]
   - [[#data][data]]
   - [[#structure][structure]]
     - [[#engine][engine]]
@@ -249,6 +250,20 @@ Vi mangler overvågning af de enkelte pipeline trin i scannermotoren.
 - Hvis rabbitmq oplever timeout fra en af pipeline trinene.
 - Hvis et pipelinetrin går i stå og ikke spiser flere beskeder fra en fyldt kø.
 
+*** CPR-nummer forbedring, 39173
+Udspringer af [[https://redmine.magenta-aps.dk/issues/39173][COOPs falske positive]]
+Men vi bygger videre på
+https://redmine.magenta-aps.dk/issues/39173
+
+Forslag
+1. Kig efter specialtegn før og efter 10 cifret nummer. Lav det til en option i regeloprettelsesformen.
+2. Kig efter kontekst og opstil regler baseret på denne. Fx er det et tal før og efter. Er det ord med store bogstaver o kontekst.
+   "Genkend maskinskrift"
+3. NLP(natural language processing)
+
+
+Leverance:
+En af det nævnte løsninger og bevis på at det virker efter hensigten.
 ** data
 [[file:os2ds/data/vst-lokalplan-20200416.pdf][pdf der udpakker til ca 3.000 filer]], sikkert pga embedded vektor grafik
 

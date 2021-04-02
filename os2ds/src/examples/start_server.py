@@ -9,7 +9,7 @@ import socket
 
 
 here_path = os.path.dirname(__file__)
-test_data_path = os.path.join(here_path, "data")
+test_data_path = os.path.join(here_path, "data", "web")
 
 
 __PORT = 64346
