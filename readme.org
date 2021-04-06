@@ -256,14 +256,20 @@ Men vi bygger videre på
 https://redmine.magenta-aps.dk/issues/39173
 
 Forslag
-1. Kig efter specialtegn før og efter 10 cifret nummer. Lav det til en option i regeloprettelsesformen.
-2. Kig efter kontekst og opstil regler baseret på denne. Fx er det et tal før og efter. Er det ord med store bogstaver o kontekst.
-   "Genkend maskinskrift"
-3. NLP(natural language processing)
+- Er der specialtegn før eller efter
+- Er delimiters balanceret
+- Kommer der et tal før eller efter
+- Er ord før eller efter ikke enten (alle små, stort begyndelsesbogstav eller alle caps),
+  dvs "uSNChanged" bør give =probability=0=
+- indeholder ord før =cpr=
+
+- NLP(natural language processing)
 
 
 Leverance:
 En af det nævnte løsninger og bevis på at det virker efter hensigten.
+
+Se [[file:os2ds/src/examples/cpr_test.py][cpr-test.py]]
 ** data
 [[file:os2ds/data/vst-lokalplan-20200416.pdf][pdf der udpakker til ca 3.000 filer]], sikkert pga embedded vektor grafik
 

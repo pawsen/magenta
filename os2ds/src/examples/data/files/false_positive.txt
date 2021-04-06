@@ -2,6 +2,8 @@
 Danni Als
 Valid cpr: 1111111118
 Invalid cpr: 1111111119
+Hej, jeg er fra Magenta. Dette er linjen der handler om Danni Als med nr: [111111-1118].
+Han bor: bordet længst tilbage, th. for tavlen og kan godt lide fodbold.
 
 ### VALID CPRs
 [...], "HOST/ARB08B200319.intra.coop"], "uSNChanged": [111111-1118], "uSNCreated": [662950], "userAccountControl": [[...]
