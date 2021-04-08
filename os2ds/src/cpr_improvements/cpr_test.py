@@ -42,6 +42,8 @@ indgår ikke i den splittede liste.
 s1 = """Hej, jeg er fra Magenta. Dette er linjen der handler om Danni Als med nr: [111111-1118].
 Han bor: bordet længst tilbage, th. for tavlen og kan godt lide fodbold.
 
+Anders (111111-1118 And) på Paradisæblevej
+
 Vejstrand Kommune, Børn- og Ungeforvaltningen. P-nummer: 2305000003
 240501-0006. Men
 
@@ -116,6 +118,9 @@ def examine_context(
     if pre.endswith(_pre_sym) and post.startswith(_post_sym):
         pre = pre[:-1]
         post = post[1:]
+    elif pre.rfind("(") and post.find(")"):
+        pre = pre.replace("(", "")
+        post = post.replace(")", "")
 
     # pre_list = pre.split() if len(pre) > 0 else [""]
     # post_list = post.split() if len(post) > 0 else [""]
