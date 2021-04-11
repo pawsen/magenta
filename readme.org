@@ -8,6 +8,7 @@
     - [[#håndtering-af-døde-links-35236][Håndtering af døde links, 35236]]
     - [[#grafana-alarm---overvågning-af-pipelinetrin-42002][Grafana alarm - overvågning af pipelinetrin, 42002]]
     - [[#cpr-nummer-forbedring-39173][CPR-nummer forbedring, 39173]]
+    - [[#nlp][NLP]]
   - [[#data][data]]
   - [[#structure][structure]]
     - [[#engine][engine]]
@@ -269,7 +270,21 @@ Forslag
 Leverance:
 En af det nævnte løsninger og bevis på at det virker efter hensigten.
 
-Se [[file:os2ds/src/examples/cpr_test.py][cpr-test.py]]
+Se [[file:os2ds/src/cpr_improvements/cpr_test.py][cpr-test.py]]
+**** Try it
+#+begin_src sh
+echo "{'rule':{'type':'cpr'},'source':{'type':'data','content':'$(base64 -w 0 < cpr-examples.txt)','mime':'text/plain'}}" | tr \' \" | http post localhost:8070/scan/1 AUTHORIZATION:'Bearer os2ds' | jq
+#+end_src
+*** NLP
+
+https://www.nltk.org/book/ch01.html
+https://towardsdatascience.com/nlp-approaches-to-data-anonymization-1fb5bde6b929
+**** microsft
+
+Microsoft have [[https://github.com/microsoft/presidio][presidio]], a /Context aware, pluggable and customizable PII anonymization service for text and images./.
+It uses a mix of [[https://github.com/microsoft/presidio/tree/main/presidio-analyzer/presidio_analyzer/predefined_recognizers][predefined regex]] and [[https://github.com/microsoft/presidio/tree/main/presidio-analyzer/presidio_analyzer/nlp_engine][NLP using spaCy]].
+
+
 ** data
 [[file:os2ds/data/vst-lokalplan-20200416.pdf][pdf der udpakker til ca 3.000 filer]], sikkert pga embedded vektor grafik
 
@@ -862,7 +877,8 @@ cat > .envrc << EOF
 # https://direnv.net/man/direnv-stdlib.1.html
 root_dir=$(expand_path .)
 # root_dir=~/git/os2datascanner
-export OS2DS_ENGINE_USER_CONFIG_PATH="$root_dir/contrib/config/engine-module/user-settings.toml" PYTHONPATH="$root_dir/src"
+export OS2DS_ENGINE_USER_CONFIG_PATH="$root_dir/contrib/config/engine-module/user-settings.toml"
+export PYTHONPATH="$root_dir/src:$PYTHONPATH"
 EOF
 #+end_src
 

@@ -2,13 +2,13 @@
 Hej, jeg er fra Magenta. Dette er linjen der handler om Danni Als med nr: [111111-1118].
 Han bor: bordet længst tilbage, th. for tavlen og kan godt lide fodbold.
 
-### VALID CPRs
+### VALID CccPppRrrs
 [...], "HOST/ARB08B200319.intra.coop"], "uSNChanged": [111111-1118], "uSNCreated": [662950], "userAccountControl": [[...]
 [...]730400 0 0 WET} {111111-1118 3600 1 WEST} {111111-1118 0 0 WET} {111111-1118 3600 1 WEST} {213762[...]
 [...]16768 0 LMT} {-111111-1118 -18000 0 ACT} {-111111-1118 -14400 1 ACST} {-111111-1118 -18000 0 ACT} [...]
 
 
-### INVALID CPRs
+### INVALID CcccPppRrrs
 [...] 31500 0 CWST} {111111-1119 35100 1 CWST} {111111-1119 31500 0 CWST} {111111-1119 35100 1 CWST} {[...]
 
 # https://redmine.magenta-aps.dk/issues/41835

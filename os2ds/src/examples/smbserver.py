@@ -11,6 +11,11 @@
 #  Alberto Solino (@agsolino)
 #
 
+# I run this as:
+# # run python as sudo, keeping current virt. env
+# alias spython='sudo $(printenv VIRTUAL_ENV)/bin/python3'
+# spython smbserver.py -comment "os2 share" -username guest -password guest -ts -smb2support os2-data ./data/files
+
 import sys
 import argparse
 import logging

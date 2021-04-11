@@ -1,0 +1,44 @@
+Eksempler på kontekst-tjek
+Læs ccpprr -> cpr.
+
+@ Godtages fordi det er et valid ccpprr der opfylder Modulus 11 tjek.
+Anders And 111111-1118
+@ godtages fordi der indgår ccpprr i linjen
+Anders And, cpr: [111111-1118
+@ godtages fordi parenteser er balanceret
+Anders And, [111111-1118], Paradisæblevej 111
+@ godtages fordi der tillades ekstra ord ved parenteser.
+Anders (111111-1118 And), Andeby
+@ godtages ikke fordi foranstående ord er et tal, der IKKE opfylder kriterium for ccpprr
+Anders And 113 111111-1118
+@ godtages fordi bagvedstående/foranstående ord opfylder kriterium for ccpprr
+Anders And 111111-1118 111111-1118
+
+@ godtages ikke fordi foranstående ord er et mix af store og små bogstaver
+"HOST/ABCD08B2003.intra.corp"], "uSNChanged": [111111-1118], "uSNCreated": [123456], "userAccountControl":
+@ godtages ikke pga. omkringstående tal OG fordi kun to ord medtages, vil paranteser være ubalanceret.
+712000 0 0 WET} {111111-1118 3600 1 WEST} [111111-1118 0 0 WET]
+@ godtages ikke pga foranstående er unær operatør(dvs. fortegns-minus. På eng: unary) eller specialsymbol
+16768 0 LMT} {-111111-1118} {+111111-1118} (#111111-1118)
+
+
+Følgende kriterier undersøges
+Kontekst består af de `n_words=2` foranstående/bagvedstående ord incl. tegn. Ord med bindesteg(-), punktum(.) eller skråstreg(/) splittes ikke.
+Konteksten bruges til at estimere en sandsynlighed for at et 10-cifret nummer der opfylder modulus 11, rent faktisk er et cpr-nummber.
+Følgende heuristik benyttes
+
+- indgår pp-nnrr eller variant deraf noget sted i teksten
+- Er der unær operator før eller efter, fx -111111-1118 eller 111111-1118+
+- Er der ubalanceret symboler eller parenteser omkring, fx [111111-1118. Men [111111-1118] vil være ok. XXX sidstnævnte findes ikke!
+- Kommer der et tal der ikke ligner et cpr før eller efter, fx 113 111111-1118
+- Er ord før eller efter ikke ’alle små’-, ’stort begyndelsesbogstav’ eller ’alle caps’, fx uSNChanged 111111-1118
+resulterer alle i sandsynlighed=0.
+
+
+- indeholder ord før cpr, fx Anders cpr-nr [111111-1118]
+resulterer i  sandsynlighed=1
+
+Følgende symboler undersøges
+- unær operatører "+", "-"
+- parenteser "(", "[", "{", "<", "<?", "<%", "/*"
+- symboler "!", "#", "%"
