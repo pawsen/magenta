@@ -1,0 +1,18 @@
+https://regex101.com/r/OuIbMa/2
+
+"\b(\d{2}(?:\d{2})?[\s]?\d{2}[\s]?\d{2})(?:[\s\-/\.]|\s\-\s)?(\d{4})\b"
+
+https://en.wikipedia.org/wiki/Personal_identity_number_(Sweden)
+https://sv.wikipedia.org/wiki/Personnummer_i_Sverige
+
+either 10 or 12 digit, last digit is a checksum.
+ie very similar to danish cpr format:
+yymmdd-xxxx
+yyyymmdd-xxxx
+
+# match yymmdd-xxxx
+811218-9876
+# no match yyymmdd-xxxx
+1280986-4653
+# match yyyy mm dd-xxxx
+1981 12 18-9876

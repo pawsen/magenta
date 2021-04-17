@@ -14,6 +14,7 @@
     - [[#engine][engine]]
   - [[#docker][docker]]
     - [[#setup][setup]]
+    - [[#useful-docker-commands][useful docker commands]]
     - [[#db][db]]
     - [[#network][network]]
     - [[#run-things][run things]]
@@ -29,6 +30,7 @@
     - [[#multi-containers][multi containers]]
   - [[#promethues][promethues]]
   - [[#grafana][grafana]]
+  - [[#gcloud][gcloud]]
   - [[#local-setup][local setup]]
     - [[#local-setup-without-docker][local setup without docker]]
     - [[#poetry][poetry]]
@@ -145,6 +147,11 @@ regex
 https://regex101.com/r/OuIbMa/2
 ie. we modify danish CPR to match either {yy} OR {yyyy}, as per this [[https://stackoverflow.com/a/8177150][SO]].
 : "\b(\d{2}(?:\d{2})?[\s]?\d{2}[\s]?\d{2})(?:[\s\-/\.]|\s\-\s)?(\d{4})\b"
+
+#+begin_src sh
+echo '{"rule":{"type":"regex", "expression": "\\b(\d{2}(?:\d{2})?[\s]?\d{2}[\s]?\d{2})(?:[\s\-/\.]|\s\-\s)?(\d{4})\\b"},"source":{"type":"data","content":"'$(base64 -w 0 < cpr_test.txt)'","mime":"text/plain"}}' | sed 's/\\/\\\\/g' | http post localhost:8070/scan/1 AUTHORIZATION:'Bearer os2ds' | jq
+#+end_src
+
 
 **** test
 Download the wiki page
@@ -386,16 +393,6 @@ From =django 3.0= we can use [[https://docs.djangoproject.com/en/3.0/ref/django-
 DJANGO_SUPERUSER_PASSWORD=test DJANGO_SUPERUSER_USERNAME=test DJANGO_SUPERUSER_EMAIL=test@test docker-compose exec admin_application python manage.py createsuperuser --noinput
 #+end_src
 
-**** useful docker commands
-#+begin_src sh
-docker network inspect os2datascanner_default
-docker-compose logs | bat
-docker logs -f mycontainer
-docker stop $(docker ps -aq)
-docker rm $(docker ps -aq)
-docker system prune --all
-#+end_src
-
 **** ports
 https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
 - queue (rabbitmq)
@@ -417,6 +414,21 @@ https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
 **** debug template for docker, using DAP
 See templates
 https://github.com/ztlevi/LSP-Debug/blob/master/dap-config.el
+
+*** useful docker commands
+#+begin_src sh
+docker network inspect os2datascanner_default
+docker-compose logs | bat
+docker logs -f mycontainer
+docker stop $(docker ps -aq)
+docker rm $(docker ps -aq)
+docker system prune --all
+#+end_src
+
+#+begin_src sh
+# delete all DocumentReport's in report app
+docker exec report_module python manage.py shell -c "from os2datascanner.projects.report.reportapp.models.documentreport_model import DocumentReport; DocumentReport.objects.all().delete()"
+#+end_src
 
 *** db
 In the Dockerfile for the image, =ENTRYPOINT= is set to [[https://github.com/docker-library/postgres/blob/master/12/alpine/docker-entrypoint.sh#L307][docker-entrypoint.sh]],
@@ -539,28 +551,30 @@ OS2DS_REPORT_USER_CONFIG_PATH=dev-environment/report/dev-settings.toml
 **** report
 Report module - before starting the webserver generate static files and translations as per [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/docker/docker-entrypoint-django.sh#L27-30][docker-entrypoint-django.sh]]
 #+begin_src sh
-OS2DS_REPORT_USER_CONFIG_PATH=dev-environment/report/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.report.settings python -m os2datascanner.projects.report.manage pipeline_collector
+export OS2DS_REPORT_USER_CONFIG_PATH=dev-environment/report/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.report.settings
+python -m os2datascanner.projects.report.manage pipeline_collector
 
 # before starting the server, generate static files and translates
-OS2DS_REPORT_USER_CONFIG_PATH=dev-environment/report/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.report.settings python -m os2datascanner.projects.report.manage collectstatic --no-input --clear --dry-run
-OS2DS_REPORT_USER_CONFIG_PATH=dev-environment/report/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.report.settings python -m os2datascanner.projects.report.manage compilemessages
+python -m os2datascanner.projects.report.manage collectstatic --no-input --clear --dry-run
+python -m os2datascanner.projects.report.manage compilemessages
 
-OS2DS_REPORT_USER_CONFIG_PATH=dev-environment/report/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.report.settings python -m os2datascanner.projects.report.manage runserver 0.0.0.0:8040
+python -m os2datascanner.projects.report.manage runserver 0.0.0.0:8040
 
-OS2DS_REPORT_USER_CONFIG_PATH=dev-environment/report/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.report.settings GUNICORN_WORKERS=2 gunicorn --config docker/gunicorn-settings.py --reload os2datascanner.projects.report.wsgi
+GUNICORN_WORKERS=2 gunicorn --config docker/gunicorn-settings.py --reload os2datascanner.projects.report.wsgi
 #+end_src
 
 **** Admin
 #+begin_src sh
-OS2DS_ADMIN_USER_CONFIG_PATH=dev-environment/admin/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.admin.settings python -m os2datascanner.projects.admin.manage pipeline_collector
+export OS2DS_ADMIN_USER_CONFIG_PATH=dev-environment/admin/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.admin.settings
+python -m os2datascanner.projects.admin.manage pipeline_collector
 
 # before starting the server, generate static files and translates
-OS2DS_ADMIN_USER_CONFIG_PATH=dev-environment/admin/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.admin.settings python -m os2datascanner.projects.admin.manage collectstatic --no-input --clear --dry-run
-OS2DS_ADMIN_USER_CONFIG_PATH=dev-environment/admin/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.admin.settings python -m os2datascanner.projects.admin.manage compilemessages
+python -m os2datascanner.projects.admin.manage collectstatic --no-input --clear --dry-run
+python -m os2datascanner.projects.admin.manage compilemessages
 
-OS2DS_ADMIN_USER_CONFIG_PATH=dev-environment/admin/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.admin.settings python -m os2datascanner.projects.admin.manage runserver 0.0.0.0:8040
+python -m os2datascanner.projects.admin.manage runserver 0.0.0.0:8040
 
-OS2DS_ADMIN_USER_CONFIG_PATH=dev-environment/admin/dev-settings.toml DJANGO_SETTINGS_MODULE=os2datascanner.projects.admin.settings GUNICORN_WORKERS=2 gunicorn --config docker/gunicorn-settings.py --reload os2datascanner.projects.admin.wsgi
+GUNICORN_WORKERS=2 gunicorn --config docker/gunicorn-settings.py --reload os2datascanner.projects.admin.wsgi
 #+end_src
 
 **** engine
@@ -686,11 +700,20 @@ echo '{"rule":{"type":"regex","expression":"[Mm]orten"},"source":{"type":"web","
 
 The content is =base64= encoded
 #+begin_src sh
-echo -n "This is only a test" | base64
+echo -n "This is only a test" | base64 -w 0
 VGhpcyBpcyBvbmx5IGEgdGVzdA==
 
 echo 'VGhpcyBpcyBvbmx5IGEgdGVzdA==' | base64 --decode
 #+end_src
+
+Another example
+The API expects valid JSON which is using ="= and not ='=.
+Also, we need escape backslash so =\= becomes =\\=. =\b= is a literal backspace and needs to be escaped.
+
+#+begin_src sh
+echo '{"rule":{"type":"regex", "expression": "\\b(\d{2}(?:\d{2})?[\s]?\d{2}[\s]?\d{2})(?:[\s\-/\.]|\s\-\s)?(\d{4})\\b"},"source":{"type":"data","content":"'$(base64 -w 0 < cpr_test.txt)'","mime":"text/plain"}}' | sed 's/\\/\\\\/g' | http post localhost:8070/scan/1 AUTHORIZATION:'Bearer os2ds' | jq
+#+end_src
+
 
 Follow the logs
 #+begin_src sh
@@ -829,6 +852,29 @@ user/pass: =admin/admin= as from [[https://git.magenta.dk/os2datascanner/os2data
 Grafana connects to prometheus server on port =9090=, as per [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/dev-environment/grafana/datasources.yml#L8][datasources.yml]]. The dashboard is setup in [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/dev-environment/grafana/dashboards/engine.json#L163][engine.json.]]
 
 [[https://wikitech.wikimedia.org/wiki/Grafana.wikimedia.org][https://wikitech.wikimedia.org/wiki/Grafana.wikimedia.org]] might contain useful information.
+** gcloud
+
+
+
+Setup instructions
+[[https://labs.docs.magenta.dk/google-cloud-platform/instance-ssh-access.html][SSH-access to Google Cloud Compute instances (servers)]]
+
+#+begin_src sh
+gcloud compute ssh --tunnel-through-iap test-webserver-with-dummy-data --zone=europe-west4-a
+#+end_src
+
+
+Copy files
+#+begin_src sh
+gcloud compute scp MYFILE --tunnel-through-iap test-webserver-with-dummy-data:~/ --zone=europe-west4-a
+#+end_src
+
+Or use as a proxy
+#+begin_src sh
+gcloud compute ssh --tunnel-through-iap test-webserver-with-dummy-data --zone=europe-west4-a -- -N -p 22 -D localhost:5000
+curl https://api.ip2geo.pl/json/
+curl --proxy socks5://localhost:5000 https://api.ip2geo.pl/json/
+#+end_src
 
 ** local setup
 *** local setup without docker

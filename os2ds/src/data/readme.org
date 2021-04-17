@@ -1,0 +1,49 @@
+
+* CPRs
+** testdata fra cprservicedesk
+[[https://cprservicedesk.atlassian.net/wiki/spaces/CPR/pages/11436127/Testdata][download page]]
+#+begin_quote
+Testdatasættet er opbygget således, at det giver myndigheder og virksomheder mulighed for at foretage retvisende tests. Det betyder eksempelvis, at der kan anvendes godkendte navne jf. navneloven, fødselsdatoer i det 20. og 21. århundrede samt visse adresser, der kan henføre til en eksisterende fysisk bygning mv. Navne, fødselsdatoer og adresser i testdatasættet kan anvendes til at fremsøge entiteter i testdatasættet, men kan ikke anvendes til at identificere fysiske personer optaget i CPR’s produktionsmiljø. En entitet i testdatasættet er ligeledes tildelt en ti-cifret nøgle, der er opbygget efter de samme offentlige tilgængelige regler, der gælder for dannelse af personnumre til fysiske personer i CPR’s produktionsmiljø. I testdatasættet er der således nøgler, der kan være identiske med personnumre i CPR’s produktionsmiljø.
+#+end_quote
+
+[[file:data/files/Testpersoner i Demo.docx][Test.docx]]
+[[file:data/files/Testpersoner i demo.xlsx][Test.xlsx]]
+
+** gsuite
+https://redmine.magenta-aps.dk/issues/37563
+
+** python generated
+https://git.magenta.dk/labs/salt-automation/-/tree/master/kubernetes/os2ds-cloud/test
+
+http://34.90.213.110/html/
+
+* smb
+#+begin_src sh
+pip install impacket
+sudo apt install samba smbclient
+#+end_src
+
+Run ~smbserver.py~ with root privileges, but using my =virtual env=
+#+begin_src sh
+alias spython='sudo $(printenv VIRTUAL_ENV)/bin/python3'
+spython smbserver.py -comment "os2 share" -username guest -password guest -ts -smb2support os2-data ./data
+# test
+smbclient --user=guest //127.0.0.1/os2-data
+#+end_src
+Check the ~-m SMB2~ option for ~smbclient~.
+
+
+[[https://serverfault.com/a/166255][List shares on network]]
+#+begin_src sh
+nmblookup -S '*'
+#+end_src
+
+** change samba protocol
+: protocol negotiation failed: NT_STATUS_NOT_SUPPORTED
+
+then either add ~-smb2support~ when calling ~smbserver.py~ or try [[https://unix.stackexchange.com/a/585339][adding]] (under =GLOBAL=)
+#+begin_src sh
+vi /etc/samba/smb.conf
+client min protocol = CORE
+client max protocol = SMB3
+#+end_src
