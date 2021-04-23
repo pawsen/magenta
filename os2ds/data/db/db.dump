@@ -1,0 +1,5203 @@
+--
+-- PostgreSQL database cluster dump
+--
+
+SET default_transaction_read_only = off;
+
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+
+--
+-- Drop databases (except postgres and template1)
+--
+
+DROP DATABASE os2datascanner_admin;
+DROP DATABASE os2datascanner_report;
+
+
+
+
+--
+-- Drop roles
+--
+
+DROP ROLE os2datascanner_admin_dev;
+DROP ROLE os2datascanner_report_dev;
+DROP ROLE postgres;
+
+
+--
+-- Roles
+--
+
+CREATE ROLE os2datascanner_admin_dev;
+ALTER ROLE os2datascanner_admin_dev WITH NOSUPERUSER INHERIT NOCREATEROLE CREATEDB LOGIN NOREPLICATION NOBYPASSRLS PASSWORD 'md508c5eccf9e3c8a64219c494e4322689e';
+CREATE ROLE os2datascanner_report_dev;
+ALTER ROLE os2datascanner_report_dev WITH NOSUPERUSER INHERIT NOCREATEROLE CREATEDB LOGIN NOREPLICATION NOBYPASSRLS PASSWORD 'md5094bfbc17af6eba3162dc6a51f16b388';
+CREATE ROLE postgres;
+ALTER ROLE postgres WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION BYPASSRLS PASSWORD 'md571d793b8217805e7df55af54c98ae526';
+
+
+
+
+
+
+--
+-- Databases
+--
+
+--
+-- Database "template1" dump
+--
+
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.6 (Debian 12.6-1.pgdg100+1)
+-- Dumped by pg_dump version 12.6 (Debian 12.6-1.pgdg100+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+UPDATE pg_catalog.pg_database SET datistemplate = false WHERE datname = 'template1';
+DROP DATABASE template1;
+--
+-- Name: template1; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE template1 WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
+
+
+ALTER DATABASE template1 OWNER TO postgres;
+
+\connect template1
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: DATABASE template1; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON DATABASE template1 IS 'default template for new databases';
+
+
+--
+-- Name: template1; Type: DATABASE PROPERTIES; Schema: -; Owner: postgres
+--
+
+ALTER DATABASE template1 IS_TEMPLATE = true;
+
+
+\connect template1
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: DATABASE template1; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE CONNECT,TEMPORARY ON DATABASE template1 FROM PUBLIC;
+GRANT CONNECT ON DATABASE template1 TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+--
+-- Database "os2datascanner_admin" dump
+--
+
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.6 (Debian 12.6-1.pgdg100+1)
+-- Dumped by pg_dump version 12.6 (Debian 12.6-1.pgdg100+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: os2datascanner_admin; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE os2datascanner_admin WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
+
+
+ALTER DATABASE os2datascanner_admin OWNER TO postgres;
+
+\connect os2datascanner_admin
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.auth_group (
+    id integer NOT NULL,
+    name character varying(150) NOT NULL
+);
+
+
+ALTER TABLE public.auth_group OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.auth_group_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.auth_group_id_seq OWNED BY public.auth_group.id;
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.auth_group_permissions (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_group_permissions OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.auth_group_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_permissions_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.auth_group_permissions_id_seq OWNED BY public.auth_group_permissions.id;
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.auth_permission (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.auth_permission OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.auth_permission_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_permission_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.auth_permission_id_seq OWNED BY public.auth_permission.id;
+
+
+--
+-- Name: auth_user; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.auth_user (
+    id integer NOT NULL,
+    password character varying(128) NOT NULL,
+    last_login timestamp with time zone,
+    is_superuser boolean NOT NULL,
+    username character varying(150) NOT NULL,
+    first_name character varying(30) NOT NULL,
+    last_name character varying(150) NOT NULL,
+    email character varying(254) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.auth_user OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.auth_user_groups (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_groups OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.auth_user_groups_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_groups_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.auth_user_groups_id_seq OWNED BY public.auth_user_groups.id;
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.auth_user_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.auth_user_id_seq OWNED BY public.auth_user.id;
+
+
+--
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.auth_user_user_permissions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_user_permissions OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.auth_user_user_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_user_permissions_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.auth_user_user_permissions_id_seq OWNED BY public.auth_user_user_permissions.id;
+
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    content_type_id integer,
+    user_id integer NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE public.django_admin_log OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.django_admin_log_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_admin_log_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.django_admin_log_id_seq OWNED BY public.django_admin_log.id;
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.django_content_type (
+    id integer NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.django_content_type OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.django_content_type_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_content_type_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.django_content_type_id_seq OWNED BY public.django_content_type.id;
+
+
+--
+-- Name: django_migrations; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.django_migrations (
+    id integer NOT NULL,
+    app character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_migrations OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.django_migrations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_migrations_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.django_migrations_id_seq OWNED BY public.django_migrations.id;
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_session OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_addressrule; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_addressrule (
+    rule_ptr_id integer NOT NULL,
+    database integer NOT NULL,
+    blacklist text NOT NULL,
+    whitelist text NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_addressrule OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_apikey; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_apikey (
+    uuid uuid NOT NULL,
+    scope text NOT NULL,
+    organization_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_apikey OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_authentication; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_authentication (
+    id integer NOT NULL,
+    username character varying(1024) NOT NULL,
+    iv bytea NOT NULL,
+    ciphertext bytea NOT NULL,
+    domain character varying(2024) NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_authentication OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_authentication_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_authentication_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_authentication_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_authentication_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_authentication_id_seq OWNED BY public.os2datascanner_authentication.id;
+
+
+--
+-- Name: os2datascanner_authenticationmethods; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_authenticationmethods (
+    id integer NOT NULL,
+    methodname character varying(1024) NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_authenticationmethods OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_authenticationmethods_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_authenticationmethods_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_authenticationmethods_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_authenticationmethods_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_authenticationmethods_id_seq OWNED BY public.os2datascanner_authenticationmethods.id;
+
+
+--
+-- Name: os2datascanner_cprrule; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_cprrule (
+    rule_ptr_id integer NOT NULL,
+    do_modulus11 boolean NOT NULL,
+    ignore_irrelevant boolean NOT NULL,
+    whitelist text NOT NULL,
+    examine_context boolean NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_cprrule OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_dropboxscanner; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_dropboxscanner (
+    scanner_ptr_id integer NOT NULL,
+    token character varying(64)
+);
+
+
+ALTER TABLE public.os2datascanner_dropboxscanner OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_exchangescanner; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_exchangescanner (
+    scanner_ptr_id integer NOT NULL,
+    userlist character varying(100) NOT NULL,
+    service_endpoint character varying(256) NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_exchangescanner OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_filescanner; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_filescanner (
+    scanner_ptr_id integer NOT NULL,
+    alias character varying(64)
+);
+
+
+ALTER TABLE public.os2datascanner_filescanner OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_gmailscanner; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_gmailscanner (
+    scanner_ptr_id integer NOT NULL,
+    service_account_file_gmail character varying(100) NOT NULL,
+    user_emails_gmail character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_gmailscanner OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_googledrivescanner; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_googledrivescanner (
+    scanner_ptr_id integer NOT NULL,
+    service_account_file character varying(100) NOT NULL,
+    user_emails character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_googledrivescanner OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_group; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_group (
+    id integer NOT NULL,
+    name character varying(256) NOT NULL,
+    contact_email character varying(256) NOT NULL,
+    contact_phone character varying(256) NOT NULL,
+    organization_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_group OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_group_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_group_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_group_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_group_id_seq OWNED BY public.os2datascanner_group.id;
+
+
+--
+-- Name: os2datascanner_group_user_profiles; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_group_user_profiles (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    userprofile_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_group_user_profiles OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_group_user_profiles_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_group_user_profiles_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_group_user_profiles_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_group_user_profiles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_group_user_profiles_id_seq OWNED BY public.os2datascanner_group_user_profiles.id;
+
+
+--
+-- Name: os2datascanner_msgraphfilescanner; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_msgraphfilescanner (
+    scanner_ptr_id integer NOT NULL,
+    tenant_id character varying(256) NOT NULL,
+    scan_site_drives boolean NOT NULL,
+    scan_user_drives boolean NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_msgraphfilescanner OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_msgraphmailscanner; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_msgraphmailscanner (
+    scanner_ptr_id integer NOT NULL,
+    tenant_id character varying(256) NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_msgraphmailscanner OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_namerule; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_namerule (
+    rule_ptr_id integer NOT NULL,
+    database integer NOT NULL,
+    blacklist text NOT NULL,
+    whitelist text NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_namerule OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_organization; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_organization (
+    id integer NOT NULL,
+    name character varying(256) NOT NULL,
+    contact_email character varying(256) NOT NULL,
+    contact_phone character varying(256) NOT NULL,
+    do_use_groups boolean NOT NULL,
+    do_notify_all_scans boolean NOT NULL,
+    uuid uuid NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_organization OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_organization_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_organization_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_organization_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_organization_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_organization_id_seq OWNED BY public.os2datascanner_organization.id;
+
+
+--
+-- Name: os2datascanner_regexpattern; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_regexpattern (
+    id integer NOT NULL,
+    pattern_string character varying(1024) NOT NULL,
+    regex_id integer
+);
+
+
+ALTER TABLE public.os2datascanner_regexpattern OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_regexpattern_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_regexpattern_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_regexpattern_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_regexpattern_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_regexpattern_id_seq OWNED BY public.os2datascanner_regexpattern.id;
+
+
+--
+-- Name: os2datascanner_regexrule; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_regexrule (
+    rule_ptr_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_regexrule OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_rule; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_rule (
+    id integer NOT NULL,
+    name character varying(256) NOT NULL,
+    description text NOT NULL,
+    sensitivity integer NOT NULL,
+    group_id integer,
+    organization_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_rule OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_rule_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_rule_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_rule_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_rule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_rule_id_seq OWNED BY public.os2datascanner_rule.id;
+
+
+--
+-- Name: os2datascanner_sbsysscanner; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_sbsysscanner (
+    scanner_ptr_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_sbsysscanner OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_scanner; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_scanner (
+    id integer NOT NULL,
+    name character varying(256) NOT NULL,
+    schedule text NOT NULL,
+    do_ocr boolean NOT NULL,
+    do_last_modified_check boolean NOT NULL,
+    columns character varying(128),
+    output_spreadsheet_file boolean NOT NULL,
+    do_cpr_replace boolean NOT NULL,
+    cpr_replace_text character varying(2048),
+    do_name_replace boolean NOT NULL,
+    name_replace_text character varying(2048),
+    do_address_replace boolean NOT NULL,
+    address_replace_text character varying(2048),
+    url character varying(2048) NOT NULL,
+    validation_status integer NOT NULL,
+    exclusion_rules text NOT NULL,
+    process_urls jsonb,
+    do_run_synchronously boolean NOT NULL,
+    is_visible boolean NOT NULL,
+    authentication_id integer,
+    group_id integer,
+    organization_id integer NOT NULL,
+    e2_last_run_at timestamp with time zone
+);
+
+
+ALTER TABLE public.os2datascanner_scanner OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_scanner_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_scanner_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_scanner_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_scanner_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_scanner_id_seq OWNED BY public.os2datascanner_scanner.id;
+
+
+--
+-- Name: os2datascanner_scanner_recipients; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_scanner_recipients (
+    id integer NOT NULL,
+    scanner_id integer NOT NULL,
+    userprofile_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_scanner_recipients OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_scanner_recipients_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_scanner_recipients_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_scanner_recipients_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_scanner_recipients_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_scanner_recipients_id_seq OWNED BY public.os2datascanner_scanner_recipients.id;
+
+
+--
+-- Name: os2datascanner_scanner_rules; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_scanner_rules (
+    id integer NOT NULL,
+    scanner_id integer NOT NULL,
+    rule_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_scanner_rules OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_scanner_rules_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_scanner_rules_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_scanner_rules_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_scanner_rules_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_scanner_rules_id_seq OWNED BY public.os2datascanner_scanner_rules.id;
+
+
+--
+-- Name: os2datascanner_scanstatus; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_scanstatus (
+    id integer NOT NULL,
+    scan_tag jsonb NOT NULL,
+    total_sources integer,
+    explored_sources integer,
+    total_objects integer,
+    scanned_objects integer,
+    scanned_size bigint,
+    scanner_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_scanstatus OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_scanstatus_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_scanstatus_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_scanstatus_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_scanstatus_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_scanstatus_id_seq OWNED BY public.os2datascanner_scanstatus.id;
+
+
+--
+-- Name: os2datascanner_scheduledcheckup; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_scheduledcheckup (
+    id integer NOT NULL,
+    handle_representation jsonb NOT NULL,
+    interested_before timestamp with time zone,
+    scanner_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_scheduledcheckup OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_scheduledcheckup_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_scheduledcheckup_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_scheduledcheckup_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_scheduledcheckup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_scheduledcheckup_id_seq OWNED BY public.os2datascanner_scheduledcheckup.id;
+
+
+--
+-- Name: os2datascanner_userprofile; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_userprofile (
+    id integer NOT NULL,
+    is_group_admin boolean NOT NULL,
+    is_upload_only boolean NOT NULL,
+    organization_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_userprofile OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_userprofile_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_userprofile_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_userprofile_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: os2datascanner_userprofile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_userprofile_id_seq OWNED BY public.os2datascanner_userprofile.id;
+
+
+--
+-- Name: os2datascanner_webscanner; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.os2datascanner_webscanner (
+    scanner_ptr_id integer NOT NULL,
+    do_link_check boolean NOT NULL,
+    do_external_link_check boolean NOT NULL,
+    do_last_modified_check_head_request boolean NOT NULL,
+    do_collect_cookies boolean NOT NULL,
+    validation_method integer NOT NULL,
+    sitemap character varying(100) NOT NULL,
+    sitemap_url character varying(2048) NOT NULL,
+    download_sitemap boolean NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_webscanner OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: recurrence_date; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.recurrence_date (
+    id integer NOT NULL,
+    mode boolean NOT NULL,
+    dt timestamp with time zone NOT NULL,
+    recurrence_id integer NOT NULL
+);
+
+
+ALTER TABLE public.recurrence_date OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: recurrence_date_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.recurrence_date_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.recurrence_date_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: recurrence_date_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.recurrence_date_id_seq OWNED BY public.recurrence_date.id;
+
+
+--
+-- Name: recurrence_param; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.recurrence_param (
+    id integer NOT NULL,
+    param character varying(16) NOT NULL,
+    value integer NOT NULL,
+    index integer NOT NULL,
+    rule_id integer NOT NULL
+);
+
+
+ALTER TABLE public.recurrence_param OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: recurrence_param_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.recurrence_param_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.recurrence_param_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: recurrence_param_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.recurrence_param_id_seq OWNED BY public.recurrence_param.id;
+
+
+--
+-- Name: recurrence_recurrence; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.recurrence_recurrence (
+    id integer NOT NULL,
+    dtstart timestamp with time zone,
+    dtend timestamp with time zone
+);
+
+
+ALTER TABLE public.recurrence_recurrence OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: recurrence_recurrence_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.recurrence_recurrence_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.recurrence_recurrence_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: recurrence_recurrence_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.recurrence_recurrence_id_seq OWNED BY public.recurrence_recurrence.id;
+
+
+--
+-- Name: recurrence_rule; Type: TABLE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE TABLE public.recurrence_rule (
+    id integer NOT NULL,
+    mode boolean NOT NULL,
+    freq integer NOT NULL,
+    "interval" integer NOT NULL,
+    wkst integer,
+    count integer,
+    until timestamp with time zone,
+    recurrence_id integer NOT NULL,
+    CONSTRAINT recurrence_rule_count_check CHECK ((count >= 0)),
+    CONSTRAINT recurrence_rule_freq_check CHECK ((freq >= 0)),
+    CONSTRAINT recurrence_rule_interval_check CHECK (("interval" >= 0)),
+    CONSTRAINT recurrence_rule_wkst_check CHECK ((wkst >= 0))
+);
+
+
+ALTER TABLE public.recurrence_rule OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: recurrence_rule_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE SEQUENCE public.recurrence_rule_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.recurrence_rule_id_seq OWNER TO os2datascanner_admin_dev;
+
+--
+-- Name: recurrence_rule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER SEQUENCE public.recurrence_rule_id_seq OWNED BY public.recurrence_rule.id;
+
+
+--
+-- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_group ALTER COLUMN id SET DEFAULT nextval('public.auth_group_id_seq'::regclass);
+
+
+--
+-- Name: auth_group_permissions id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- Name: auth_permission id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_permission ALTER COLUMN id SET DEFAULT nextval('public.auth_permission_id_seq'::regclass);
+
+
+--
+-- Name: auth_user id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_user ALTER COLUMN id SET DEFAULT nextval('public.auth_user_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_groups id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_user_groups ALTER COLUMN id SET DEFAULT nextval('public.auth_user_groups_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_user_permissions id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- Name: django_admin_log id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.django_admin_log ALTER COLUMN id SET DEFAULT nextval('public.django_admin_log_id_seq'::regclass);
+
+
+--
+-- Name: django_content_type id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.django_content_type ALTER COLUMN id SET DEFAULT nextval('public.django_content_type_id_seq'::regclass);
+
+
+--
+-- Name: django_migrations id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.django_migrations ALTER COLUMN id SET DEFAULT nextval('public.django_migrations_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_authentication id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_authentication ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_authentication_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_authenticationmethods id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_authenticationmethods ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_authenticationmethods_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_group id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_group ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_group_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_group_user_profiles id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_group_user_profiles ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_group_user_profiles_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_organization id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_organization ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_organization_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_regexpattern id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_regexpattern ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_regexpattern_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_rule id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_rule ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_rule_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_scanner id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_scanner_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_scanner_recipients id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner_recipients ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_scanner_recipients_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_scanner_rules id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner_rules ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_scanner_rules_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_scanstatus id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanstatus ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_scanstatus_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_scheduledcheckup id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scheduledcheckup ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_scheduledcheckup_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_userprofile id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_userprofile ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_userprofile_id_seq'::regclass);
+
+
+--
+-- Name: recurrence_date id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.recurrence_date ALTER COLUMN id SET DEFAULT nextval('public.recurrence_date_id_seq'::regclass);
+
+
+--
+-- Name: recurrence_param id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.recurrence_param ALTER COLUMN id SET DEFAULT nextval('public.recurrence_param_id_seq'::regclass);
+
+
+--
+-- Name: recurrence_recurrence id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.recurrence_recurrence ALTER COLUMN id SET DEFAULT nextval('public.recurrence_recurrence_id_seq'::regclass);
+
+
+--
+-- Name: recurrence_rule id; Type: DEFAULT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.recurrence_rule ALTER COLUMN id SET DEFAULT nextval('public.recurrence_rule_id_seq'::regclass);
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.auth_group (id, name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.auth_group_permissions (id, group_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add log entry	1	add_logentry
+2	Can change log entry	1	change_logentry
+3	Can delete log entry	1	delete_logentry
+4	Can view log entry	1	view_logentry
+5	Can add permission	2	add_permission
+6	Can change permission	2	change_permission
+7	Can delete permission	2	delete_permission
+8	Can view permission	2	view_permission
+9	Can add group	3	add_group
+10	Can change group	3	change_group
+11	Can delete group	3	delete_group
+12	Can view group	3	view_group
+13	Can add user	4	add_user
+14	Can change user	4	change_user
+15	Can delete user	4	delete_user
+16	Can view user	4	view_user
+17	Can add content type	5	add_contenttype
+18	Can change content type	5	change_contenttype
+19	Can delete content type	5	delete_contenttype
+20	Can view content type	5	view_contenttype
+21	Can add session	6	add_session
+22	Can change session	6	change_session
+23	Can delete session	6	delete_session
+24	Can view session	6	view_session
+25	Can add authentication	7	add_authentication
+26	Can change authentication	7	change_authentication
+27	Can delete authentication	7	delete_authentication
+28	Can view authentication	7	view_authentication
+29	Can add authentication methods	8	add_authenticationmethods
+30	Can change authentication methods	8	change_authenticationmethods
+31	Can delete authentication methods	8	delete_authenticationmethods
+32	Can view authentication methods	8	view_authenticationmethods
+33	Can add group	9	add_group
+34	Can change group	9	change_group
+35	Can delete group	9	delete_group
+36	Can view group	9	view_group
+37	Can add organization	10	add_organization
+38	Can change organization	10	change_organization
+39	Can delete organization	10	delete_organization
+40	Can view organization	10	view_organization
+41	Can add regex pattern	11	add_regexpattern
+42	Can change regex pattern	11	change_regexpattern
+43	Can delete regex pattern	11	delete_regexpattern
+44	Can view regex pattern	11	view_regexpattern
+45	Can add scanner	12	add_scanner
+46	Can change scanner	12	change_scanner
+47	Can delete scanner	12	delete_scanner
+48	Can view scanner	12	view_scanner
+49	Can add user profile	13	add_userprofile
+50	Can change user profile	13	change_userprofile
+51	Can delete user profile	13	delete_userprofile
+52	Can view user profile	13	view_userprofile
+53	Can add exchange scanner	14	add_exchangescanner
+54	Can change exchange scanner	14	change_exchangescanner
+55	Can delete exchange scanner	14	delete_exchangescanner
+56	Can view exchange scanner	14	view_exchangescanner
+57	Can add file scanner	15	add_filescanner
+58	Can change file scanner	15	change_filescanner
+59	Can delete file scanner	15	delete_filescanner
+60	Can view file scanner	15	view_filescanner
+61	Can add web scanner	16	add_webscanner
+62	Can change web scanner	16	change_webscanner
+63	Can delete web scanner	16	delete_webscanner
+64	Can view web scanner	16	view_webscanner
+65	Can add rule	17	add_rule
+66	Can change rule	17	change_rule
+67	Can delete rule	17	delete_rule
+68	Can view rule	17	view_rule
+69	Can add cpr rule	18	add_cprrule
+70	Can change cpr rule	18	change_cprrule
+71	Can delete cpr rule	18	delete_cprrule
+72	Can view cpr rule	18	view_cprrule
+73	Can add regex rule	19	add_regexrule
+74	Can change regex rule	19	change_regexrule
+75	Can delete regex rule	19	delete_regexrule
+76	Can view regex rule	19	view_regexrule
+77	Can add address rule	20	add_addressrule
+78	Can change address rule	20	change_addressrule
+79	Can delete address rule	20	delete_addressrule
+80	Can view address rule	20	view_addressrule
+81	Can add name rule	21	add_namerule
+82	Can change name rule	21	change_namerule
+83	Can delete name rule	21	delete_namerule
+84	Can view name rule	21	view_namerule
+85	Can add ms graph mail scanner	22	add_msgraphmailscanner
+86	Can change ms graph mail scanner	22	change_msgraphmailscanner
+87	Can delete ms graph mail scanner	22	delete_msgraphmailscanner
+88	Can view ms graph mail scanner	22	view_msgraphmailscanner
+89	Can add dropbox scanner	23	add_dropboxscanner
+90	Can change dropbox scanner	23	change_dropboxscanner
+91	Can delete dropbox scanner	23	delete_dropboxscanner
+92	Can view dropbox scanner	23	view_dropboxscanner
+93	Can add ms graph file scanner	24	add_msgraphfilescanner
+94	Can change ms graph file scanner	24	change_msgraphfilescanner
+95	Can delete ms graph file scanner	24	delete_msgraphfilescanner
+96	Can view ms graph file scanner	24	view_msgraphfilescanner
+97	Can add google drive scanner	25	add_googledrivescanner
+98	Can change google drive scanner	25	change_googledrivescanner
+99	Can delete google drive scanner	25	delete_googledrivescanner
+100	Can view google drive scanner	25	view_googledrivescanner
+101	Can add gmail scanner	26	add_gmailscanner
+102	Can change gmail scanner	26	change_gmailscanner
+103	Can delete gmail scanner	26	delete_gmailscanner
+104	Can view gmail scanner	26	view_gmailscanner
+105	Can add scheduled checkup	27	add_scheduledcheckup
+106	Can change scheduled checkup	27	change_scheduledcheckup
+107	Can delete scheduled checkup	27	delete_scheduledcheckup
+108	Can view scheduled checkup	27	view_scheduledcheckup
+109	Can add sbsys scanner	28	add_sbsysscanner
+110	Can change sbsys scanner	28	change_sbsysscanner
+111	Can delete sbsys scanner	28	delete_sbsysscanner
+112	Can view sbsys scanner	28	view_sbsysscanner
+113	Can add scan status	29	add_scanstatus
+114	Can change scan status	29	change_scanstatus
+115	Can delete scan status	29	delete_scanstatus
+116	Can view scan status	29	view_scanstatus
+117	Can add API key	30	add_apikey
+118	Can change API key	30	change_apikey
+119	Can delete API key	30	delete_apikey
+120	Can view API key	30	view_apikey
+121	Can add date	31	add_date
+122	Can change date	31	change_date
+123	Can delete date	31	delete_date
+124	Can view date	31	view_date
+125	Can add param	32	add_param
+126	Can change param	32	change_param
+127	Can delete param	32	delete_param
+128	Can view param	32	view_param
+129	Can add recurrence	33	add_recurrence
+130	Can change recurrence	33	change_recurrence
+131	Can delete recurrence	33	delete_recurrence
+132	Can view recurrence	33	view_recurrence
+133	Can add rule	34	add_rule
+134	Can change rule	34	change_rule
+135	Can delete rule	34	delete_rule
+136	Can view rule	34	view_rule
+\.
+
+
+--
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
+1	pbkdf2_sha256$150000$60TBwpBIqzPG$/pOjfy3GgoY+hHhe0dSm5gmR6iE17tTv1nLw0Jwthos=	2021-03-18 13:52:17.464727+00	t	test			test@test	t	t	2021-03-18 13:50:04.36525+00
+\.
+
+
+--
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.auth_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+1	2021-03-18 13:52:55.882522+00	2	paws org	1	[{"added": {}}]	10	1
+\.
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.django_content_type (id, app_label, model) FROM stdin;
+1	admin	logentry
+2	auth	permission
+3	auth	group
+4	auth	user
+5	contenttypes	contenttype
+6	sessions	session
+7	os2datascanner	authentication
+8	os2datascanner	authenticationmethods
+9	os2datascanner	group
+10	os2datascanner	organization
+11	os2datascanner	regexpattern
+12	os2datascanner	scanner
+13	os2datascanner	userprofile
+14	os2datascanner	exchangescanner
+15	os2datascanner	filescanner
+16	os2datascanner	webscanner
+17	os2datascanner	rule
+18	os2datascanner	cprrule
+19	os2datascanner	regexrule
+20	os2datascanner	addressrule
+21	os2datascanner	namerule
+22	os2datascanner	msgraphmailscanner
+23	os2datascanner	dropboxscanner
+24	os2datascanner	msgraphfilescanner
+25	os2datascanner	googledrivescanner
+26	os2datascanner	gmailscanner
+27	os2datascanner	scheduledcheckup
+28	os2datascanner	sbsysscanner
+29	os2datascanner	scanstatus
+30	os2datascanner	apikey
+31	recurrence	date
+32	recurrence	param
+33	recurrence	recurrence
+34	recurrence	rule
+\.
+
+
+--
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.django_migrations (id, app, name, applied) FROM stdin;
+1	contenttypes	0001_initial	2021-03-18 13:48:15.07323+00
+2	auth	0001_initial	2021-03-18 13:48:15.132993+00
+3	admin	0001_initial	2021-03-18 13:48:15.224582+00
+4	admin	0002_logentry_remove_auto_add	2021-03-18 13:48:15.249806+00
+5	admin	0003_logentry_add_action_flag_choices	2021-03-18 13:48:15.263485+00
+6	contenttypes	0002_remove_content_type_name	2021-03-18 13:48:15.333622+00
+7	auth	0002_alter_permission_name_max_length	2021-03-18 13:48:15.342058+00
+8	auth	0003_alter_user_email_max_length	2021-03-18 13:48:15.35323+00
+9	auth	0004_alter_user_username_opts	2021-03-18 13:48:15.364832+00
+10	auth	0005_alter_user_last_login_null	2021-03-18 13:48:15.376701+00
+11	auth	0006_require_contenttypes_0002	2021-03-18 13:48:15.382636+00
+12	auth	0007_alter_validators_add_error_messages	2021-03-18 13:48:15.394712+00
+13	auth	0008_alter_user_username_max_length	2021-03-18 13:48:15.412445+00
+14	auth	0009_alter_user_last_name_max_length	2021-03-18 13:48:15.428753+00
+15	auth	0010_alter_group_name_max_length	2021-03-18 13:48:15.439964+00
+16	auth	0011_update_proxy_permissions	2021-03-18 13:48:15.453796+00
+17	os2datascanner	0001_initial	2021-03-18 13:48:16.437466+00
+18	os2datascanner	0002_cqi_status	2021-03-18 13:48:16.692147+00
+19	os2datascanner	0003_related_names	2021-03-18 13:48:16.76313+00
+20	os2datascanner	0004_scan_order	2021-03-18 13:48:16.78911+00
+21	os2datascanner	0005_version_mime_type	2021-03-18 13:48:16.881251+00
+22	os2datascanner	0006_cascade_deleting_scanners	2021-03-18 13:48:16.92016+00
+23	os2datascanner	0007_version_metadata	2021-03-18 13:48:16.945227+00
+24	os2datascanner	0008_cprrule	2021-03-18 13:48:16.997788+00
+25	os2datascanner	0009_concrete_rule	2021-03-18 13:48:17.118969+00
+26	os2datascanner	0010_scan_rules	2021-03-18 13:48:17.266581+00
+27	os2datascanner	0011_regexpattern_ordering	2021-03-18 13:48:17.312361+00
+28	os2datascanner	0012_remove_regexrule_cpr	2021-03-18 13:48:17.448735+00
+29	os2datascanner	0013_addressrule_namerule	2021-03-18 13:48:17.523759+00
+30	os2datascanner	0014_remove_special_scan_properties	2021-03-18 13:48:17.727891+00
+31	os2datascanner	0015_remove_organization_lists	2021-03-18 13:48:18.019276+00
+32	os2datascanner	0016_bigint_statistics	2021-03-18 13:48:18.09635+00
+33	os2datascanner	0017_track_scanner_start	2021-03-18 13:48:18.120497+00
+34	os2datascanner	0018_exchangescanner_service_endpoint	2021-03-18 13:48:18.142645+00
+35	os2datascanner	0019_purge_old_engine_properties	2021-03-18 13:48:18.206927+00
+36	os2datascanner	0020_new_sensitivity_level	2021-03-18 13:48:18.231476+00
+37	os2datascanner	0021_excise_colours	2021-03-18 13:48:18.350061+00
+38	os2datascanner	0022_delete_conversionqueueitem	2021-03-18 13:48:18.358864+00
+39	os2datascanner	0023_delete_summary	2021-03-18 13:48:18.377095+00
+40	os2datascanner	0024_delete_urllastmodified	2021-03-18 13:48:18.388568+00
+41	os2datascanner	0025_delete_statistics	2021-03-18 13:48:18.419804+00
+42	os2datascanner	0026_delete_webscan	2021-03-18 13:48:18.426986+00
+43	os2datascanner	0027_delete_referrerurl	2021-03-18 13:48:18.459623+00
+44	os2datascanner	0028_delete_webversion	2021-03-18 13:48:18.466705+00
+45	os2datascanner	0029_delete_scan_and_friends	2021-03-18 13:48:18.59469+00
+46	os2datascanner	0030_msgraphmailscanner	2021-03-18 13:48:18.62235+00
+47	os2datascanner	0030_dropboxscanner	2021-03-18 13:48:18.649223+00
+48	os2datascanner	0030_cprrule_examine_context	2021-03-18 13:48:18.666753+00
+49	os2datascanner	0031_merge_20200707_1142	2021-03-18 13:48:18.672167+00
+50	os2datascanner	0032_msgraphfilescanner	2021-03-18 13:48:18.69739+00
+51	os2datascanner	0033_googledrivescanner	2021-03-18 13:48:18.724451+00
+52	os2datascanner	0034_gmailscanner	2021-03-18 13:48:18.754231+00
+53	os2datascanner	0035_scheduledcheckup	2021-03-18 13:48:18.786666+00
+54	os2datascanner	0036_sbsysscanner	2021-03-18 13:48:18.817966+00
+55	os2datascanner	0037_scanstatus	2021-03-18 13:48:18.864934+00
+56	os2datascanner	0038_organization_uuid	2021-03-18 13:48:18.893126+00
+57	os2datascanner	0039_populate_uuid_values	2021-03-18 13:48:18.931962+00
+58	os2datascanner	0040_remove_uuid_null	2021-03-18 13:48:18.953629+00
+59	os2datascanner	0041_upload_to_paths_20201217_2335	2021-03-18 13:48:19.03685+00
+60	os2datascanner	0042_create_default_cpr_rule	2021-03-18 13:48:19.070194+00
+61	os2datascanner	0043_service_endpoint_blank_true	2021-03-18 13:48:19.094669+00
+62	os2datascanner	0044_apikey	2021-03-18 13:48:19.132707+00
+63	recurrence	0001_initial	2021-03-18 13:48:19.198308+00
+64	sessions	0001_initial	2021-03-18 13:48:19.233434+00
+\.
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+0nf4961h8v5e9uxu1g77p119ykrvonds	ZWY3MTYyMzg0ZDhiYjMxZWVmODA5YTMyZTQ3YTBjYzY0OTgwZjcyNzp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJhMmIzM2FmNTkzNTgxNDRkNDg0NzNmMzYyYjU5Y2QzYjViNDI2MWRjIn0=	2021-04-01 13:52:17.474653+00
+\.
+
+
+--
+-- Data for Name: os2datascanner_addressrule; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_addressrule (rule_ptr_id, database, blacklist, whitelist) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_apikey; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_apikey (uuid, scope, organization_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_authentication; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_authentication (id, username, iv, ciphertext, domain) FROM stdin;
+1		\\x	\\x	
+2		\\x	\\x	
+\.
+
+
+--
+-- Data for Name: os2datascanner_authenticationmethods; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_authenticationmethods (id, methodname) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_cprrule; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_cprrule (rule_ptr_id, do_modulus11, ignore_irrelevant, whitelist, examine_context) FROM stdin;
+1	t	t		t
+\.
+
+
+--
+-- Data for Name: os2datascanner_dropboxscanner; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_dropboxscanner (scanner_ptr_id, token) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_exchangescanner; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_exchangescanner (scanner_ptr_id, userlist, service_endpoint) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_filescanner; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_filescanner (scanner_ptr_id, alias) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_gmailscanner; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_gmailscanner (scanner_ptr_id, service_account_file_gmail, user_emails_gmail) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_googledrivescanner; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_googledrivescanner (scanner_ptr_id, service_account_file, user_emails) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_group; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_group (id, name, contact_email, contact_phone, organization_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_group_user_profiles; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_group_user_profiles (id, group_id, userprofile_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_msgraphfilescanner; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_msgraphfilescanner (scanner_ptr_id, tenant_id, scan_site_drives, scan_user_drives) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_msgraphmailscanner; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_msgraphmailscanner (scanner_ptr_id, tenant_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_namerule; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_namerule (rule_ptr_id, database, blacklist, whitelist) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_organization; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_organization (id, name, contact_email, contact_phone, do_use_groups, do_notify_all_scans, uuid) FROM stdin;
+1	OS2datascanner	info@magenta-aps.dk	+45 3336 9696	f	t	8c27d4fc-a425-447d-b276-8f717263fa73
+2	paws org	test@test.dk	11223344	f	t	aa1aa88a-f249-4487-a166-00c4ca816ca7
+\.
+
+
+--
+-- Data for Name: os2datascanner_regexpattern; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_regexpattern (id, pattern_string, regex_id) FROM stdin;
+1	[Dd]anni	2
+\.
+
+
+--
+-- Data for Name: os2datascanner_regexrule; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_regexrule (rule_ptr_id) FROM stdin;
+2
+\.
+
+
+--
+-- Data for Name: os2datascanner_rule; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_rule (id, name, description, sensitivity, group_id, organization_id) FROM stdin;
+1	CPR regel	Denne regel finder alle gyldige CPR numre.	3	\N	1
+2	danni	Find Danni	2	\N	2
+\.
+
+
+--
+-- Data for Name: os2datascanner_sbsysscanner; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_sbsysscanner (scanner_ptr_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_scanner; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_scanner (id, name, schedule, do_ocr, do_last_modified_check, columns, output_spreadsheet_file, do_cpr_replace, cpr_replace_text, do_name_replace, name_replace_text, do_address_replace, address_replace_text, url, validation_status, exclusion_rules, process_urls, do_run_synchronously, is_visible, authentication_id, group_id, organization_id, e2_last_run_at) FROM stdin;
+1	danni magenta		f	t	\N	f	f	\N	f	\N	f	\N	https://www.magenta.dk	1		\N	f	t	1	\N	2	\N
+2	localhost		t	t	\N	f	f	\N	f	\N	f	\N	127.0.0.1:64346	1		\N	f	t	2	\N	2	\N
+\.
+
+
+--
+-- Data for Name: os2datascanner_scanner_recipients; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_scanner_recipients (id, scanner_id, userprofile_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_scanner_rules; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_scanner_rules (id, scanner_id, rule_id) FROM stdin;
+1	1	2
+2	2	1
+3	2	2
+\.
+
+
+--
+-- Data for Name: os2datascanner_scanstatus; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_scanstatus (id, scan_tag, total_sources, explored_sources, total_objects, scanned_objects, scanned_size, scanner_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_scheduledcheckup; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_scheduledcheckup (id, handle_representation, interested_before, scanner_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_userprofile; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_userprofile (id, is_group_admin, is_upload_only, organization_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_webscanner; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.os2datascanner_webscanner (scanner_ptr_id, do_link_check, do_external_link_check, do_last_modified_check_head_request, do_collect_cookies, validation_method, sitemap, sitemap_url, download_sitemap) FROM stdin;
+1	t	t	t	f	0			t
+2	t	t	t	t	0			t
+\.
+
+
+--
+-- Data for Name: recurrence_date; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.recurrence_date (id, mode, dt, recurrence_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: recurrence_param; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.recurrence_param (id, param, value, index, rule_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: recurrence_recurrence; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.recurrence_recurrence (id, dtstart, dtend) FROM stdin;
+\.
+
+
+--
+-- Data for Name: recurrence_rule; Type: TABLE DATA; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+COPY public.recurrence_rule (id, mode, freq, "interval", wkst, count, until, recurrence_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.auth_group_id_seq', 1, false);
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 1, false);
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 136, true);
+
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 1, false);
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.auth_user_id_seq', 1, true);
+
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 1, false);
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 1, true);
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 34, true);
+
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 64, true);
+
+
+--
+-- Name: os2datascanner_authentication_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_authentication_id_seq', 2, true);
+
+
+--
+-- Name: os2datascanner_authenticationmethods_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_authenticationmethods_id_seq', 1, false);
+
+
+--
+-- Name: os2datascanner_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_group_id_seq', 1, false);
+
+
+--
+-- Name: os2datascanner_group_user_profiles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_group_user_profiles_id_seq', 1, false);
+
+
+--
+-- Name: os2datascanner_organization_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_organization_id_seq', 2, true);
+
+
+--
+-- Name: os2datascanner_regexpattern_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_regexpattern_id_seq', 1, true);
+
+
+--
+-- Name: os2datascanner_rule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_rule_id_seq', 2, true);
+
+
+--
+-- Name: os2datascanner_scanner_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_scanner_id_seq', 2, true);
+
+
+--
+-- Name: os2datascanner_scanner_recipients_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_scanner_recipients_id_seq', 1, false);
+
+
+--
+-- Name: os2datascanner_scanner_rules_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_scanner_rules_id_seq', 3, true);
+
+
+--
+-- Name: os2datascanner_scanstatus_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_scanstatus_id_seq', 1, false);
+
+
+--
+-- Name: os2datascanner_scheduledcheckup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_scheduledcheckup_id_seq', 1, false);
+
+
+--
+-- Name: os2datascanner_userprofile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_userprofile_id_seq', 1, false);
+
+
+--
+-- Name: recurrence_date_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.recurrence_date_id_seq', 1, false);
+
+
+--
+-- Name: recurrence_param_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.recurrence_param_id_seq', 1, false);
+
+
+--
+-- Name: recurrence_recurrence_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.recurrence_recurrence_id_seq', 1, false);
+
+
+--
+-- Name: recurrence_rule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+SELECT pg_catalog.setval('public.recurrence_rule_id_seq', 1, false);
+
+
+--
+-- Name: auth_group auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_name_key UNIQUE (name);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_permission_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_permission_id_0cd325b0_uniq UNIQUE (group_id, permission_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_codename_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_codename_01ab375a_uniq UNIQUE (content_type_id, codename);
+
+
+--
+-- Name: auth_permission auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_group_id_94350c0c_uniq; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_group_id_94350c0c_uniq UNIQUE (user_id, group_id);
+
+
+--
+-- Name: auth_user auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_permission_id_14a6b632_uniq; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_permission_id_14a6b632_uniq UNIQUE (user_id, permission_id);
+
+
+--
+-- Name: auth_user auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_username_key UNIQUE (username);
+
+
+--
+-- Name: django_admin_log django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_content_type django_content_type_app_label_model_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_app_label_model_76bd3d3b_uniq UNIQUE (app_label, model);
+
+
+--
+-- Name: django_content_type django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_migrations django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.django_migrations
+    ADD CONSTRAINT django_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_session django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.django_session
+    ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: os2datascanner_addressrule os2datascanner_addressrule_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_addressrule
+    ADD CONSTRAINT os2datascanner_addressrule_pkey PRIMARY KEY (rule_ptr_id);
+
+
+--
+-- Name: os2datascanner_apikey os2datascanner_apikey_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_apikey
+    ADD CONSTRAINT os2datascanner_apikey_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: os2datascanner_authentication os2datascanner_authentication_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_authentication
+    ADD CONSTRAINT os2datascanner_authentication_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_authenticationmethods os2datascanner_authenticationmethods_methodname_key; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_authenticationmethods
+    ADD CONSTRAINT os2datascanner_authenticationmethods_methodname_key UNIQUE (methodname);
+
+
+--
+-- Name: os2datascanner_authenticationmethods os2datascanner_authenticationmethods_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_authenticationmethods
+    ADD CONSTRAINT os2datascanner_authenticationmethods_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_cprrule os2datascanner_cprrule_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_cprrule
+    ADD CONSTRAINT os2datascanner_cprrule_pkey PRIMARY KEY (rule_ptr_id);
+
+
+--
+-- Name: os2datascanner_dropboxscanner os2datascanner_dropboxscanner_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_dropboxscanner
+    ADD CONSTRAINT os2datascanner_dropboxscanner_pkey PRIMARY KEY (scanner_ptr_id);
+
+
+--
+-- Name: os2datascanner_exchangescanner os2datascanner_exchangescanner_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_exchangescanner
+    ADD CONSTRAINT os2datascanner_exchangescanner_pkey PRIMARY KEY (scanner_ptr_id);
+
+
+--
+-- Name: os2datascanner_filescanner os2datascanner_filescanner_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_filescanner
+    ADD CONSTRAINT os2datascanner_filescanner_pkey PRIMARY KEY (scanner_ptr_id);
+
+
+--
+-- Name: os2datascanner_gmailscanner os2datascanner_gmailscanner_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_gmailscanner
+    ADD CONSTRAINT os2datascanner_gmailscanner_pkey PRIMARY KEY (scanner_ptr_id);
+
+
+--
+-- Name: os2datascanner_googledrivescanner os2datascanner_googledrivescanner_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_googledrivescanner
+    ADD CONSTRAINT os2datascanner_googledrivescanner_pkey PRIMARY KEY (scanner_ptr_id);
+
+
+--
+-- Name: os2datascanner_group os2datascanner_group_name_key; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_group
+    ADD CONSTRAINT os2datascanner_group_name_key UNIQUE (name);
+
+
+--
+-- Name: os2datascanner_group os2datascanner_group_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_group
+    ADD CONSTRAINT os2datascanner_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_group_user_profiles os2datascanner_group_use_group_id_userprofile_id_b9161752_uniq; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_group_user_profiles
+    ADD CONSTRAINT os2datascanner_group_use_group_id_userprofile_id_b9161752_uniq UNIQUE (group_id, userprofile_id);
+
+
+--
+-- Name: os2datascanner_group_user_profiles os2datascanner_group_user_profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_group_user_profiles
+    ADD CONSTRAINT os2datascanner_group_user_profiles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_msgraphfilescanner os2datascanner_msgraphfilescanner_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_msgraphfilescanner
+    ADD CONSTRAINT os2datascanner_msgraphfilescanner_pkey PRIMARY KEY (scanner_ptr_id);
+
+
+--
+-- Name: os2datascanner_msgraphmailscanner os2datascanner_msgraphmailscanner_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_msgraphmailscanner
+    ADD CONSTRAINT os2datascanner_msgraphmailscanner_pkey PRIMARY KEY (scanner_ptr_id);
+
+
+--
+-- Name: os2datascanner_namerule os2datascanner_namerule_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_namerule
+    ADD CONSTRAINT os2datascanner_namerule_pkey PRIMARY KEY (rule_ptr_id);
+
+
+--
+-- Name: os2datascanner_organization os2datascanner_organization_name_key; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_organization
+    ADD CONSTRAINT os2datascanner_organization_name_key UNIQUE (name);
+
+
+--
+-- Name: os2datascanner_organization os2datascanner_organization_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_organization
+    ADD CONSTRAINT os2datascanner_organization_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_organization os2datascanner_organization_uuid_4ceeaa6a_uniq; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_organization
+    ADD CONSTRAINT os2datascanner_organization_uuid_4ceeaa6a_uniq UNIQUE (uuid);
+
+
+--
+-- Name: os2datascanner_regexpattern os2datascanner_regexpattern_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_regexpattern
+    ADD CONSTRAINT os2datascanner_regexpattern_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_regexrule os2datascanner_regexrule_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_regexrule
+    ADD CONSTRAINT os2datascanner_regexrule_pkey PRIMARY KEY (rule_ptr_id);
+
+
+--
+-- Name: os2datascanner_rule os2datascanner_rule_name_key; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_rule
+    ADD CONSTRAINT os2datascanner_rule_name_key UNIQUE (name);
+
+
+--
+-- Name: os2datascanner_rule os2datascanner_rule_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_rule
+    ADD CONSTRAINT os2datascanner_rule_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_sbsysscanner os2datascanner_sbsysscanner_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_sbsysscanner
+    ADD CONSTRAINT os2datascanner_sbsysscanner_pkey PRIMARY KEY (scanner_ptr_id);
+
+
+--
+-- Name: os2datascanner_scanner os2datascanner_scanner_authentication_id_key; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner
+    ADD CONSTRAINT os2datascanner_scanner_authentication_id_key UNIQUE (authentication_id);
+
+
+--
+-- Name: os2datascanner_scanner os2datascanner_scanner_name_key; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner
+    ADD CONSTRAINT os2datascanner_scanner_name_key UNIQUE (name);
+
+
+--
+-- Name: os2datascanner_scanner os2datascanner_scanner_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner
+    ADD CONSTRAINT os2datascanner_scanner_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_scanner_recipients os2datascanner_scanner_r_scanner_id_userprofile_i_b9261a0c_uniq; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner_recipients
+    ADD CONSTRAINT os2datascanner_scanner_r_scanner_id_userprofile_i_b9261a0c_uniq UNIQUE (scanner_id, userprofile_id);
+
+
+--
+-- Name: os2datascanner_scanner_recipients os2datascanner_scanner_recipients_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner_recipients
+    ADD CONSTRAINT os2datascanner_scanner_recipients_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_scanner_rules os2datascanner_scanner_rules_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner_rules
+    ADD CONSTRAINT os2datascanner_scanner_rules_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_scanner_rules os2datascanner_scanner_rules_scanner_id_rule_id_34acd5ed_uniq; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner_rules
+    ADD CONSTRAINT os2datascanner_scanner_rules_scanner_id_rule_id_34acd5ed_uniq UNIQUE (scanner_id, rule_id);
+
+
+--
+-- Name: os2datascanner_scanstatus os2datascanner_scanstatus_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanstatus
+    ADD CONSTRAINT os2datascanner_scanstatus_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_scanstatus os2datascanner_scanstatus_scan_tag_key; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanstatus
+    ADD CONSTRAINT os2datascanner_scanstatus_scan_tag_key UNIQUE (scan_tag);
+
+
+--
+-- Name: os2datascanner_scheduledcheckup os2datascanner_scheduledcheckup_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scheduledcheckup
+    ADD CONSTRAINT os2datascanner_scheduledcheckup_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_userprofile os2datascanner_userprofile_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_userprofile
+    ADD CONSTRAINT os2datascanner_userprofile_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_userprofile os2datascanner_userprofile_user_id_key; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_userprofile
+    ADD CONSTRAINT os2datascanner_userprofile_user_id_key UNIQUE (user_id);
+
+
+--
+-- Name: os2datascanner_webscanner os2datascanner_webscanner_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_webscanner
+    ADD CONSTRAINT os2datascanner_webscanner_pkey PRIMARY KEY (scanner_ptr_id);
+
+
+--
+-- Name: recurrence_date recurrence_date_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.recurrence_date
+    ADD CONSTRAINT recurrence_date_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: recurrence_param recurrence_param_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.recurrence_param
+    ADD CONSTRAINT recurrence_param_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: recurrence_recurrence recurrence_recurrence_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.recurrence_recurrence
+    ADD CONSTRAINT recurrence_recurrence_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: recurrence_rule recurrence_rule_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.recurrence_rule
+    ADD CONSTRAINT recurrence_rule_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group_name_a6ea08ec_like; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX auth_group_name_a6ea08ec_like ON public.auth_group USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: auth_group_permissions_group_id_b120cbf9; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX auth_group_permissions_group_id_b120cbf9 ON public.auth_group_permissions USING btree (group_id);
+
+
+--
+-- Name: auth_group_permissions_permission_id_84c5c92e; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON public.auth_group_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_permission_content_type_id_2f476e4b; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX auth_permission_content_type_id_2f476e4b ON public.auth_permission USING btree (content_type_id);
+
+
+--
+-- Name: auth_user_groups_group_id_97559544; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX auth_user_groups_group_id_97559544 ON public.auth_user_groups USING btree (group_id);
+
+
+--
+-- Name: auth_user_groups_user_id_6a12ed8b; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX auth_user_groups_user_id_6a12ed8b ON public.auth_user_groups USING btree (user_id);
+
+
+--
+-- Name: auth_user_user_permissions_permission_id_1fbb5f2c; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX auth_user_user_permissions_permission_id_1fbb5f2c ON public.auth_user_user_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_user_user_permissions_user_id_a95ead1b; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX auth_user_user_permissions_user_id_a95ead1b ON public.auth_user_user_permissions USING btree (user_id);
+
+
+--
+-- Name: auth_user_username_6821ab7c_like; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX auth_user_username_6821ab7c_like ON public.auth_user USING btree (username varchar_pattern_ops);
+
+
+--
+-- Name: django_admin_log_content_type_id_c4bce8eb; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX django_admin_log_content_type_id_c4bce8eb ON public.django_admin_log USING btree (content_type_id);
+
+
+--
+-- Name: django_admin_log_user_id_c564eba6; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX django_admin_log_user_id_c564eba6 ON public.django_admin_log USING btree (user_id);
+
+
+--
+-- Name: django_session_expire_date_a5c62663; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX django_session_expire_date_a5c62663 ON public.django_session USING btree (expire_date);
+
+
+--
+-- Name: django_session_session_key_c0390e0f_like; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX django_session_session_key_c0390e0f_like ON public.django_session USING btree (session_key varchar_pattern_ops);
+
+
+--
+-- Name: os2datascanner_apikey_organization_id_6c02d5fc; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_apikey_organization_id_6c02d5fc ON public.os2datascanner_apikey USING btree (organization_id);
+
+
+--
+-- Name: os2datascanner_authenticationmethods_methodname_c015242b_like; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_authenticationmethods_methodname_c015242b_like ON public.os2datascanner_authenticationmethods USING btree (methodname varchar_pattern_ops);
+
+
+--
+-- Name: os2datascanner_group_name_0b32bad0_like; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_group_name_0b32bad0_like ON public.os2datascanner_group USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: os2datascanner_group_organization_id_9ffc50b1; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_group_organization_id_9ffc50b1 ON public.os2datascanner_group USING btree (organization_id);
+
+
+--
+-- Name: os2datascanner_group_user_profiles_group_id_814c1829; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_group_user_profiles_group_id_814c1829 ON public.os2datascanner_group_user_profiles USING btree (group_id);
+
+
+--
+-- Name: os2datascanner_group_user_profiles_userprofile_id_43eb80b1; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_group_user_profiles_userprofile_id_43eb80b1 ON public.os2datascanner_group_user_profiles USING btree (userprofile_id);
+
+
+--
+-- Name: os2datascanner_organization_name_f3cc10a2_like; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_organization_name_f3cc10a2_like ON public.os2datascanner_organization USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: os2datascanner_regexpattern_regex_id_1862c052; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_regexpattern_regex_id_1862c052 ON public.os2datascanner_regexpattern USING btree (regex_id);
+
+
+--
+-- Name: os2datascanner_rule_group_id_00968b64; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_rule_group_id_00968b64 ON public.os2datascanner_rule USING btree (group_id);
+
+
+--
+-- Name: os2datascanner_rule_name_c7a54dd8_like; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_rule_name_c7a54dd8_like ON public.os2datascanner_rule USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: os2datascanner_rule_organization_id_8b7288fb; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_rule_organization_id_8b7288fb ON public.os2datascanner_rule USING btree (organization_id);
+
+
+--
+-- Name: os2datascanner_scanner_group_id_8a2192ac; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_scanner_group_id_8a2192ac ON public.os2datascanner_scanner USING btree (group_id);
+
+
+--
+-- Name: os2datascanner_scanner_name_01f6858f_like; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_scanner_name_01f6858f_like ON public.os2datascanner_scanner USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: os2datascanner_scanner_organization_id_28643d68; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_scanner_organization_id_28643d68 ON public.os2datascanner_scanner USING btree (organization_id);
+
+
+--
+-- Name: os2datascanner_scanner_recipients_scanner_id_eec76ed4; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_scanner_recipients_scanner_id_eec76ed4 ON public.os2datascanner_scanner_recipients USING btree (scanner_id);
+
+
+--
+-- Name: os2datascanner_scanner_recipients_userprofile_id_615ba473; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_scanner_recipients_userprofile_id_615ba473 ON public.os2datascanner_scanner_recipients USING btree (userprofile_id);
+
+
+--
+-- Name: os2datascanner_scanner_rules_rule_id_1f175668; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_scanner_rules_rule_id_1f175668 ON public.os2datascanner_scanner_rules USING btree (rule_id);
+
+
+--
+-- Name: os2datascanner_scanner_rules_scanner_id_c008a442; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_scanner_rules_scanner_id_c008a442 ON public.os2datascanner_scanner_rules USING btree (scanner_id);
+
+
+--
+-- Name: os2datascanner_scanstatus_scanner_id_24adf542; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_scanstatus_scanner_id_24adf542 ON public.os2datascanner_scanstatus USING btree (scanner_id);
+
+
+--
+-- Name: os2datascanner_scheduledcheckup_scanner_id_651cebb8; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_scheduledcheckup_scanner_id_651cebb8 ON public.os2datascanner_scheduledcheckup USING btree (scanner_id);
+
+
+--
+-- Name: os2datascanner_userprofile_organization_id_be951068; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX os2datascanner_userprofile_organization_id_be951068 ON public.os2datascanner_userprofile USING btree (organization_id);
+
+
+--
+-- Name: recurrence_date_recurrence_id_eb6cafba; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX recurrence_date_recurrence_id_eb6cafba ON public.recurrence_date USING btree (recurrence_id);
+
+
+--
+-- Name: recurrence_param_rule_id_89d093fd; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX recurrence_param_rule_id_89d093fd ON public.recurrence_param USING btree (rule_id);
+
+
+--
+-- Name: recurrence_rule_recurrence_id_b9b6b296; Type: INDEX; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+CREATE INDEX recurrence_rule_recurrence_id_b9b6b296 ON public.recurrence_rule USING btree (recurrence_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissio_permission_id_84c5c92e_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_2f476e4b_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_group_id_97559544_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_group_id_97559544_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_6a12ed8b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_6a12ed8b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_content_type_id_c4bce8eb_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_content_type_id_c4bce8eb_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_user_id_c564eba6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_user_id_c564eba6_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_addressrule os2datascanner_addre_rule_ptr_id_0825a6bc_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_addressrule
+    ADD CONSTRAINT os2datascanner_addre_rule_ptr_id_0825a6bc_fk_os2datasc FOREIGN KEY (rule_ptr_id) REFERENCES public.os2datascanner_rule(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_apikey os2datascanner_apike_organization_id_6c02d5fc_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_apikey
+    ADD CONSTRAINT os2datascanner_apike_organization_id_6c02d5fc_fk_os2datasc FOREIGN KEY (organization_id) REFERENCES public.os2datascanner_organization(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_cprrule os2datascanner_cprru_rule_ptr_id_cc4a1590_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_cprrule
+    ADD CONSTRAINT os2datascanner_cprru_rule_ptr_id_cc4a1590_fk_os2datasc FOREIGN KEY (rule_ptr_id) REFERENCES public.os2datascanner_rule(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_dropboxscanner os2datascanner_dropb_scanner_ptr_id_fa62f89b_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_dropboxscanner
+    ADD CONSTRAINT os2datascanner_dropb_scanner_ptr_id_fa62f89b_fk_os2datasc FOREIGN KEY (scanner_ptr_id) REFERENCES public.os2datascanner_scanner(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_exchangescanner os2datascanner_excha_scanner_ptr_id_78dc899a_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_exchangescanner
+    ADD CONSTRAINT os2datascanner_excha_scanner_ptr_id_78dc899a_fk_os2datasc FOREIGN KEY (scanner_ptr_id) REFERENCES public.os2datascanner_scanner(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_filescanner os2datascanner_files_scanner_ptr_id_e3a0450b_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_filescanner
+    ADD CONSTRAINT os2datascanner_files_scanner_ptr_id_e3a0450b_fk_os2datasc FOREIGN KEY (scanner_ptr_id) REFERENCES public.os2datascanner_scanner(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_gmailscanner os2datascanner_gmail_scanner_ptr_id_a5c8606f_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_gmailscanner
+    ADD CONSTRAINT os2datascanner_gmail_scanner_ptr_id_a5c8606f_fk_os2datasc FOREIGN KEY (scanner_ptr_id) REFERENCES public.os2datascanner_scanner(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_googledrivescanner os2datascanner_googl_scanner_ptr_id_01d7a0b1_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_googledrivescanner
+    ADD CONSTRAINT os2datascanner_googl_scanner_ptr_id_01d7a0b1_fk_os2datasc FOREIGN KEY (scanner_ptr_id) REFERENCES public.os2datascanner_scanner(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_group_user_profiles os2datascanner_group_group_id_814c1829_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_group_user_profiles
+    ADD CONSTRAINT os2datascanner_group_group_id_814c1829_fk_os2datasc FOREIGN KEY (group_id) REFERENCES public.os2datascanner_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_group os2datascanner_group_organization_id_9ffc50b1_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_group
+    ADD CONSTRAINT os2datascanner_group_organization_id_9ffc50b1_fk_os2datasc FOREIGN KEY (organization_id) REFERENCES public.os2datascanner_organization(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_group_user_profiles os2datascanner_group_userprofile_id_43eb80b1_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_group_user_profiles
+    ADD CONSTRAINT os2datascanner_group_userprofile_id_43eb80b1_fk_os2datasc FOREIGN KEY (userprofile_id) REFERENCES public.os2datascanner_userprofile(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_msgraphfilescanner os2datascanner_msgra_scanner_ptr_id_58034e4b_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_msgraphfilescanner
+    ADD CONSTRAINT os2datascanner_msgra_scanner_ptr_id_58034e4b_fk_os2datasc FOREIGN KEY (scanner_ptr_id) REFERENCES public.os2datascanner_scanner(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_msgraphmailscanner os2datascanner_msgra_scanner_ptr_id_c3ba7d8b_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_msgraphmailscanner
+    ADD CONSTRAINT os2datascanner_msgra_scanner_ptr_id_c3ba7d8b_fk_os2datasc FOREIGN KEY (scanner_ptr_id) REFERENCES public.os2datascanner_scanner(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_namerule os2datascanner_namer_rule_ptr_id_89b7a5a2_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_namerule
+    ADD CONSTRAINT os2datascanner_namer_rule_ptr_id_89b7a5a2_fk_os2datasc FOREIGN KEY (rule_ptr_id) REFERENCES public.os2datascanner_rule(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_regexrule os2datascanner_regex_rule_ptr_id_d92b70b9_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_regexrule
+    ADD CONSTRAINT os2datascanner_regex_rule_ptr_id_d92b70b9_fk_os2datasc FOREIGN KEY (rule_ptr_id) REFERENCES public.os2datascanner_rule(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_rule os2datascanner_rule_group_id_00968b64_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_rule
+    ADD CONSTRAINT os2datascanner_rule_group_id_00968b64_fk_os2datasc FOREIGN KEY (group_id) REFERENCES public.os2datascanner_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_rule os2datascanner_rule_organization_id_8b7288fb_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_rule
+    ADD CONSTRAINT os2datascanner_rule_organization_id_8b7288fb_fk_os2datasc FOREIGN KEY (organization_id) REFERENCES public.os2datascanner_organization(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_sbsysscanner os2datascanner_sbsys_scanner_ptr_id_bcfe62a6_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_sbsysscanner
+    ADD CONSTRAINT os2datascanner_sbsys_scanner_ptr_id_bcfe62a6_fk_os2datasc FOREIGN KEY (scanner_ptr_id) REFERENCES public.os2datascanner_scanner(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_scanner os2datascanner_scann_authentication_id_20636e58_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner
+    ADD CONSTRAINT os2datascanner_scann_authentication_id_20636e58_fk_os2datasc FOREIGN KEY (authentication_id) REFERENCES public.os2datascanner_authentication(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_scanner os2datascanner_scann_group_id_8a2192ac_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner
+    ADD CONSTRAINT os2datascanner_scann_group_id_8a2192ac_fk_os2datasc FOREIGN KEY (group_id) REFERENCES public.os2datascanner_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_scanner os2datascanner_scann_organization_id_28643d68_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner
+    ADD CONSTRAINT os2datascanner_scann_organization_id_28643d68_fk_os2datasc FOREIGN KEY (organization_id) REFERENCES public.os2datascanner_organization(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_scanner_rules os2datascanner_scann_rule_id_1f175668_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner_rules
+    ADD CONSTRAINT os2datascanner_scann_rule_id_1f175668_fk_os2datasc FOREIGN KEY (rule_id) REFERENCES public.os2datascanner_rule(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_scanner_rules os2datascanner_scann_scanner_id_c008a442_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner_rules
+    ADD CONSTRAINT os2datascanner_scann_scanner_id_c008a442_fk_os2datasc FOREIGN KEY (scanner_id) REFERENCES public.os2datascanner_scanner(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_scanner_recipients os2datascanner_scann_scanner_id_eec76ed4_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner_recipients
+    ADD CONSTRAINT os2datascanner_scann_scanner_id_eec76ed4_fk_os2datasc FOREIGN KEY (scanner_id) REFERENCES public.os2datascanner_scanner(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_scanner_recipients os2datascanner_scann_userprofile_id_615ba473_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanner_recipients
+    ADD CONSTRAINT os2datascanner_scann_userprofile_id_615ba473_fk_os2datasc FOREIGN KEY (userprofile_id) REFERENCES public.os2datascanner_userprofile(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_scanstatus os2datascanner_scans_scanner_id_24adf542_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scanstatus
+    ADD CONSTRAINT os2datascanner_scans_scanner_id_24adf542_fk_os2datasc FOREIGN KEY (scanner_id) REFERENCES public.os2datascanner_scanner(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_scheduledcheckup os2datascanner_sched_scanner_id_651cebb8_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_scheduledcheckup
+    ADD CONSTRAINT os2datascanner_sched_scanner_id_651cebb8_fk_os2datasc FOREIGN KEY (scanner_id) REFERENCES public.os2datascanner_scanner(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_userprofile os2datascanner_userp_organization_id_be951068_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_userprofile
+    ADD CONSTRAINT os2datascanner_userp_organization_id_be951068_fk_os2datasc FOREIGN KEY (organization_id) REFERENCES public.os2datascanner_organization(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_userprofile os2datascanner_userprofile_user_id_d64afd48_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_userprofile
+    ADD CONSTRAINT os2datascanner_userprofile_user_id_d64afd48_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_webscanner os2datascanner_websc_scanner_ptr_id_c209e35e_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_webscanner
+    ADD CONSTRAINT os2datascanner_websc_scanner_ptr_id_c209e35e_fk_os2datasc FOREIGN KEY (scanner_ptr_id) REFERENCES public.os2datascanner_scanner(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: recurrence_date recurrence_date_recurrence_id_eb6cafba_fk_recurrenc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.recurrence_date
+    ADD CONSTRAINT recurrence_date_recurrence_id_eb6cafba_fk_recurrenc FOREIGN KEY (recurrence_id) REFERENCES public.recurrence_recurrence(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: recurrence_param recurrence_param_rule_id_89d093fd_fk_recurrence_rule_id; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.recurrence_param
+    ADD CONSTRAINT recurrence_param_rule_id_89d093fd_fk_recurrence_rule_id FOREIGN KEY (rule_id) REFERENCES public.recurrence_rule(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: recurrence_rule recurrence_rule_recurrence_id_b9b6b296_fk_recurrenc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_admin_dev
+--
+
+ALTER TABLE ONLY public.recurrence_rule
+    ADD CONSTRAINT recurrence_rule_recurrence_id_b9b6b296_fk_recurrenc FOREIGN KEY (recurrence_id) REFERENCES public.recurrence_recurrence(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: DATABASE os2datascanner_admin; Type: ACL; Schema: -; Owner: postgres
+--
+
+GRANT ALL ON DATABASE os2datascanner_admin TO os2datascanner_admin_dev;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+--
+-- Database "os2datascanner_report" dump
+--
+
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.6 (Debian 12.6-1.pgdg100+1)
+-- Dumped by pg_dump version 12.6 (Debian 12.6-1.pgdg100+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: os2datascanner_report; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE os2datascanner_report WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
+
+
+ALTER DATABASE os2datascanner_report OWNER TO postgres;
+
+\connect os2datascanner_report
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.auth_group (
+    id integer NOT NULL,
+    name character varying(150) NOT NULL
+);
+
+
+ALTER TABLE public.auth_group OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE SEQUENCE public.auth_group_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_id_seq OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER SEQUENCE public.auth_group_id_seq OWNED BY public.auth_group.id;
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.auth_group_permissions (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_group_permissions OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE SEQUENCE public.auth_group_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_permissions_id_seq OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER SEQUENCE public.auth_group_permissions_id_seq OWNED BY public.auth_group_permissions.id;
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.auth_permission (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.auth_permission OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE SEQUENCE public.auth_permission_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_permission_id_seq OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER SEQUENCE public.auth_permission_id_seq OWNED BY public.auth_permission.id;
+
+
+--
+-- Name: auth_user; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.auth_user (
+    id integer NOT NULL,
+    password character varying(128) NOT NULL,
+    last_login timestamp with time zone,
+    is_superuser boolean NOT NULL,
+    username character varying(150) NOT NULL,
+    first_name character varying(30) NOT NULL,
+    last_name character varying(150) NOT NULL,
+    email character varying(254) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.auth_user OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.auth_user_groups (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_groups OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE SEQUENCE public.auth_user_groups_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_groups_id_seq OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER SEQUENCE public.auth_user_groups_id_seq OWNED BY public.auth_user_groups.id;
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE SEQUENCE public.auth_user_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_id_seq OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER SEQUENCE public.auth_user_id_seq OWNED BY public.auth_user.id;
+
+
+--
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.auth_user_user_permissions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_user_permissions OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE SEQUENCE public.auth_user_user_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_user_permissions_id_seq OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER SEQUENCE public.auth_user_user_permissions_id_seq OWNED BY public.auth_user_user_permissions.id;
+
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    content_type_id integer,
+    user_id integer NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE public.django_admin_log OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE SEQUENCE public.django_admin_log_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_admin_log_id_seq OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER SEQUENCE public.django_admin_log_id_seq OWNED BY public.django_admin_log.id;
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.django_content_type (
+    id integer NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.django_content_type OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE SEQUENCE public.django_content_type_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_content_type_id_seq OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER SEQUENCE public.django_content_type_id_seq OWNED BY public.django_content_type.id;
+
+
+--
+-- Name: django_migrations; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.django_migrations (
+    id integer NOT NULL,
+    app character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_migrations OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE SEQUENCE public.django_migrations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_migrations_id_seq OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER SEQUENCE public.django_migrations_id_seq OWNED BY public.django_migrations.id;
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_session OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_adsidalias; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.os2datascanner_report_adsidalias (
+    alias_ptr_id integer NOT NULL,
+    sid character varying(192) NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_report_adsidalias OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_alias; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.os2datascanner_report_alias (
+    id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_report_alias OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_alias_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_report_alias_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_report_alias_id_seq OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_alias_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_report_alias_id_seq OWNED BY public.os2datascanner_report_alias.id;
+
+
+--
+-- Name: os2datascanner_report_dataprotectionofficer; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.os2datascanner_report_dataprotectionofficer (
+    role_ptr_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_report_dataprotectionofficer OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_defaultrole; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.os2datascanner_report_defaultrole (
+    role_ptr_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_report_defaultrole OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_documentreport; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.os2datascanner_report_documentreport (
+    id integer NOT NULL,
+    path character varying(2000) NOT NULL,
+    data jsonb,
+    custom_resolution_status character varying(1024) NOT NULL,
+    resolution_status integer,
+    scan_time timestamp with time zone,
+    organization_id integer,
+    sensitivity integer,
+    probability double precision,
+    datasource_last_modified timestamp with time zone,
+    resolution_time timestamp with time zone,
+    created_timestamp timestamp with time zone,
+    source_type character varying(2000) NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_report_documentreport OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_documentreport_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_report_documentreport_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_report_documentreport_id_seq OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_documentreport_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_report_documentreport_id_seq OWNED BY public.os2datascanner_report_documentreport.id;
+
+
+--
+-- Name: os2datascanner_report_emailalias; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.os2datascanner_report_emailalias (
+    alias_ptr_id integer NOT NULL,
+    address character varying(254) NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_report_emailalias OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_leader; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.os2datascanner_report_leader (
+    role_ptr_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_report_leader OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_organization; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.os2datascanner_report_organization (
+    id integer NOT NULL,
+    name character varying(256) NOT NULL,
+    uuid uuid NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_report_organization OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_organization_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_report_organization_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_report_organization_id_seq OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_organization_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_report_organization_id_seq OWNED BY public.os2datascanner_report_organization.id;
+
+
+--
+-- Name: os2datascanner_report_remediator; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.os2datascanner_report_remediator (
+    role_ptr_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_report_remediator OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_role; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.os2datascanner_report_role (
+    id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_report_role OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_role_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_report_role_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_report_role_id_seq OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_report_role_id_seq OWNED BY public.os2datascanner_report_role.id;
+
+
+--
+-- Name: os2datascanner_report_userprofile; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.os2datascanner_report_userprofile (
+    id integer NOT NULL,
+    organization_id integer,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_report_userprofile OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_userprofile_id_seq; Type: SEQUENCE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE SEQUENCE public.os2datascanner_report_userprofile_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.os2datascanner_report_userprofile_id_seq OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: os2datascanner_report_userprofile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER SEQUENCE public.os2datascanner_report_userprofile_id_seq OWNED BY public.os2datascanner_report_userprofile.id;
+
+
+--
+-- Name: os2datascanner_report_webdomainalias; Type: TABLE; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE TABLE public.os2datascanner_report_webdomainalias (
+    alias_ptr_id integer NOT NULL,
+    domain text NOT NULL
+);
+
+
+ALTER TABLE public.os2datascanner_report_webdomainalias OWNER TO os2datascanner_report_dev;
+
+--
+-- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_group ALTER COLUMN id SET DEFAULT nextval('public.auth_group_id_seq'::regclass);
+
+
+--
+-- Name: auth_group_permissions id; Type: DEFAULT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- Name: auth_permission id; Type: DEFAULT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_permission ALTER COLUMN id SET DEFAULT nextval('public.auth_permission_id_seq'::regclass);
+
+
+--
+-- Name: auth_user id; Type: DEFAULT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_user ALTER COLUMN id SET DEFAULT nextval('public.auth_user_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_groups id; Type: DEFAULT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_user_groups ALTER COLUMN id SET DEFAULT nextval('public.auth_user_groups_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_user_permissions id; Type: DEFAULT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- Name: django_admin_log id; Type: DEFAULT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.django_admin_log ALTER COLUMN id SET DEFAULT nextval('public.django_admin_log_id_seq'::regclass);
+
+
+--
+-- Name: django_content_type id; Type: DEFAULT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.django_content_type ALTER COLUMN id SET DEFAULT nextval('public.django_content_type_id_seq'::regclass);
+
+
+--
+-- Name: django_migrations id; Type: DEFAULT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.django_migrations ALTER COLUMN id SET DEFAULT nextval('public.django_migrations_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_report_alias id; Type: DEFAULT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_alias ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_report_alias_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_report_documentreport id; Type: DEFAULT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_documentreport ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_report_documentreport_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_report_organization id; Type: DEFAULT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_organization ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_report_organization_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_report_role id; Type: DEFAULT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_role ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_report_role_id_seq'::regclass);
+
+
+--
+-- Name: os2datascanner_report_userprofile id; Type: DEFAULT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_userprofile ALTER COLUMN id SET DEFAULT nextval('public.os2datascanner_report_userprofile_id_seq'::regclass);
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.auth_group (id, name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.auth_group_permissions (id, group_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add log entry	1	add_logentry
+2	Can change log entry	1	change_logentry
+3	Can delete log entry	1	delete_logentry
+4	Can view log entry	1	view_logentry
+5	Can add permission	2	add_permission
+6	Can change permission	2	change_permission
+7	Can delete permission	2	delete_permission
+8	Can view permission	2	view_permission
+9	Can add group	3	add_group
+10	Can change group	3	change_group
+11	Can delete group	3	delete_group
+12	Can view group	3	view_group
+13	Can add user	4	add_user
+14	Can change user	4	change_user
+15	Can delete user	4	delete_user
+16	Can view user	4	view_user
+17	Can add content type	5	add_contenttype
+18	Can change content type	5	change_contenttype
+19	Can delete content type	5	delete_contenttype
+20	Can view content type	5	view_contenttype
+21	Can add session	6	add_session
+22	Can change session	6	change_session
+23	Can delete session	6	delete_session
+24	Can view session	6	view_session
+25	Can add document report	7	add_documentreport
+26	Can change document report	7	change_documentreport
+27	Can delete document report	7	delete_documentreport
+28	Can view document report	7	view_documentreport
+29	Can add alias	8	add_alias
+30	Can change alias	8	change_alias
+31	Can delete alias	8	delete_alias
+32	Can view alias	8	view_alias
+33	Can add ADSID alias	9	add_adsidalias
+34	Can change ADSID alias	9	change_adsidalias
+35	Can delete ADSID alias	9	delete_adsidalias
+36	Can view ADSID alias	9	view_adsidalias
+37	Can add email alias	10	add_emailalias
+38	Can change email alias	10	change_emailalias
+39	Can delete email alias	10	delete_emailalias
+40	Can view email alias	10	view_emailalias
+41	Can add role	11	add_role
+42	Can change role	11	change_role
+43	Can delete role	11	delete_role
+44	Can view role	11	view_role
+45	Can add default role	12	add_defaultrole
+46	Can change default role	12	change_defaultrole
+47	Can delete default role	12	delete_defaultrole
+48	Can view default role	12	view_defaultrole
+49	Can add remediator	13	add_remediator
+50	Can change remediator	13	change_remediator
+51	Can delete remediator	13	delete_remediator
+52	Can view remediator	13	view_remediator
+53	Can add web domain alias	14	add_webdomainalias
+54	Can change web domain alias	14	change_webdomainalias
+55	Can delete web domain alias	14	delete_webdomainalias
+56	Can view web domain alias	14	view_webdomainalias
+57	Can add organization	15	add_organization
+58	Can change organization	15	change_organization
+59	Can delete organization	15	delete_organization
+60	Can view organization	15	view_organization
+61	Can add user profile	16	add_userprofile
+62	Can change user profile	16	change_userprofile
+63	Can delete user profile	16	delete_userprofile
+64	Can view user profile	16	view_userprofile
+65	Can add leader	17	add_leader
+66	Can change leader	17	change_leader
+67	Can delete leader	17	delete_leader
+68	Can view leader	17	view_leader
+69	Can add dpo	18	add_dataprotectionofficer
+70	Can change dpo	18	change_dataprotectionofficer
+71	Can delete dpo	18	delete_dataprotectionofficer
+72	Can view dpo	18	view_dataprotectionofficer
+\.
+
+
+--
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
+1	pbkdf2_sha256$150000$OdcVHkIRd0Qf$ARlE/tRXQG4Kxw6RmRRRPCFCne+nuIqg4b2mWy0AyTQ=	2021-03-18 13:53:04.413558+00	t	test			test@test	t	t	2021-03-18 13:50:21.069279+00
+\.
+
+
+--
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.auth_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+1	2021-03-18 13:53:18.746887+00	1	Remediator object (1)	1	[{"added": {}}]	13	1
+\.
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.django_content_type (id, app_label, model) FROM stdin;
+1	admin	logentry
+2	auth	permission
+3	auth	group
+4	auth	user
+5	contenttypes	contenttype
+6	sessions	session
+7	os2datascanner_report	documentreport
+8	os2datascanner_report	alias
+9	os2datascanner_report	adsidalias
+10	os2datascanner_report	emailalias
+11	os2datascanner_report	role
+12	os2datascanner_report	defaultrole
+13	os2datascanner_report	remediator
+14	os2datascanner_report	webdomainalias
+15	os2datascanner_report	organization
+16	os2datascanner_report	userprofile
+17	os2datascanner_report	leader
+18	os2datascanner_report	dataprotectionofficer
+\.
+
+
+--
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.django_migrations (id, app, name, applied) FROM stdin;
+1	contenttypes	0001_initial	2021-03-18 13:48:14.897708+00
+2	auth	0001_initial	2021-03-18 13:48:14.957974+00
+3	admin	0001_initial	2021-03-18 13:48:15.090299+00
+4	admin	0002_logentry_remove_auto_add	2021-03-18 13:48:15.118913+00
+5	admin	0003_logentry_add_action_flag_choices	2021-03-18 13:48:15.133021+00
+6	contenttypes	0002_remove_content_type_name	2021-03-18 13:48:15.156923+00
+7	auth	0002_alter_permission_name_max_length	2021-03-18 13:48:15.166661+00
+8	auth	0003_alter_user_email_max_length	2021-03-18 13:48:15.178285+00
+9	auth	0004_alter_user_username_opts	2021-03-18 13:48:15.191756+00
+10	auth	0005_alter_user_last_login_null	2021-03-18 13:48:15.20934+00
+11	auth	0006_require_contenttypes_0002	2021-03-18 13:48:15.214528+00
+12	auth	0007_alter_validators_add_error_messages	2021-03-18 13:48:15.228127+00
+13	auth	0008_alter_user_username_max_length	2021-03-18 13:48:15.247756+00
+14	auth	0009_alter_user_last_name_max_length	2021-03-18 13:48:15.259612+00
+15	auth	0010_alter_group_name_max_length	2021-03-18 13:48:15.271664+00
+16	auth	0011_update_proxy_permissions	2021-03-18 13:48:15.282965+00
+17	os2datascanner_report	0001_initial	2021-03-18 13:48:15.298458+00
+18	os2datascanner_report	0002_aliases	2021-03-18 13:48:15.349636+00
+19	os2datascanner_report	0003_jsonbfield	2021-03-18 13:48:15.366125+00
+20	os2datascanner_report	0004_auto_20191210_1525	2021-03-18 13:48:15.367101+00
+21	os2datascanner_report	0004_documentreport_added_metadata	2021-03-18 13:48:15.374445+00
+22	os2datascanner_report	0005_role	2021-03-18 13:48:15.392176+00
+23	os2datascanner_report	0006_defaultrole	2021-03-18 13:48:15.417242+00
+24	os2datascanner_report	0007_remediator	2021-03-18 13:48:15.439849+00
+25	os2datascanner_report	0008_webdomainalias	2021-03-18 13:48:15.476802+00
+26	os2datascanner_report	0009_resolution_status	2021-03-18 13:48:15.487368+00
+27	os2datascanner_report	0010_inaction_handling	2021-03-18 13:48:15.494142+00
+28	os2datascanner_report	0011_documentreport_scan_time	2021-03-18 13:48:15.513878+00
+29	os2datascanner_report	0012_resolutionstatus_index_added	2021-03-18 13:48:15.526095+00
+30	os2datascanner_report	0013_filter_internal_rules_matches	2021-03-18 13:48:15.545963+00
+31	os2datascanner_report	0014_organization	2021-03-18 13:48:15.572451+00
+32	os2datascanner_report	0015_userprofile	2021-03-18 13:48:15.620949+00
+33	os2datascanner_report	0016_documentreport_organization	2021-03-18 13:48:15.650748+00
+34	os2datascanner_report	0017_documentreport_added_sensitivity_and_probability	2021-03-18 13:48:15.685423+00
+35	os2datascanner_report	0018_pairing_matches_and_metadata	2021-03-18 13:48:15.713643+00
+36	os2datascanner_report	0019_reanglicise_remediators	2021-03-18 13:48:15.726995+00
+37	os2datascanner_report	0020_documentreport_datasource_last_modified	2021-03-18 13:48:15.747749+00
+38	os2datascanner_report	0021_documentreport_indexing_for_performance	2021-03-18 13:48:15.781961+00
+39	os2datascanner_report	0022_adds_role_leader	2021-03-18 13:48:15.804516+00
+40	os2datascanner_report	0023_adds_role_dataprotection_officer	2021-03-18 13:48:15.824826+00
+41	os2datascanner_report	0024_documentreport_resolution_time	2021-03-18 13:48:15.835399+00
+42	os2datascanner_report	0025_documentreport_created_timestamp	2021-03-18 13:48:15.84669+00
+43	os2datascanner_report	0026_changing_documentreport_leader_dpo_verbose_names	2021-03-18 13:48:15.944482+00
+44	sessions	0001_initial	2021-03-18 13:48:15.968757+00
+45	os2datascanner_report	0003_documentreport_jsonbfield_added	2021-03-18 13:48:15.985769+00
+46	os2datascanner_report	0027_documentreport_source_type	2021-03-18 16:01:05.781742+00
+\.
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+d4m9r3907r1omrfi0jtg9h2h0dpqjz3e	MGVhY2E0ZGFhYjY0NGZmN2FhZDIyM2NhMTBjODI0YjY5MDE0MmVlMzp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIwMmU3MDdhMzQyZWM3MzM1OGRhZTA1MDJmMGEyNWIyNjg0MmNkY2U5In0=	2021-04-01 13:53:04.421706+00
+\.
+
+
+--
+-- Data for Name: os2datascanner_report_adsidalias; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.os2datascanner_report_adsidalias (alias_ptr_id, sid) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_report_alias; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.os2datascanner_report_alias (id, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_report_dataprotectionofficer; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.os2datascanner_report_dataprotectionofficer (role_ptr_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_report_defaultrole; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.os2datascanner_report_defaultrole (role_ptr_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_report_documentreport; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.os2datascanner_report_documentreport (id, path, data, custom_resolution_status, resolution_status, scan_time, organization_id, sensitivity, probability, datasource_last_modified, resolution_time, created_timestamp, source_type) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_report_emailalias; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.os2datascanner_report_emailalias (alias_ptr_id, address) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_report_leader; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.os2datascanner_report_leader (role_ptr_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_report_organization; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.os2datascanner_report_organization (id, name, uuid) FROM stdin;
+1	paws org	aa1aa88a-f249-4487-a166-00c4ca816ca7
+\.
+
+
+--
+-- Data for Name: os2datascanner_report_remediator; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.os2datascanner_report_remediator (role_ptr_id) FROM stdin;
+1
+\.
+
+
+--
+-- Data for Name: os2datascanner_report_role; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.os2datascanner_report_role (id, user_id) FROM stdin;
+1	1
+\.
+
+
+--
+-- Data for Name: os2datascanner_report_userprofile; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.os2datascanner_report_userprofile (id, organization_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: os2datascanner_report_webdomainalias; Type: TABLE DATA; Schema: public; Owner: os2datascanner_report_dev
+--
+
+COPY public.os2datascanner_report_webdomainalias (alias_ptr_id, domain) FROM stdin;
+\.
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_report_dev
+--
+
+SELECT pg_catalog.setval('public.auth_group_id_seq', 1, false);
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_report_dev
+--
+
+SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 1, false);
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_report_dev
+--
+
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 72, true);
+
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_report_dev
+--
+
+SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 1, false);
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_report_dev
+--
+
+SELECT pg_catalog.setval('public.auth_user_id_seq', 1, true);
+
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_report_dev
+--
+
+SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 1, false);
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_report_dev
+--
+
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 1, true);
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_report_dev
+--
+
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 18, true);
+
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_report_dev
+--
+
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 46, true);
+
+
+--
+-- Name: os2datascanner_report_alias_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_report_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_report_alias_id_seq', 1, false);
+
+
+--
+-- Name: os2datascanner_report_documentreport_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_report_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_report_documentreport_id_seq', 1, false);
+
+
+--
+-- Name: os2datascanner_report_organization_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_report_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_report_organization_id_seq', 1, true);
+
+
+--
+-- Name: os2datascanner_report_role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_report_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_report_role_id_seq', 1, true);
+
+
+--
+-- Name: os2datascanner_report_userprofile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: os2datascanner_report_dev
+--
+
+SELECT pg_catalog.setval('public.os2datascanner_report_userprofile_id_seq', 1, false);
+
+
+--
+-- Name: auth_group auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_name_key UNIQUE (name);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_permission_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_permission_id_0cd325b0_uniq UNIQUE (group_id, permission_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_codename_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_codename_01ab375a_uniq UNIQUE (content_type_id, codename);
+
+
+--
+-- Name: auth_permission auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_group_id_94350c0c_uniq; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_group_id_94350c0c_uniq UNIQUE (user_id, group_id);
+
+
+--
+-- Name: auth_user auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_permission_id_14a6b632_uniq; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_permission_id_14a6b632_uniq UNIQUE (user_id, permission_id);
+
+
+--
+-- Name: auth_user auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_username_key UNIQUE (username);
+
+
+--
+-- Name: django_admin_log django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_content_type django_content_type_app_label_model_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_app_label_model_76bd3d3b_uniq UNIQUE (app_label, model);
+
+
+--
+-- Name: django_content_type django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_migrations django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.django_migrations
+    ADD CONSTRAINT django_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_session django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.django_session
+    ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: os2datascanner_report_adsidalias os2datascanner_report_adsidalias_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_adsidalias
+    ADD CONSTRAINT os2datascanner_report_adsidalias_pkey PRIMARY KEY (alias_ptr_id);
+
+
+--
+-- Name: os2datascanner_report_alias os2datascanner_report_alias_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_alias
+    ADD CONSTRAINT os2datascanner_report_alias_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_report_dataprotectionofficer os2datascanner_report_dataprotectionofficer_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_dataprotectionofficer
+    ADD CONSTRAINT os2datascanner_report_dataprotectionofficer_pkey PRIMARY KEY (role_ptr_id);
+
+
+--
+-- Name: os2datascanner_report_defaultrole os2datascanner_report_defaultrole_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_defaultrole
+    ADD CONSTRAINT os2datascanner_report_defaultrole_pkey PRIMARY KEY (role_ptr_id);
+
+
+--
+-- Name: os2datascanner_report_documentreport os2datascanner_report_documentreport_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_documentreport
+    ADD CONSTRAINT os2datascanner_report_documentreport_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_report_emailalias os2datascanner_report_emailalias_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_emailalias
+    ADD CONSTRAINT os2datascanner_report_emailalias_pkey PRIMARY KEY (alias_ptr_id);
+
+
+--
+-- Name: os2datascanner_report_leader os2datascanner_report_leader_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_leader
+    ADD CONSTRAINT os2datascanner_report_leader_pkey PRIMARY KEY (role_ptr_id);
+
+
+--
+-- Name: os2datascanner_report_organization os2datascanner_report_organization_name_key; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_organization
+    ADD CONSTRAINT os2datascanner_report_organization_name_key UNIQUE (name);
+
+
+--
+-- Name: os2datascanner_report_organization os2datascanner_report_organization_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_organization
+    ADD CONSTRAINT os2datascanner_report_organization_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_report_organization os2datascanner_report_organization_uuid_key; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_organization
+    ADD CONSTRAINT os2datascanner_report_organization_uuid_key UNIQUE (uuid);
+
+
+--
+-- Name: os2datascanner_report_remediator os2datascanner_report_remediator_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_remediator
+    ADD CONSTRAINT os2datascanner_report_remediator_pkey PRIMARY KEY (role_ptr_id);
+
+
+--
+-- Name: os2datascanner_report_role os2datascanner_report_role_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_role
+    ADD CONSTRAINT os2datascanner_report_role_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_report_userprofile os2datascanner_report_userprofile_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_userprofile
+    ADD CONSTRAINT os2datascanner_report_userprofile_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: os2datascanner_report_userprofile os2datascanner_report_userprofile_user_id_key; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_userprofile
+    ADD CONSTRAINT os2datascanner_report_userprofile_user_id_key UNIQUE (user_id);
+
+
+--
+-- Name: os2datascanner_report_webdomainalias os2datascanner_report_webdomainalias_pkey; Type: CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_webdomainalias
+    ADD CONSTRAINT os2datascanner_report_webdomainalias_pkey PRIMARY KEY (alias_ptr_id);
+
+
+--
+-- Name: auth_group_name_a6ea08ec_like; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX auth_group_name_a6ea08ec_like ON public.auth_group USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: auth_group_permissions_group_id_b120cbf9; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX auth_group_permissions_group_id_b120cbf9 ON public.auth_group_permissions USING btree (group_id);
+
+
+--
+-- Name: auth_group_permissions_permission_id_84c5c92e; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON public.auth_group_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_permission_content_type_id_2f476e4b; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX auth_permission_content_type_id_2f476e4b ON public.auth_permission USING btree (content_type_id);
+
+
+--
+-- Name: auth_user_groups_group_id_97559544; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX auth_user_groups_group_id_97559544 ON public.auth_user_groups USING btree (group_id);
+
+
+--
+-- Name: auth_user_groups_user_id_6a12ed8b; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX auth_user_groups_user_id_6a12ed8b ON public.auth_user_groups USING btree (user_id);
+
+
+--
+-- Name: auth_user_user_permissions_permission_id_1fbb5f2c; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX auth_user_user_permissions_permission_id_1fbb5f2c ON public.auth_user_user_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_user_user_permissions_user_id_a95ead1b; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX auth_user_user_permissions_user_id_a95ead1b ON public.auth_user_user_permissions USING btree (user_id);
+
+
+--
+-- Name: auth_user_username_6821ab7c_like; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX auth_user_username_6821ab7c_like ON public.auth_user USING btree (username varchar_pattern_ops);
+
+
+--
+-- Name: django_admin_log_content_type_id_c4bce8eb; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX django_admin_log_content_type_id_c4bce8eb ON public.django_admin_log USING btree (content_type_id);
+
+
+--
+-- Name: django_admin_log_user_id_c564eba6; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX django_admin_log_user_id_c564eba6 ON public.django_admin_log USING btree (user_id);
+
+
+--
+-- Name: django_session_expire_date_a5c62663; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX django_session_expire_date_a5c62663 ON public.django_session USING btree (expire_date);
+
+
+--
+-- Name: django_session_session_key_c0390e0f_like; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX django_session_session_key_c0390e0f_like ON public.django_session USING btree (session_key varchar_pattern_ops);
+
+
+--
+-- Name: os2datascanner_report_alias_user_id_48c0600d; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX os2datascanner_report_alias_user_id_48c0600d ON public.os2datascanner_report_alias USING btree (user_id);
+
+
+--
+-- Name: os2datascanner_report_documentreport_organization_id_3161cd1c; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX os2datascanner_report_documentreport_organization_id_3161cd1c ON public.os2datascanner_report_documentreport USING btree (organization_id);
+
+
+--
+-- Name: os2datascanner_report_documentreport_path_1815be7f; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX os2datascanner_report_documentreport_path_1815be7f ON public.os2datascanner_report_documentreport USING btree (path);
+
+
+--
+-- Name: os2datascanner_report_documentreport_path_1815be7f_like; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX os2datascanner_report_documentreport_path_1815be7f_like ON public.os2datascanner_report_documentreport USING btree (path varchar_pattern_ops);
+
+
+--
+-- Name: os2datascanner_report_documentreport_resolution_status_2c60e14c; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX os2datascanner_report_documentreport_resolution_status_2c60e14c ON public.os2datascanner_report_documentreport USING btree (resolution_status);
+
+
+--
+-- Name: os2datascanner_report_documentreport_scan_time_35e7bfb7; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX os2datascanner_report_documentreport_scan_time_35e7bfb7 ON public.os2datascanner_report_documentreport USING btree (scan_time);
+
+
+--
+-- Name: os2datascanner_report_organization_name_6564f537_like; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX os2datascanner_report_organization_name_6564f537_like ON public.os2datascanner_report_organization USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: os2datascanner_report_role_user_id_2019b151; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX os2datascanner_report_role_user_id_2019b151 ON public.os2datascanner_report_role USING btree (user_id);
+
+
+--
+-- Name: os2datascanner_report_userprofile_organization_id_6133ed68; Type: INDEX; Schema: public; Owner: os2datascanner_report_dev
+--
+
+CREATE INDEX os2datascanner_report_userprofile_organization_id_6133ed68 ON public.os2datascanner_report_userprofile USING btree (organization_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissio_permission_id_84c5c92e_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_2f476e4b_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_group_id_97559544_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_group_id_97559544_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_6a12ed8b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_6a12ed8b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_content_type_id_c4bce8eb_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_content_type_id_c4bce8eb_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_user_id_c564eba6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_user_id_c564eba6_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_report_adsidalias os2datascanner_repor_alias_ptr_id_4b729769_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_adsidalias
+    ADD CONSTRAINT os2datascanner_repor_alias_ptr_id_4b729769_fk_os2datasc FOREIGN KEY (alias_ptr_id) REFERENCES public.os2datascanner_report_alias(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_report_webdomainalias os2datascanner_repor_alias_ptr_id_a4a2b79b_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_webdomainalias
+    ADD CONSTRAINT os2datascanner_repor_alias_ptr_id_a4a2b79b_fk_os2datasc FOREIGN KEY (alias_ptr_id) REFERENCES public.os2datascanner_report_alias(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_report_emailalias os2datascanner_repor_alias_ptr_id_d34c58dd_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_emailalias
+    ADD CONSTRAINT os2datascanner_repor_alias_ptr_id_d34c58dd_fk_os2datasc FOREIGN KEY (alias_ptr_id) REFERENCES public.os2datascanner_report_alias(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_report_documentreport os2datascanner_repor_organization_id_3161cd1c_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_documentreport
+    ADD CONSTRAINT os2datascanner_repor_organization_id_3161cd1c_fk_os2datasc FOREIGN KEY (organization_id) REFERENCES public.os2datascanner_report_organization(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_report_userprofile os2datascanner_repor_organization_id_6133ed68_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_userprofile
+    ADD CONSTRAINT os2datascanner_repor_organization_id_6133ed68_fk_os2datasc FOREIGN KEY (organization_id) REFERENCES public.os2datascanner_report_organization(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_report_defaultrole os2datascanner_repor_role_ptr_id_23b55b1a_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_defaultrole
+    ADD CONSTRAINT os2datascanner_repor_role_ptr_id_23b55b1a_fk_os2datasc FOREIGN KEY (role_ptr_id) REFERENCES public.os2datascanner_report_role(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_report_remediator os2datascanner_repor_role_ptr_id_5c0113d0_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_remediator
+    ADD CONSTRAINT os2datascanner_repor_role_ptr_id_5c0113d0_fk_os2datasc FOREIGN KEY (role_ptr_id) REFERENCES public.os2datascanner_report_role(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_report_leader os2datascanner_repor_role_ptr_id_8234f33e_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_leader
+    ADD CONSTRAINT os2datascanner_repor_role_ptr_id_8234f33e_fk_os2datasc FOREIGN KEY (role_ptr_id) REFERENCES public.os2datascanner_report_role(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_report_dataprotectionofficer os2datascanner_repor_role_ptr_id_bc57bbb8_fk_os2datasc; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_dataprotectionofficer
+    ADD CONSTRAINT os2datascanner_repor_role_ptr_id_bc57bbb8_fk_os2datasc FOREIGN KEY (role_ptr_id) REFERENCES public.os2datascanner_report_role(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_report_userprofile os2datascanner_repor_user_id_dac61390_fk_auth_user; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_userprofile
+    ADD CONSTRAINT os2datascanner_repor_user_id_dac61390_fk_auth_user FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_report_alias os2datascanner_report_alias_user_id_48c0600d_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_alias
+    ADD CONSTRAINT os2datascanner_report_alias_user_id_48c0600d_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: os2datascanner_report_role os2datascanner_report_role_user_id_2019b151_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: os2datascanner_report_dev
+--
+
+ALTER TABLE ONLY public.os2datascanner_report_role
+    ADD CONSTRAINT os2datascanner_report_role_user_id_2019b151_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: DATABASE os2datascanner_report; Type: ACL; Schema: -; Owner: postgres
+--
+
+GRANT ALL ON DATABASE os2datascanner_report TO os2datascanner_report_dev;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+--
+-- Database "postgres" dump
+--
+
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.6 (Debian 12.6-1.pgdg100+1)
+-- Dumped by pg_dump version 12.6 (Debian 12.6-1.pgdg100+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+DROP DATABASE postgres;
+--
+-- Name: postgres; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE postgres WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
+
+
+ALTER DATABASE postgres OWNER TO postgres;
+
+\connect postgres
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: DATABASE postgres; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON DATABASE postgres IS 'default administrative connection database';
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+--
+-- PostgreSQL database cluster dump complete
+--
+

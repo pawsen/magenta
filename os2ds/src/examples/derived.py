@@ -18,18 +18,55 @@ from os2datascanner.engine2.model.core import (
 try:
     __file__
 except:
-    __file__ = str(Path(".").resolve())
+    __file__ = str(Path("./derived.py").resolve())
 
-datadir = Path(__file__) / "data" / "files"
+datadir = (Path(__file__).parents[1] / "data/files").resolve()
+fwd = datadir.absolute()
 
-testfile = FilesystemHandle(FilesystemSource(datadir.absolute()), "test.txt")
-testzip = ZipHandle(
-    ZipSource(
-        FilesystemHandle(FilesystemSource(datadir.absolute()), "simple.zip")),
-    "test.txt",
-)
+testfile = FilesystemHandle(FilesystemSource(fwd), "test.txt")
+
+fs = FilesystemSource(fwd)
+fh = FilesystemHandle(fs, "cpr-test-single.zip")
+zs = ZipSource(fh)
+zh = ZipHandle(zs,"cpr-test-single.txt")
+
+zsm = ZipSource(FilesystemHandle(FilesystemSource(fwd), "cpr-test-multiple.zip"))
+zhm1 = ZipHandle(zsm, "cpr-test/cpr-test2.zip")
+zhm2 = ZipHandle(zsm, "cpr-test/cpr-test3.zip")
+
+zsmd1 = ZipSource(zhm1)
+zhmd1 = ZipHandle(zsmd1, "cpr2-test.txt")
 
 sm = SourceManager()
+rz_list = []
+count = 0
+with SourceManager() as sm:
+    for h in zsm.handles(sm):
+        rz = h.follow(sm)
+        rz_list.append(rz)
+        print(h)
+        count += 1
 
-rfile = testfile.follow(sm)
-rzip = testfile.follow(sm)
+print(f"handles found {count}")
+
+def contains(self, h) -> bool:
+    while h:
+        if h.source == self:
+            return True
+        elif h.source.handle:
+            print(f"previous handle\n{h}")
+            h = h.source.handle
+            print(f"new handle\n{h}")
+        else:
+            break
+    return False
+
+print(f"source: {zsm}, handle: {zh}.\nSource contains handle: {contains(zsm, zh)}")
+print(f"source: {fs}, handle: {zh}.\nSource contains handle: {contains(fs, zh)}")
+print(f"source: {fs}, handle: {zhm1}.\nSource contains handle: {contains(fs, zhm1)}")
+
+s =  zhmd1.source
+while s.handle:
+    print(s)
+    s = s.handle.source
+print(s)
