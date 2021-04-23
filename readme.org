@@ -28,6 +28,7 @@
     - [[#admin][admin]]
     - [[#report][report]]
     - [[#multi-containers][multi containers]]
+    - [[#translations][translations]]
   - [[#promethues][promethues]]
   - [[#grafana][grafana]]
   - [[#gcloud][gcloud]]
@@ -815,6 +816,16 @@ This allows us to be logged in both instances.
 Maybe useful extensions(check the first one)
 https://addons.mozilla.org/en-US/firefox/addon/containerise
 https://addons.mozilla.org/en-US/firefox/addon/containers-sync
+*** translations
+Edit =PO= files, part of [[https://www.gnu.org/software/gettext/manual/html_node/PO-Mode.html#PO-Mode][GNU gettext]]
+#+begin_src sh
+sudo apt install gettext-el
+#+end_src
+
+Switch to =emacs-mode-map= using =C-z=.
+
+Set the =Source Context= by =S=. For the admin part, set it to
+: ~/git/os2datascanner/src/os2datascanner/projects/admin/
 ** promethues
 Prometheus collects metrics from the engine modules, using a =http pull= model(server is scraping target). This means that each module, when started with the =--metric= flag, also starts a prometheus web server (=start_http_server(args.prometheus_port)= in [[https://git.magenta.dk/os2datascanner/os2datascanner/-/blob/development/src/os2datascanner/engine2/pipeline/run_stage.py#L67-68][run_stage.py]]) and corresponding =prometheus_summary= decorator providing the metrics.
 
