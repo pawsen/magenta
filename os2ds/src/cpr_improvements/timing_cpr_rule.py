@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 
 from pathlib import Path
+import logging
 
-from old_cpr_rule import CPRRule as CPRRule_old
+from old_cpr_rule import CPRRule as CPROld
+from simpler_cpr_rule import CPRRule as CPRSimple
+from complicated_cpr_rule import CPRRule as CPRComplicated
+from cpr_functions import(
+    extract_surrounding_words_all, extract_surrounding_words_fixed,
+)
+
 from os2datascanner.engine2.model.core import Source, SourceManager
 from os2datascanner.engine2.model.file import FilesystemHandle
 from os2datascanner.engine2.rules.cpr import CPRRule, modulus11_check
@@ -17,7 +24,11 @@ from time import time
 from types import MethodType
 import re
 #from faker import Faker
+#
+logging.basicConfig(level=logging.ERROR)
+logging.getLogger(__name__).setLevel(logging.DEBUG)
 
+#logging.basicConfig(level=logging.DEBUG)
 
 F = TypeVar('F', bound=Callable[..., Any])
 def timing(func: F) -> F:
@@ -57,33 +68,41 @@ except:
 fpath = cwd / '../data/files/document.docx'
 #fpath = cwd / '../data/files/cpr-examples.odt'
 
+reload_content = True
+reload_content = False
 try:
     content
 except:
+    reload_content = True
+
+if reload_content:
     h = FilesystemHandle.make_handle(fpath)
     content = get_content_from_handle(h)
 
 
-from new_cpr_rule import(
-    extract_surrounding_words_all, extract_surrounding_words_fixed,
-)
 
-newrule = CPRRule(modulus_11=True, ignore_irrelevant=False,
-                  examine_context=True)
-newrule.extract_surrounding_words = MethodType(extract_surrounding_words_fixed, newrule)
+
+# newrule = CPRRule(modulus_11=True, ignore_irrelevant=False,
+#                   examine_context=True)
+# newrule.extract_surrounding_words = MethodType(extract_surrounding_words_fixed, newrule)
 
 rules = [
+
+    (CPRSimple(modulus_11=True, ignore_irrelevant=False, examine_context=True),
+     "simple w. context"),
+    (CPRComplicated(modulus_11=True, ignore_irrelevant=False, examine_context=True),
+     "'accepted' w. context"),
     (CPRRule(modulus_11=True, ignore_irrelevant=False, examine_context=False),
      "current wo. context"),
-    (CPRRule(modulus_11=True, ignore_irrelevant=False, examine_context=True),
-     "current w. context"),
-    (CPRRule_old(modulus_11=True, ignore_irrelevant=False,
+    # (CPRRule(modulus_11=True, ignore_irrelevant=False, examine_context=True),
+    #  "current w. context"),
+    (CPROld(modulus_11=True, ignore_irrelevant=False,
                  examine_context=False),
      "old wo. context"),
-    (CPRRule_old(modulus_11=True, ignore_irrelevant=False,
+    (CPROld(modulus_11=True, ignore_irrelevant=False,
                  examine_context=True),
      "old w. context"),
-    (newrule, "new w. context"),
+    # (newrule, "new w. context"),
 ]
 
 for rule, description in rules:

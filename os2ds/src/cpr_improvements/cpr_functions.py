@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+#!/usr/bin/env python3
+
 from typing import Match, Tuple, Dict, cast, TypeVar, Callable, Any
 import re
 
@@ -90,4 +92,3 @@ def extract_surrounding_words_fixed(
         post=post_sym if len(post_sym) > 0 else [""],
     )
     return words, symbols
-
