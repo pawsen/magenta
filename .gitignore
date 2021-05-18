@@ -2,3 +2,9 @@
 /os2ds/src/secrets.txt
 /os2ds/src/smile.png
 *#
+*.png
+*.svg
+*.out
+/os2ds/src/html_conversion/out/python
+/os2ds/src/cpr_improvements/stats_testing/*.json
+/os2ds/src/cpr_improvements/stats_testing/.benchmarks/

@@ -42,6 +42,8 @@
   - [[#users-uidgid][users uid/gid]]
   - [[#git-hooks][git hooks]]
     - [[#installation][Installation]]
+- [[#magenta][magenta]]
+  - [[#time-tracking][time tracking]]
 
 * os2ds
 
@@ -998,3 +1000,6 @@ De to hooks spænder ikke ben for hinanden og kan fint anvendes samtidigt. De ka
 Hooks kan installeres per projekt ved at kopiere ovenstående til en fil i .git/hooks/ uden endelse og gøre den eksekverbar.
 
 Hooks kan installeres globalt med kommandoen git config --global core.hooksPath <sti til mappe med hooks>.
+* magenta
+** time tracking
+https://git.magenta.dk/internal/personal-projects/dan/time-tracking

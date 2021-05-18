@@ -27,3 +27,5 @@ p.sort_stats(SortKey.TIME, SortKey.CUMULATIVE).print_stats(.5, 'init')
 # get a list of callers for each of the listed functions.
 # p.print_callers(.5, 'init')
 
+p.print_stats('cpr', .1)
+p.print_stats('cpr')
