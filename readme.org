@@ -35,6 +35,7 @@
   - [[#local-setup][local setup]]
     - [[#local-setup-without-docker][local setup without docker]]
     - [[#poetry][poetry]]
+  - [[#debugging][debugging]]
 - [[#random][random]]
   - [[#pipeline-projekt-oversigt][Pipeline projekt oversigt]]
   - [[#get-requirementstxt][get requirements.txt]]
@@ -971,6 +972,24 @@ poetry shell
 #+end_src
 
 [[https://stackoverflow.com/a/64672646][Import requirements.txt into poetry]]
+** debugging
+home made =repl=, https://git.magenta.dk/os2datascanner/os2datascanner/-/tree/feature/43622_debug_signal
+activated by sending =SIGUSR2= to the =<pid>=, ie
+#+begin_src sh
+root@big-brain:~# kill -USR2 25456; sleep 0.5; cat /proc/25456/root/tmp/tipd.out.* & cat > /proc/25456/root/tmp/tipd.in.*
+[1] 28829
+Python 3.6.13 (default, Feb 16 2021, 20:24:15)
+[GCC 8.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> rh
+<__main__.main.<locals>.GenericRunner object at 0x7f45c2d50b38>
+#+end_src
+
+Man kan komme ind i en containers filsystem-namespace igennem hostsystemets =/proc/<pid>/root= mappe.
+
+An alternative could be [[https://github.com/ionelmc/python-manhole][python-manhole]]
+
 * random
 ** Pipeline projekt oversigt
 https://docs.google.com/spreadsheets/d/1WylHagXFc2rXuB2qEfnPng4an78U49WiiP8lJWMCc2Y/edit#gid=281544569
