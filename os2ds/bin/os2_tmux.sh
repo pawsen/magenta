@@ -8,7 +8,7 @@ OS2DS_ENGINE_USER_CONFIG_PATH=$OS2DS_PATH/dev-environment/engine/dev-settings.to
 OS2DS_ADMIN_USER_CONFIG_PATH=$OS2DS_PATH/dev-environment/admin/dev-settings.toml
 OS2DS_REPORT_USER_CONFIG_PATH=$OS2DS_PATH/dev-environment/report/dev-settings.toml
 
-ENGINE_FLAGS="--debug"
+ENGINE_FLAGS="--debug --log debug"
 
 ENGINE_MODULES=('explorer' 'processor' 'matcher' 'tagger' 'exporter')
 DJANGO_MODULES=('report' 'admin')
