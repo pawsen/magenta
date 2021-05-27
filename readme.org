@@ -36,6 +36,7 @@
     - [[#local-setup-without-docker][local setup without docker]]
     - [[#poetry][poetry]]
   - [[#debugging][debugging]]
+  - [[#registrered-convertershandlers][registrered converters/handlers]]
 - [[#random][random]]
   - [[#pipeline-projekt-oversigt][Pipeline projekt oversigt]]
   - [[#get-requirementstxt][get requirements.txt]]
@@ -989,7 +990,36 @@ Type "help", "copyright", "credits" or "license" for more information.
 Man kan komme ind i en containers filsystem-namespace igennem hostsystemets =/proc/<pid>/root= mappe.
 
 An alternative could be [[https://github.com/ionelmc/python-manhole][python-manhole]]
+** registrered converters/handlers
+List registered converters/handlers.
+New converters needs to added to their respective =__init__.py= file.
 
+#+begin_src python
+from pprint import pprint
+from os2datascanner.engine2.conversions import registry
+from os2datascanner.engine2.model.core import Source
+
+# converts, used for converting content to the type required by a rule
+converters = registry.__converters
+# pprint(f"converters {converters}")
+
+## two ways of creating Sources using registrered handlers
+# handle points to a container(fx. zip or docx); reinterpret handle as new Source
+Source.from_handle(h)
+# uses the handle's mime-typ
+mime = h.guess_type() or mime = h.compute_type()
+# list all registered mime handlers
+Source._Source__mime_handlers
+
+# create Source from url
+Source.from_url(url)
+# used the url's scheme, ie.
+scheme = url.split(:)
+# list all registrered scheme-handlers
+Source._Source__url_handlers
+#+end_src
+
+See also [[file:os2ds/src/examples/gzip_source_from_string.py][gzip_source_from_string.py]]
 * random
 ** Pipeline projekt oversigt
 https://docs.google.com/spreadsheets/d/1WylHagXFc2rXuB2qEfnPng4an78U49WiiP8lJWMCc2Y/edit#gid=281544569
