@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from pprint import pprint
+import contextlib
 
 from os2datascanner.engine2.model.core import (Handle,
         Source, SourceManager, UnknownSchemeError)
@@ -19,6 +20,15 @@ conveted content.
 
 """
 
+def base_referrer(h):
+    """return base referrer"""
+    while h:
+        if h.referrer:
+            h = h.referrer
+        else:
+            break
+    return h
+
 converters = registry.__converters
 # pprint(f"converters {converters}")
 
@@ -36,3 +46,12 @@ link_list = convert(resource, OutputType.Links).value
 rule = LinksFollowRule(sensitivity=Sensitivity.INFORMATION)
 matches = list(rule.match(link_list))
 msg = messages.MatchFragment(rule, matches or [])
+
+
+with contextlib.closing(site.handles(sm)) as handles:
+    first_thing = next(handles)
+    second_thing = next(handles)
+
+
+h = base_referrer(second_thing)
+print(f"{second_thing.presentation} have {h.presentation} as base referrer")

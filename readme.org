@@ -36,7 +36,9 @@
     - [[#local-setup-without-docker][local setup without docker]]
     - [[#poetry][poetry]]
   - [[#debugging][debugging]]
-  - [[#registrered-convertershandlers][registrered converters/handlers]]
+    - [[#repl][repl]]
+    - [[#stacktrace][stacktrace]]
+  - [[#registered-convertershandlers][registered converters/handlers]]
 - [[#random][random]]
   - [[#pipeline-projekt-oversigt][Pipeline projekt oversigt]]
   - [[#get-requirementstxt][get requirements.txt]]
@@ -869,8 +871,6 @@ Grafana connects to prometheus server on port =9090=, as per [[https://git.magen
 [[https://wikitech.wikimedia.org/wiki/Grafana.wikimedia.org][https://wikitech.wikimedia.org/wiki/Grafana.wikimedia.org]] might contain useful information.
 ** gcloud
 
-
-
 Setup instructions
 [[https://labs.docs.magenta.dk/google-cloud-platform/instance-ssh-access.html][SSH-access to Google Cloud Compute instances (servers)]]
 
@@ -974,6 +974,7 @@ poetry shell
 
 [[https://stackoverflow.com/a/64672646][Import requirements.txt into poetry]]
 ** debugging
+*** repl
 home made =repl=, https://git.magenta.dk/os2datascanner/os2datascanner/-/tree/feature/43622_debug_signal
 activated by sending =SIGUSR2= to the =<pid>=, ie
 #+begin_src sh
@@ -990,7 +991,27 @@ Type "help", "copyright", "credits" or "license" for more information.
 Man kan komme ind i en containers filsystem-namespace igennem hostsystemets =/proc/<pid>/root= mappe.
 
 An alternative could be [[https://github.com/ionelmc/python-manhole][python-manhole]]
-** registrered converters/handlers
+*** stacktrace
+A stacktrace is printed to `stderr` if pipeline components receive `SIGUSR1`. The
+scan continues without interuption.
+
+The components must be startet using `run_stage`
+
+Running the engine locally,
+#+begin_src sh
+python -m os2datascanner.engine2.pipeline.run_stage worker
+ps aux | grep os2datascanner
+kill -USR1 <pid>
+#+end_src
+
+Running the engine in Docker, using the namespace sharing between localhost and docker
+#+begin_src sh
+docker top os2datascanner_engine_worker_1  # get the <pid> of the python process
+kill -USR1 <pid>
+docker logs os2datascanner_engine_worker_1
+#+end_src
+
+** registered converters/handlers
 List registered converters/handlers.
 New converters needs to added to their respective =__init__.py= file.
 
