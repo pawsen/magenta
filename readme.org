@@ -9,6 +9,9 @@
     - [[#grafana-alarm---overvågning-af-pipelinetrin-42002][Grafana alarm - overvågning af pipelinetrin, 42002]]
     - [[#cpr-nummer-forbedring-39173][CPR-nummer forbedring, 39173]]
     - [[#nlp][NLP]]
+    - [[#unfinished-branches][unfinished branches]]
+    - [[#heartbeat--health-status][heartbeat / health status]]
+    - [[#logging][logging]]
   - [[#data][data]]
   - [[#structure][structure]]
     - [[#engine][engine]]
@@ -38,6 +41,7 @@
   - [[#debugging][debugging]]
     - [[#repl][repl]]
     - [[#stacktrace][stacktrace]]
+    - [[#testing][testing]]
   - [[#registered-convertershandlers][registered converters/handlers]]
 - [[#random][random]]
   - [[#pipeline-projekt-oversigt][Pipeline projekt oversigt]]
@@ -298,6 +302,82 @@ https://towardsdatascience.com/nlp-approaches-to-data-anonymization-1fb5bde6b929
 Microsoft have [[https://github.com/microsoft/presidio][presidio]], a /Context aware, pluggable and customizable PII anonymization service for text and images./.
 It uses a mix of [[https://github.com/microsoft/presidio/tree/main/presidio-analyzer/presidio_analyzer/predefined_recognizers][predefined regex]] and [[https://github.com/microsoft/presidio/tree/main/presidio-analyzer/presidio_analyzer/nlp_engine][NLP using spaCy]].
 
+*** unfinished branches
+**** Feature/35236 show dead links
+
+*** heartbeat / health status
+**** check rabbitMQ health status
+#+begin_src python
+@group.command()
+def check_rabbitmq_status():
+    """Check if RabbitMQ is alive"""
+
+    import pika
+    from os2datascanner.engine2.pipeline.utilities.pika import (
+        PikaConnectionHolder)
+
+    def is_open(con):
+        try:
+            con.process_data_events()
+            return True
+        except pika.exceptions.ConnectionClosed as e:
+            return False
+
+    success = is_open(con)
+    err_msg = "pika connection is closed"
+    if success:
+        logger.info("rabbitmq passed health check")
+    else:
+        logger.error(err_msg)
+        sys.exit(3)
+
+
+#+end_src
+
+
+
+**** db
+#+begin_src python
+
+@group.command()
+@click.option("--seconds", default=_SLEEPING_TIME, type=float,
+              help="Wait up to n seconds for the database connection before"
+                   " exiting.")
+def checkdb(wait):
+    """Check that database is online."""
+
+    from django.core.management import call_command
+    call_command("cron", **{"now": True}, stdout=buf)
+
+    def check_db():
+        with conf_db._get_session() as session:
+            session.execute("SELECT 1")
+
+    _wait_for_service("Database is up", check_db,
+                      sqlalchemy.exc.OperationalError, wait)
+
+
+@group.command()
+def check_configuration_db_status():
+    success, error_msg = conf_db.health_check()
+    if success:
+        logger.info("database passed health check")
+    else:
+        logger.error(error_msg)
+        sys.exit(3)
+#+end_src
+*** logging
+
+
+**** initiate logging
+#+begin_src python
+import logging
+
+# prevent default configuration, if users do not set one specifically
+logging.getLogger(__name__).addHandler(logging.NullHandler())
+# This allows users of this "library" to disable all logging, simply by
+# logging.getLogger('os2datascanner').propagate = False
+#+end_src
 
 ** data
 [[file:os2ds/data/vst-lokalplan-20200416.pdf][pdf der udpakker til ca 3.000 filer]], sikkert pga embedded vektor grafik
@@ -1009,6 +1089,18 @@ Running the engine in Docker, using the namespace sharing between localhost and 
 docker top os2datascanner_engine_worker_1  # get the <pid> of the python process
 kill -USR1 <pid>
 docker logs os2datascanner_engine_worker_1
+#+end_src
+*** testing
+**** local
+#+begin_src sh
+dse python -m unittest os2datascanner.engine2.tests.integration.test_engine2_pipeline.Engine2PipelineTests
+#+end_src
+
+**** docker
+#+begin_src sh
+docker-compose run admin_application python -m django test os2datascanner.projects.admin.tests
+docker-compose run engine_explorer python -m unittest discover -s /code/src/os2datascanner/engine2/tests
+docker-compose run report_application python -m django test os2datascanner.projects.report.tests
 #+end_src
 
 ** registered converters/handlers
