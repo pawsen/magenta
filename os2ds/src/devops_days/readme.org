@@ -1,0 +1,24 @@
+#+TITLE: Readme
+https://github.com/swisskyrepo/PayloadsAllTheThings
+
+[[https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XXE%20Injection#blind-xxe][blind xxe]]
+XMLSyntaxError: Failure to process entity callhome, line 8, column 16 (<string>, line 8)
+
+* list unsafe packages :ATTACH:
+:PROPERTIES:
+:ID:       25e3458e-f459-4c7f-8c24-f25857491689
+:END:
+
+#+begin_src sh
+safety check --stdin <<< `cat *.txt`
+safety check --stdin --full-report <<< `cat *.txt` | less
+#+end_src
+
+[[attachment:_20210611_112749sitemap_amqp.xml]]
+
+* file formats
+
+- email
+- xml (specific sitemaps)
+- containers (zip/gzip)
+-
