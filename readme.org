@@ -912,6 +912,38 @@ Switch to =emacs-mode-map= using =C-z=.
 
 Set the =Source Context= by =S=. For the admin part, set it to
 : ~/git/os2datascanner/src/os2datascanner/projects/admin/
+
+**** translate javascript
+See the following [[https://git.magenta.dk/os2datascanner/os2datascanner/-/commit/155ccef34e271e84336a09081ec2ad95e7c6f676][commit]]
+
+In html template, have
+#+begin_src js
+{% block scripts %}
+    {{ block.super }}
+    <script type="text/javascript" src="/jsi18n/"></script>
+{% endblock %}
+
+// then somewhere in a {% block body %}, within <main class="wrapper">.
+{% trans "Do you really want to delete the status object for scanner '%(scanner_name)s'?" as r_u_sure %}
+<button
+    type="submit"
+    class="button button--small button--grey"
+    onclick="return confirm(interpolate('{{ r_u_sure|escapejs }}', {'scanner_name': '{{ status.scanner.name|escapejs }}'}, true))"
+    title="{% trans 'Delete' %}">
+</button>
+#+end_src
+
+In =django.po= have (line number point to the line of ={% trans "" %}= above.)
+#+begin_src
+#: adminapp/templates/os2datascanner/scan_status.html:93
+#, python-format
+msgid ""
+"Do you really want to delete the status object for scanner "
+"'%%(scanner_name)s'?"
+msgstr "Er du sikker på, at du vil slette status for scanner "
+"»%%(scanner_name)s«?"
+#+end_src
+
 ** promethues
 Prometheus collects metrics from the engine modules, using a =http pull= model(server is scraping target). This means that each module, when started with the =--metric= flag, also starts a prometheus web server (=start_http_server(args.prometheus_port)= in [[https://git.magenta.dk/os2datascanner/os2datascanner/-/blob/development/src/os2datascanner/engine2/pipeline/run_stage.py#L67-68][run_stage.py]]) and corresponding =prometheus_summary= decorator providing the metrics.
 
