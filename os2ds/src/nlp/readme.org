@@ -1,0 +1,150 @@
+#+TITLE: Natural Language Processing: Workshop Notes
+
+* Magenta udviklerdage, 2021
+https://git.magenta.dk/udviklerdage-sommer-2021/nltk-playground
+https://git.magenta.dk/udviklerdage-sommer-2021/nltk-playground/-/blob/master/danni/hello_nltk.py
+
+Tutorial walk through  https://medium.com/swlh/language-modelling-with-nltk-20eac7e70853#6463
+
+* Basis
+
+Tools:
+
+- NLTK
+
+Danni suggests one of these approaches:
+
+- Sentiment analysis
+- Prediction
+
+** Terminology
+
+=Stop Words=: Stop words are words that during a given task aren't adding much meaning and can safely be ignored. Fx.
+for sentiment analysis it could be words such as: I, me, my, you, their, what, which, can, will, under and need.
+
+=Stemming=: Stemming in NLP is the process of removing prefixes and suffixes from words so that they are reduced to
+simpler forms which are called stems. It's often rule-based and relatively simple.
+
+=Lemmatization=: Similar goal as stemming: Find the root form of a word. The process is more involved, however, but it
+can be used in cases where stemming is insufficient.
+
+=Tokenizing=: Splitting up a text into its individual parts.
+
+=Part-of-speech tagging=: The process of marking up a word in a text (corpus) as corresponding to a particular part of
+speech, based on both its definition and its context. A simplified form of this is commonly taught to school-age
+children, in the identification of words as nouns, verbs, adjectives, adverbs, etc.
+
+=Sentiment analysis=: Is it a negative or positive text/sentence/group of texts?
+
+=Topic segmentation=: Splitting up a text by subject.
+
+=Named entity recognition=: A subtask of information extraction that seeks to locate and classify named entities
+mentioned in unstructured text into pre-defined categories such as: person names, organizations, locations, medical
+codes, time expressions, quantities, monetary values, percentages, etc.
+
+=Frequency Analysis=: E.g.: What are the most common words?
+
+=n-grams=: A sequence of n words. For instance a bigram is a sequence of two words, a trigram a sequence of three and so forth.
+For instance in a /frequency analysis/ you could check for the most frequent phrase of n words rather than individual words.
+
+
+** Links
+
+Intros:
+- https://towardsdatascience.com/text-preprocessing-with-nltk-9de5de891658
+- https://medium.com/swlh/language-modelling-with-nltk-20eac7e70853#6463
+
+More in depth?: https://realpython.com/python-nltk-sentiment-analysis/
+https://danlp-alexandra.readthedocs.io/en/latest/docs/datasets.html
+
+Repo: git clone https://git.magenta.dk/udviklerdage-sommer-2021 OR git clone
+git@git.magenta.dk:udviklerdage-sommer-2021/nltk-playground
+
+* Process
+
+1. Obtain data
+2. Preprocess data:
+   - Remove symbols: , . etc.
+   - Remove stopwords
+
+* DAGW: The Danish Gigaword Corpus
+
+
+[[file:dataset-description.png]]
+
+Additional info in dagw/dokumentation/dagw_paper.pdf
+
+** Twitter data
+
+The Twitter data is not downloaded, rather they are referenced by IDs and must be fetched via their API.
+
+1. Get twitter consumer key and secret key for their API:
+   https://support.yapsody.com/hc/en-us/articles/360003291573-How-do-I-get-a-Twitter-Consumer-Key-and-Consumer-Secret-key-
+
+2. Install twarc:
+   pip install twarc
+
+3. Setup twarc with the twitter API credentials:
+   twarc configure
+
+4. cd to the right directory:
+   cd dagw/sektioner
+
+5. Hydrate the tweets:
+   #+begin_src bash
+   twarc hydrate datwitter/raw_data/da_all_150420-260520.txt > datwitter/raw_data/hydrated_tweets.txt
+   #+end_src
+
+6. Convert hydrated tweets to dagw's format:
+   #+begin_src bash
+   python scripts/twitter_expander.py \
+     --input datwitter/raw_data/hydrated_tweets.txt \
+     --section_name datwitter \
+     --output sektioner/datwitter
+   #+end_src
+
+* NLTK
+
+** Introduction
+
+The Natural Language Toolkit, or more commonly NLTK, is a suite of libraries and programs for symbolic and statistical
+natural language processing for English written in the Python programming language. It consists of the most common
+algorithms such as
+
+- Tokenizing
+- Part-of-speech tagging
+- Stemming
+- Sentiment analysis
+- Topic segmentation
+- Named entity recognition
+
+....some of which we will be making use of in this article.
+
+*** Sample data
+
+nltk has a =downloader= that can be used to obtain some sample data.
+
+Start the user interface for it:
+
+    >>> import nltk nltk.download()
+
+Alternately if you know what to download you can pass that as an argument and bypass the UI:
+
+    >>> nltk.download('inaugural')
+
+Aftewards NLTK has some data built into it, under =corpus=.
+
+
+**** Example: US Presidential inaugural addresses
+
+from nltk.corpus import inaugural
+
+...but first you need to download it:
+
+>>> import nltk nltk.download('inaugural')
+
+List all of them: inaugural.fileids()[:10]
+
+** Tips
+
+Set the stopwords to danish: stopwords.words('danish')
