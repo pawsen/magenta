@@ -34,6 +34,7 @@
     - [[#translations][translations]]
   - [[#promethues][promethues]]
   - [[#grafana][grafana]]
+    - [[#magentas-grafana][magentas grafana]]
   - [[#gcloud][gcloud]]
   - [[#local-setup][local setup]]
     - [[#local-setup-without-docker][local setup without docker]]
@@ -537,6 +538,18 @@ as specified in [[https://git.magenta.dk/os2datascanner/os2datascanner/tree/feat
 Right click on table, select =View/Edit Data=
 
 **** backup
+The easiest is to dump directly to/from localhost
+#+begin_src sh
+# backup
+docker exec -t os2datascanner_db_1 pg_dumpall -U postgres --clean > db_dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
+
+# restore
+cat your_dump.sql | docker exec -i os2datascanenr_db_1 psql -U postgres
+#+end_src
+
+
+
+Alternative, create the dump-file inside the container and copy it to localhost.
 As per this [[https://stackoverflow.com/a/63934857][SO]]
 Let =pg_dump= write to a file inside the Docker container, then copy that out to the host
 
@@ -981,6 +994,12 @@ user/pass: =admin/admin= as from [[https://git.magenta.dk/os2datascanner/os2data
 Grafana connects to prometheus server on port =9090=, as per [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/dev-environment/grafana/datasources.yml#L8][datasources.yml]]. The dashboard is setup in [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/dev-environment/grafana/dashboards/engine.json#L163][engine.json.]]
 
 [[https://wikitech.wikimedia.org/wiki/Grafana.wikimedia.org][https://wikitech.wikimedia.org/wiki/Grafana.wikimedia.org]] might contain useful information.
+
+*** magentas grafana
+https://magenta.grafana.net
+
+[[https://magenta.grafana.net/explore?orgId=1&left=\["now-15m","now","grafanacloud-magenta-logs",{"exemplar":true,"expr":"{minion=~\"os2ds.*\"}"}\]][See logs collected from servers]]
+
 ** gcloud
 
 Setup instructions
