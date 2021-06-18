@@ -16,12 +16,14 @@
   - [[#structure][structure]]
     - [[#engine][engine]]
   - [[#docker][docker]]
+    - [[#init][init]]
     - [[#setup][setup]]
     - [[#useful-docker-commands][useful docker commands]]
     - [[#db][db]]
     - [[#network][network]]
     - [[#run-things][run things]]
     - [[#backup-volumes][backup volumes]]
+    - [[#remove-volumes][remove volumes]]
     - [[#gunicorn][gunicorn]]
     - [[#inspect-docker-settings][inspect docker settings]]
     - [[#docker_overwriteyml][docker_overwrite.yml]]
@@ -422,6 +424,7 @@ pdfcrop pipeline-architecture.pdf pipeline-architecture.pdf
 #+end_src
 
 ** docker
+*** init
 Install docker-compose
 : pipx install docker-compose
 
@@ -464,8 +467,10 @@ Se [[https://udvikler.docs.magenta.dk/docker/index.html][udviklerhåndbogen]] fo
 Build the containers
 #+begin_src sh
 docker-compose up --build -d
-docker-compose exec admin_application python manage.py createsuperuser --username test --email test@test
-docker-compose exec report_application python manage.py createsuperuser --username test --email test@test
+
+docker-compose exec -e DJANGO_SUPERUSER_PASSWORD=test admin_application python manage.py createsuperuser --noinput --username test --email test@test.dk
+
+docker-compose exec -e DJANGO_SUPERUSER_PASSWORD=test report_application python manage.py createsuperuser --noinput --username test --email test@test.dk
 #+end_src
 
 : docker logs --timestamps --follow os2datascanner_engine_worker_1
@@ -729,6 +734,26 @@ Restore -- Not complete
 docker create -v /data --name DATA2 busybox true
 # untar the backup files into the new container᾿s data volume
 docker run --rm --volumes-from DATA2 -v $(pwd):/backup busybox tar xvf /backup/backup.tar
+#+end_src
+*** remove volumes
+remove all volumes
+#+begin_src sh
+dkc down -v
+#+end_src
+
+remove named volume,
+#+begin_src sh
+# Stop and remove container's using the target volume
+docker-compose stop NAME_OF_CONTAINER
+
+# We need the force flag, "-f", as the container is still bound to the volume
+docker-compose rm -f NAME_OF_CONTAINER
+
+# Next find your volume name in the following list
+docker volume ls
+
+# Finally remove the volume
+docker volume rm VOLUME_NAME
 #+end_src
 
 *** gunicorn
