@@ -1,0 +1,7 @@
+#+TITLE: Todo
+
+- Go through logs at grafana
+  [[https://magenta.grafana.net/explore?orgId=1&left=\["now-15m","now","grafanacloud-magenta-logs",{"exemplar":true,"expr":"{minion=~\"os2ds.*\"}"}\]][See logs collected from servers]]
+  Should there be tracebacks in the log?
+- cpr improvements
+-
