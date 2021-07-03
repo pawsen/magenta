@@ -34,6 +34,11 @@
     - [[#report][report]]
     - [[#multi-containers][multi containers]]
     - [[#translations][translations]]
+  - [[#ldap][ldap]]
+    - [[#installation][installation]]
+    - [[#create-users][create users]]
+    - [[#ldap-structure][ldap structure]]
+  - [[#code-snippets][code snippets/]]
   - [[#promethues][promethues]]
   - [[#grafana][grafana]]
     - [[#magentas-grafana][magentas grafana]]
@@ -52,7 +57,7 @@
   - [[#debuging-of-docker-container-not-app-debuging][debug'ing of docker container (not app debug'ing)]]
   - [[#users-uidgid][users uid/gid]]
   - [[#git-hooks][git hooks]]
-    - [[#installation][Installation]]
+    - [[#installation-1][Installation]]
 - [[#magenta][magenta]]
   - [[#time-tracking][time tracking]]
 
@@ -593,11 +598,27 @@ docker exec -ti os2datascanner_db_1 bash -c 'pg_restore -U postgres -c -d os2dat
 
 Drop DB
 #+begin_src sh
-dropdb -U postgres os2datascanner_report
-dropdb -U postgres os2datascanner_admin
+dkc exec db bash -c "dropdb -U postgres os2datascanner_report"
+dkc exec db bash -c "dropdb -U postgres os2datascanner_admin"
 #+end_src
 
 Various DB backup files can be found [[file:os2ds/data/db/][here]].
+
+**** restoring db
+
+#+begin_src sh
+dkc exec db bash
+cd /docker-entrypoint-initdb.d
+su postgres
+psql  <<ENDSQL
+dropdb ${REPORT_DATABASE_NAME};
+dropuser ${REPORT_DATABASE_USER};
+CREATE DATABASE ${REPORT_DATABASE_NAME};
+CREATE USER ${REPORT_DATABASE_USER} WITH ENCRYPTED PASSWORD '${REPORT_DATABASE_PASSWORD}';
+GRANT ALL PRIVILEGES ON DATABASE ${REPORT_DATABASE_NAME} TO ${REPORT_DATABASE_USER};
+ENDSQL
+
+#+end_src
 
 *** network
 Inspect network and find the IPs of the containers
@@ -980,6 +1001,41 @@ msgid ""
 "'%%(scanner_name)s'?"
 msgstr "Er du sikker på, at du vil slette status for scanner "
 "»%%(scanner_name)s«?"
+#+end_src
+** ldap
+*** installation
+install utils
+#+begin_src sh
+apt-file search ldapadd
+sudo apt install ldap-utils
+#+end_src
+*** create users
+
+#+begin_src sh
+echo -e "dn: ou=jumbo,dc=magenta,dc=test\nobjectClass: organizationalUnit\nou:jumbo\n" > ne2; for k in `seq 1 10000`; do echo -e "dn: cn=Test User $k,ou=jumbo,dc=magenta,dc=test\nobjectClass: inetOrgPerson\ncn: Test User $k\nsn: Test User $k\nmail: test$k@magenta.test\n" >> ne2; done
+ldapadd -v -D cn=admin,dc=magenta,dc=test -w testMAG -f ne2
+#+end_src
+*** ldap structure
+- =DN= distinguished name. Describe the fully qualified path to an entry
+- =RDN= relative distinguished name. Describe the partial path to the entry relative to another entry in the tree.
+[[file:img/LDAP_Directory_Strucuture.gif]]
+
+- =dc= domain component (root)
+- =ou= organisational unit
+- =cn= common name
+- =sn= surname
+
+Example, DN
+=cn=John Doe, ou=People, dc=sun.com=
+A =RDN= is a component of the =DN=
+=cn=John Doe, ou=People= is a RDN relative to the root RDN =dc=sun.com=.
+
+
+** code snippets/
+
+#+begin_src python
+from os2datascanner import SourceManager
+C.convert(FilesystemHandle.make_handle("/home/alec/Documents/ocr_this_if_you_dare.png").follow(sm), C.types.OutputType.Text)
 #+end_src
 
 ** promethues
