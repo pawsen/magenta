@@ -1015,6 +1015,10 @@ sudo apt install ldap-utils
 echo -e "dn: ou=jumbo,dc=magenta,dc=test\nobjectClass: organizationalUnit\nou:jumbo\n" > ne2; for k in `seq 1 10000`; do echo -e "dn: cn=Test User $k,ou=jumbo,dc=magenta,dc=test\nobjectClass: inetOrgPerson\ncn: Test User $k\nsn: Test User $k\nmail: test$k@magenta.test\n" >> ne2; done
 ldapadd -v -D cn=admin,dc=magenta,dc=test -w testMAG -f ne2
 #+end_src
+
+See the stucture, using phpLDAPadmin http://localhost:8100
+user: cn=admin,dc=magenta,dc=test
+pass: testMAG
 *** ldap structure
 - =DN= distinguished name. Describe the fully qualified path to an entry
 - =RDN= relative distinguished name. Describe the partial path to the entry relative to another entry in the tree.
