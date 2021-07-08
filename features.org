@@ -1,0 +1,349 @@
+#+TITLE: Features
+* Content :toc:
+- [[#html-performance][html-performance]]
+  - [[#redmine-related][redmine related]]
+  - [[#test][test]]
+- [[#swedish-cpr][Swedish CPR]]
+  - [[#test-1][test]]
+- [[#implementer-nave--og-adresseregler-34001][Implementer nave- og adresseregler, 34001]]
+  - [[#conversion-to-utf8][conversion to utf8]]
+  - [[#conversion-to-jsonl][conversion to jsonl]]
+  - [[#regex][regex]]
+  - [[#test-2][test]]
+- [[#externe-link-til-websource-35210][Externe link til WebSource, 35210]]
+- [[#håndtering-af-døde-links-35236][Håndtering af døde links, 35236]]
+- [[#grafana-alarm---overvågning-af-pipelinetrin-42002][Grafana alarm - overvågning af pipelinetrin, 42002]]
+- [[#cpr-nummer-forbedring-39173][CPR-nummer forbedring, 39173]]
+  - [[#try-it][Try it]]
+- [[#nlp][NLP]]
+  - [[#microsft][microsft]]
+- [[#unfinished-branches][unfinished branches]]
+  - [[#feature35236-show-dead-links][Feature/35236 show dead links]]
+- [[#heartbeat--health-status][heartbeat / health status]]
+  - [[#check-rabbitmq-health-status][check rabbitMQ health status]]
+  - [[#db][db]]
+- [[#logging][logging]]
+  - [[#initiate-logging][initiate logging]]
+
+* html-performance
+https://redmine.magenta-aps.dk/issues/37547
+
+Før:
+bla. pfd-filer blev udpakket til individuelle sider. Derefter konverteret med =pdf2text=.
+Se [[https://redmine.magenta-aps.dk/issues/38126][Undgå unødvendige html-konvertering]], hvor der skiftes fra =pdftohtml= til =pdftotext/pdfimages=
+Det er pt. kun =pdf= der konverteres til text. Office filer konverteres stadig til html.
+
+** redmine related
+https://redmine.magenta-aps.dk/issues/38126
+https://redmine.magenta-aps.dk/issues/30749
+
+** test
+See [[file:os2ds/src/html_conversion/test_html_conversion.py]]
+
+Based on the two test, I am confident that using =lxml= is an improvement over =bs4=. We are not loosing any body text.
+*** timing
+5 conversions of [[file:os2ds/data/html_benchmark/data/html.html][html.html]]
+
+|   bs4 |     lxml |
+|-------+----------|
+| 1.008 | 0.060507 |
+
+*** compare output of the two parsers
+The output from =bs4= does not preserve linebreaks, thus to compare, we use
+=wdiff=: it's a front-end to diff which produces word-by-word comparisons.
+
+#+begin_src sh
+apt install wdiff colordiff
+wdiff -n html_bs4.txt html_lxml.txt | colordiff | bat
+# OR show only difference
+wdiff -3 html_bs4.txt html_lxml.txt
+#+end_src
+
+From the output, it seems the only difference is in the unicode for =>/<=, etc. symbols
+#+BEGIN_SRC text
+======================================================================
+ [-<font color="">-]
+    {+<font color="">+}
+======================================================================
+ [-year > 0-] {+year > 0+}
+======================================================================
+ [-1 ≤ month ≤ 12-]
+   {+1 ≤ month ≤ 12+}
+======================================================================
+ [-1 ≤ month ≤ 12,-] {+1 ≤ month ≤ 12,+}
+======================================================================
+ [-1 ≤ day ≤ maxday-]
+   {+1 ≤ day ≤ maxday+}
+======================================================================
+ [-1 ≤ day ≤ maxday,-] {+1 ≤ day ≤ maxday,+}
+======================================================================
+ [-1 ≤ month ≤ 12-]
+   {+1 ≤ month ≤ 12+}
+======================================================================
+ [-1 ≤ day ≤ maxday-]
+   {+1 ≤ day ≤ maxday+}
+======================================================================
+ [-1 ≤ month ≤ 12,-] {+1 ≤ month ≤ 12,+}
+======================================================================
+ [-1 ≤ day ≤ maxday,-] {+1 ≤ day ≤ maxday,+}
+======================================================================
+ [-0 ≤ hour ≤ 23-]
+   {+0 ≤ hour ≤ 23+}
+======================================================================
+ [-0 ≤ minute ≤ 59-]
+   {+0 ≤ minute ≤ 59+}
+======================================================================
+ [-0 ≤ s ≤ 59-] {+0 ≤ s ≤ 59+}
+======================================================================
+ [-0 ≤ hour ≤ 23,-] {+0 ≤ hour ≤ 23,+}
+======================================================================
+ [-0 ≤ minute ≤ 59,-] {+0 ≤ minute ≤ 59,+}
+======================================================================
+ [-0 ≤ second < 60,-] {+0 ≤ second < 60,+}
+======================================================================
+#+end_src
+
+fx. from line around 4000 in =text.html=
+#+begin_src html
+<li><p>If <var data-x="">month</var> is not a number in the range 1&nbsp;&le;&nbsp;<var
+4791   │    data-x="">month</var>&nbsp;&le;&nbsp;12, then fail.</p></li>
+#+end_src
+
+* Swedish CPR
+https://redmine.magenta-aps.dk/issues/40876
+
+either 10 or 12 digit, last digit is a checksum, ie very similar to danish cpr
+format:
+#+begin_src text
+yymmdd-xxxx
+yyyymmdd-xxxx
+#+end_src
+
+info
+https://en.wikipedia.org/wiki/Personal_identity_number_(Sweden)
+https://sv.wikipedia.org/wiki/Personnummer_i_Sverige
+
+regex
+https://regex101.com/r/OuIbMa/2
+ie. we modify danish CPR to match either {yy} OR {yyyy}, as per this [[https://stackoverflow.com/a/8177150][SO]].
+: "\b(\d{2}(?:\d{2})?[\s]?\d{2}[\s]?\d{2})(?:[\s\-/\.]|\s\-\s)?(\d{4})\b"
+
+#+begin_src sh
+echo '{"rule":{"type":"regex", "expression": "\\b(\d{2}(?:\d{2})?[\s]?\d{2}[\s]?\d{2})(?:[\s\-/\.]|\s\-\s)?(\d{4})\\b"},"source":{"type":"data","content":"'$(base64 -w 0 < cpr_test.txt)'","mime":"text/plain"}}' | sed 's/\\/\\\\/g' | http post localhost:8070/scan/1 AUTHORIZATION:'Bearer os2ds' | jq
+#+end_src
+
+
+** test
+Download the wiki page
+#+begin_src sh
+wget --mirror --convert-links https://sv.wikipedia.org/wiki/Personnummer_i_Sverige
+tree
+└── sv.wikipedia.org
+   ├── robots.txt
+   └── wiki
+      └── Personnummer_i_Sverige
+
+# Eller hvis samtlige filer skal ligge lokalt.
+wget -E -H -k -K -p -e robots=off  https://sv.wikipedia.org/wiki/Personnummer_i_Sverige
+#+end_src
+
+* Implementer nave- og adresseregler, 34001
+https://redmine.magenta-aps.dk/issues/34001
+
+[[https://git.magenta.dk/os2datascanner/os2datascanner/-/tree/feature/34001_name_and_address][Alec preliminary code]]
+Which is a refactoring of the code from the old [[https://git.magenta.dk/os2datascanner/os2datascanner-prototypes/-/tree/new-datascanner/scrapy-webscanner/scanners/rules][webscanner]] (see =address.py= / =name.py=)
+
+We encode all datafiles as =utf8=.
+
+** conversion to utf8
+from =iso-8859-1= to utf8
+: iconv -f ISO-8859-1 gadenavne.txt -t UTF-8 -o da_addresses.txt
+
+
+From =ascii= (7-bit subset of utf8) with unicode characters (fx =\u00d8->ø=) to 'real' utf8.
+=C-x C-e= is your friend here.
+#+begin_src sh
+#!/usr/bin/env bash
+set -euo pipefail
+
+for filename in *.jsonl; do
+    [ -e "$filename" ] || continue
+    cat "$filename" | jq > "$filename".tmp
+    rm "$filename"
+    mv "$filename"{.tmp,}
+done
+#+end_src
+
+or in case somethings break and we need to rewrite the extension, fx. =test.jsonl.tmp= -> =test.json=.
+see [[https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html][Shell parameter expansion]] and an [[https://stackoverflow.com/a/965069][SO example]]
+#+begin_src sh
+for file in *.tmp; do
+    mv "$file" "${file%.*}"
+done
+#+end_src
+or use [[https://github.com/sharkdp/fd][fd-find]]
+
+Here is a regex using [[https://www.regular-expressions.info/lookaround.html][negative lookahead]]
+#+begin_src sh
+^(?!.*(jsonl)).*$
+#+end_src
+
+
+** conversion to jsonl
+https://jsonlines.org/
+JSON Lines text format, also called newline-delimited JSON.
+
+#+begin_src python
+#!/usr/bin/env python3
+
+import json
+
+filename = 'da_addresses.txt'
+with open(filename, 'r') as fin:
+    fileout = filename.rsplit('.', 1)[0] + '.jsonl'
+    with open(fileout, 'w') as fout:
+        for line in fin:
+            # strip to ensure \n is not part of the string sorrounded by ""
+            json.dump(line.rstrip(), fout, ensure_ascii=False)
+            fout.write('\n')
+#+end_src
+
+** regex
+[[https://stackoverflow.com/questions/22937618/reference-what-does-this-regex-mean/22944075][SO wiki on regex]] and info about [[https://www.regular-expressions.info/unicode.html#category][regex unicode categories]], fx. =\p{Lu}=: uppercase letter.
+[[https://www.regular-expressions.info/modifiers.html][regex modifiers]], fx =(?i)= for ignore case.
+
+Regex can be slow to fail as [[https://www.regular-expressions.info/catastrophic.html][this simple example]] shows.
+[[https://www.regexbuddy.com/download.html][RegexBuddy]](windows app) can debug the regex step-by-step and maybe help to optimize.
+https://1337x.to/torrent/4257525/RegexBuddy-v4-10-Crack-FTUApps/
+
+** test
+For name regex
+https://regex101.com/r/nT9wL5/8
+
+For address regex
+https://regex101.com/r/zJBsXw/9
+
+* Externe link til WebSource, 35210
+https://redmine.magenta-aps.dk/issues/35210
+
+* Håndtering af døde links, 35236
+https://redmine.magenta-aps.dk/issues/35236
+
+See [[file:os2ds/src/dead_links/readme.org][dead_links readme.org]] for example of json messages.
+
+* Grafana alarm - overvågning af pipelinetrin, 42002
+https://redmine.magenta-aps.dk/issues/42002
+
+Vi mangler overvågning af de enkelte pipeline trin i scannermotoren.
+- Hvis rabbitmq oplever timeout fra en af pipeline trinene.
+- Hvis et pipelinetrin går i stå og ikke spiser flere beskeder fra en fyldt kø.
+
+* CPR-nummer forbedring, 39173
+Udspringer af [[https://redmine.magenta-aps.dk/issues/39173][COOPs falske positive]]
+Men vi bygger videre på
+https://redmine.magenta-aps.dk/issues/39173
+
+Forslag
+- Er der specialtegn før eller efter
+- Er delimiters balanceret
+- Kommer der et tal før eller efter
+- Er ord før eller efter ikke enten (alle små, stort begyndelsesbogstav eller alle caps),
+  dvs "uSNChanged" bør give =probability=0=
+- indeholder ord før =cpr=
+
+- NLP(natural language processing)
+
+
+Leverance:
+En af det nævnte løsninger og bevis på at det virker efter hensigten.
+
+Se [[file:os2ds/src/cpr_improvements/cpr_test.py][cpr-test.py]]
+** Try it
+#+begin_src sh
+echo "{'rule':{'type':'cpr'},'source':{'type':'data','content':'$(base64 -w 0 < cpr-examples.txt)','mime':'text/plain'}}" | tr \' \" | http post localhost:8070/scan/1 AUTHORIZATION:'Bearer os2ds' | jq
+#+end_src
+* NLP
+
+https://www.nltk.org/book/ch01.html
+https://towardsdatascience.com/nlp-approaches-to-data-anonymization-1fb5bde6b929
+** microsft
+
+Microsoft have [[https://github.com/microsoft/presidio][presidio]], a /Context aware, pluggable and customizable PII anonymization service for text and images./.
+It uses a mix of [[https://github.com/microsoft/presidio/tree/main/presidio-analyzer/presidio_analyzer/predefined_recognizers][predefined regex]] and [[https://github.com/microsoft/presidio/tree/main/presidio-analyzer/presidio_analyzer/nlp_engine][NLP using spaCy]].
+
+* unfinished branches
+** Feature/35236 show dead links
+
+* heartbeat / health status
+** check rabbitMQ health status
+#+begin_src python
+@group.command()
+def check_rabbitmq_status():
+    """Check if RabbitMQ is alive"""
+
+    import pika
+    from os2datascanner.engine2.pipeline.utilities.pika import (
+        PikaConnectionHolder)
+
+    def is_open(con):
+        try:
+            con.process_data_events()
+            return True
+        except pika.exceptions.ConnectionClosed as e:
+            return False
+
+    success = is_open(con)
+    err_msg = "pika connection is closed"
+    if success:
+        logger.info("rabbitmq passed health check")
+    else:
+        logger.error(err_msg)
+        sys.exit(3)
+
+
+#+end_src
+
+
+
+** db
+#+begin_src python
+
+@group.command()
+@click.option("--seconds", default=_SLEEPING_TIME, type=float,
+              help="Wait up to n seconds for the database connection before"
+                   " exiting.")
+def checkdb(wait):
+    """Check that database is online."""
+
+    from django.core.management import call_command
+    call_command("cron", **{"now": True}, stdout=buf)
+
+    def check_db():
+        with conf_db._get_session() as session:
+            session.execute("SELECT 1")
+
+    _wait_for_service("Database is up", check_db,
+                      sqlalchemy.exc.OperationalError, wait)
+
+
+@group.command()
+def check_configuration_db_status():
+    success, error_msg = conf_db.health_check()
+    if success:
+        logger.info("database passed health check")
+    else:
+        logger.error(error_msg)
+        sys.exit(3)
+#+end_src
+* logging
+
+
+** initiate logging
+#+begin_src python
+import logging
+
+# prevent default configuration, if users do not set one specifically
+logging.getLogger(__name__).addHandler(logging.NullHandler())
+# This allows users of this "library" to disable all logging, simply by
+# logging.getLogger('os2datascanner').propagate = False
+#+end_src
