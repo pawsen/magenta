@@ -35,9 +35,9 @@
     - [[#multi-containers][multi containers]]
     - [[#translations][translations]]
   - [[#ldap][ldap]]
-    - [[#installation][installation]]
-    - [[#create-users][create users]]
     - [[#ldap-structure][ldap structure]]
+    - [[#connect-to-magenta-ad][connect to Magenta AD]]
+    - [[#local-ldap-server][local ldap server]]
   - [[#code-snippets][code snippets/]]
   - [[#promethues][promethues]]
   - [[#grafana][grafana]]
@@ -57,7 +57,7 @@
   - [[#debuging-of-docker-container-not-app-debuging][debug'ing of docker container (not app debug'ing)]]
   - [[#users-uidgid][users uid/gid]]
   - [[#git-hooks][git hooks]]
-    - [[#installation-1][Installation]]
+    - [[#installation][Installation]]
 - [[#magenta][magenta]]
   - [[#time-tracking][time tracking]]
 
@@ -1012,24 +1012,6 @@ msgstr "Er du sikker på, at du vil slette status for scanner "
 "»%%(scanner_name)s«?"
 #+end_src
 ** ldap
-*** installation
-install utils
-#+begin_src sh
-apt-file search ldapadd
-sudo apt install ldap-utils
-#+end_src
-
-*** create users
-
-#+begin_src sh
-echo -e "dn: ou=jumbo,dc=magenta,dc=test\nobjectClass: organizationalUnit\nou:jumbo\n" > ne2; for k in `seq 1 10000`; do echo -e "dn: cn=Test User $k,ou=jumbo,dc=magenta,dc=test\nobjectClass: inetOrgPerson\ncn: Test User $k\nsn: Test User $k\nmail: test$k@magenta.test\n" >> ne2; done
-ldapadd -v -D cn=admin,dc=magenta,dc=test -w testMAG -f ne2
-#+end_src
-
-See the stucture, using phpLDAPadmin http://localhost:8100
-user: cn=admin,dc=magenta,dc=test
-pass: testMAG
-
 *** ldap structure
 - =DN= distinguished name. Describe the fully qualified path to an entry
 - =RDN= relative distinguished name. Describe the partial path to the entry relative to another entry in the tree.
@@ -1044,6 +1026,39 @@ Example, DN
 =cn=John Doe, ou=People, dc=sun.com=
 A =RDN= is a component of the =DN=
 =cn=John Doe, ou=People= is a RDN relative to the root RDN =dc=sun.com=.
+
+*** connect to Magenta AD
+Install =tailscale= as described in [[https://labs.docs.magenta.dk/services/tailscale.html][labs doc]] and =rdp= tool =remmina=
+: sudo apt install remmina
+
+Get the ip of the ad-server
+#+begin_src sh
+> tailscale status
+100.105.214.39  magenta-2-sal        pmo@         linux   -
+100.69.90.85    ad-server            md@          windows idle, tx 578044 rx 1071204
+#+end_src
+
+Connect with =remmina= using
+: user: srvdsstaging
+: password from bitwarden.
+
+*** local ldap server
+**** installation
+install utils
+#+begin_src sh
+apt-file search ldapadd
+sudo apt install ldap-utils
+#+end_src
+
+**** create users
+#+begin_src sh
+echo -e "dn: ou=jumbo,dc=magenta,dc=test\nobjectClass: organizationalUnit\nou:jumbo\n" > ne2; for k in `seq 1 10`; do echo -e "dn: cn=Test User $k,ou=jumbo,dc=magenta,dc=test\nobjectClass: inetOrgPerson\ncn: Test User $k\nsn: Test User $k\nmail: test$k@magenta.test\n" >> ne2; done
+ldapadd -v -D cn=admin,dc=magenta,dc=test -w testMAG -f ne2
+#+end_src
+
+See the stucture, using phpLDAPadmin http://localhost:8100
+: user: cn=admin,dc=magenta,dc=test
+: pass: testMAG
 
 
 ** code snippets/
