@@ -34,6 +34,10 @@
     - [[#report][report]]
     - [[#multi-containers][multi containers]]
     - [[#translations][translations]]
+  - [[#ldap][ldap]]
+    - [[#installation][installation]]
+    - [[#notes][notes]]
+  - [[#snippets][snippets]]
   - [[#promethues][promethues]]
   - [[#grafana][grafana]]
     - [[#magentas-grafana][magentas grafana]]
@@ -52,7 +56,7 @@
   - [[#debuging-of-docker-container-not-app-debuging][debug'ing of docker container (not app debug'ing)]]
   - [[#users-uidgid][users uid/gid]]
   - [[#git-hooks][git hooks]]
-    - [[#installation][Installation]]
+    - [[#installation-1][Installation]]
 - [[#magenta][magenta]]
   - [[#time-tracking][time tracking]]
 
@@ -469,7 +473,6 @@ Build the containers
 docker-compose up --build -d
 
 docker-compose exec -e DJANGO_SUPERUSER_PASSWORD=test admin_application python manage.py createsuperuser --noinput --username test --email test@test.dk
-
 docker-compose exec -e DJANGO_SUPERUSER_PASSWORD=test report_application python manage.py createsuperuser --noinput --username test --email test@test.dk
 #+end_src
 
@@ -593,11 +596,27 @@ docker exec -ti os2datascanner_db_1 bash -c 'pg_restore -U postgres -c -d os2dat
 
 Drop DB
 #+begin_src sh
-dropdb -U postgres os2datascanner_report
-dropdb -U postgres os2datascanner_admin
+dkc exec db bash -c "dropdb -U postgres os2datascanner_report"
+dkc exec db bash -c "dropdb -U postgres os2datascanner_admin"
 #+end_src
 
 Various DB backup files can be found [[file:os2ds/data/db/][here]].
+
+**** restoring db
+
+#+begin_src sh
+dkc exec db bash
+cd /docker-entrypoint-initdb.d
+su postgres
+psql  <<ENDSQL
+dropdb ${REPORT_DATABASE_NAME};
+dropuser ${REPORT_DATABASE_USER};
+CREATE DATABASE ${REPORT_DATABASE_NAME};
+CREATE USER ${REPORT_DATABASE_USER} WITH ENCRYPTED PASSWORD '${REPORT_DATABASE_PASSWORD}';
+GRANT ALL PRIVILEGES ON DATABASE ${REPORT_DATABASE_NAME} TO ${REPORT_DATABASE_USER};
+ENDSQL
+
+#+end_src
 
 *** network
 Inspect network and find the IPs of the containers
@@ -814,13 +833,13 @@ Or with the CLI
 sudo apt install httpie
 
 http localhost:8070/openapi.yaml -d
-http POST localhost:8070/dummy/1 AUTHORIZATION:'Bearer os2ds'
+http POST localhost:8070/dummy/1 AUTHORIZATION:'Bearer thisIsNotASecret'
 echo '{"rule":{"type":"regex","expression":"[Tt]est"},"source":{"type":"data","content":"VGhpcyBpcyBvbmx5IGEgdGVzdA==","mime":"text/plain"}}' | http
- post localhost:8070/scan/1 AUTHORIZATION:'Bearer os2ds'
+ post localhost:8070/scan/1 AUTHORIZATION:'Bearer thisIsNotASecret'
 # OR
 curl -X POST "http://localhost:8070/scan/1" -H  "accept: application/jsonl" -H  "Authorization: Bearer os2ds" -H  "Content-Type: application/json" -d '{"rule":{"type":"regex","expression":"[Tt]est"},"source":{"type":"data","content":"VGhpcyBpcyBvbmx5IGEgdGVzdA==","mime":"text/plain"}}'
 
-echo '{"rule":{"type":"regex","expression":"[Mm]orten"},"source":{"type":"web","url":"https://www.magenta.dk"}}' | http post localhost:8070/scan/1 AUTHORIZATION:'Bearer os2ds'
+echo '{"rule":{"type":"regex","expression":"[Mm]orten"},"source":{"type":"web","url":"https://www.magenta.dk"}}' | http post localhost:8070/scan/1 AUTHORIZATION:'Bearer thisIsNotASecret'
 #+end_src
 
 The content is =base64= encoded
@@ -836,9 +855,19 @@ The API expects valid JSON which is using ="= and not ='=.
 Also, we need escape backslash so =\= becomes =\\=. =\b= is a literal backspace and needs to be escaped.
 
 #+begin_src sh
-echo '{"rule":{"type":"regex", "expression": "\\b(\d{2}(?:\d{2})?[\s]?\d{2}[\s]?\d{2})(?:[\s\-/\.]|\s\-\s)?(\d{4})\\b"},"source":{"type":"data","content":"'$(base64 -w 0 < cpr_test.txt)'","mime":"text/plain"}}' | sed 's/\\/\\\\/g' | http post localhost:8070/scan/1 AUTHORIZATION:'Bearer os2ds' | jq
+echo '{"rule":{"type":"regex", "expression": "\\b(\d{2}(?:\d{2})?[\s]?\d{2}[\s]?\d{2})(?:[\s\-/\.]|\s\-\s)?(\d{4})\\b"},"source":{"type":"data","content":"'$(base64 -w 0 < cpr_test.txt)'","mime":"text/plain"}}' | sed 's/\\/\\\\/g' | http post localhost:8070/scan/1 AUTHORIZATION:'Bearer thisIsNotASecret' | jq
 #+end_src
 
+It is possible to submit a ~configuration~ list, which is parsed into the ~ScanSpecMessage.configuration~ dict. This is only used in =processor.py=, where =skip_mime_types= is read and used as
+#+begin_quote
+A list of the MIME types for which text conversions should not be performed.
+This is chiefly used to switch off computationally-expensive OCR conversions.
+
+The last character can be the wildcard "*"; for example, "image/*".
+#+end_quote
+#+begin_src sh
+echo '{"rule":{"type":"regex", "expression": "1310"},"source":{"type":"data","content":"'$(base64 -w 0  < ~/git/os2datascanner/src/os2datascanner/engine2/tests/data/ocr/good/cpr.jpg )'","mime":"image/jpeg"}, "configuration": {"skip_mime_types": ["image/*"]}}' | http post localhost:8070/scan/1 AUTHORIZATION:'Bearer thisIsNotASecret' | jq
+#+end_src
 
 Follow the logs
 #+begin_src sh
@@ -980,6 +1009,23 @@ msgid ""
 "'%%(scanner_name)s'?"
 msgstr "Er du sikker på, at du vil slette status for scanner "
 "»%%(scanner_name)s«?"
+#+end_src
+** ldap
+*** installation
+install utils
+
+#+begin_src sh
+apt-file search ldapadd
+sudo apt install ldap-utils
+#+end_src
+*** notes
+- =DN='s describe the fully qualified path to an entry
+- =RDN= describe the partial path to the entry relative to another entry in the tree.
+** snippets
+
+#+begin_src python
+from os2datascanner import
+C.convert(FilesystemHandle.make_handle("/home/alec/Documents/ocr_this_if_you_dare.png").follow(sm), C.types.OutputType.Text)
 #+end_src
 
 ** promethues
