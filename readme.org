@@ -36,8 +36,9 @@
     - [[#translations][translations]]
   - [[#ldap][ldap]]
     - [[#installation][installation]]
-    - [[#notes][notes]]
-  - [[#snippets][snippets]]
+    - [[#create-users][create users]]
+    - [[#ldap-structure][ldap structure]]
+  - [[#code-snippets][code snippets/]]
   - [[#promethues][promethues]]
   - [[#grafana][grafana]]
     - [[#magentas-grafana][magentas grafana]]
@@ -1013,18 +1014,42 @@ msgstr "Er du sikker på, at du vil slette status for scanner "
 ** ldap
 *** installation
 install utils
-
 #+begin_src sh
 apt-file search ldapadd
 sudo apt install ldap-utils
 #+end_src
-*** notes
-- =DN='s describe the fully qualified path to an entry
-- =RDN= describe the partial path to the entry relative to another entry in the tree.
-** snippets
+
+*** create users
+
+#+begin_src sh
+echo -e "dn: ou=jumbo,dc=magenta,dc=test\nobjectClass: organizationalUnit\nou:jumbo\n" > ne2; for k in `seq 1 10000`; do echo -e "dn: cn=Test User $k,ou=jumbo,dc=magenta,dc=test\nobjectClass: inetOrgPerson\ncn: Test User $k\nsn: Test User $k\nmail: test$k@magenta.test\n" >> ne2; done
+ldapadd -v -D cn=admin,dc=magenta,dc=test -w testMAG -f ne2
+#+end_src
+
+See the stucture, using phpLDAPadmin http://localhost:8100
+user: cn=admin,dc=magenta,dc=test
+pass: testMAG
+
+*** ldap structure
+- =DN= distinguished name. Describe the fully qualified path to an entry
+- =RDN= relative distinguished name. Describe the partial path to the entry relative to another entry in the tree.
+[[file:img/LDAP_Directory_Strucuture.gif]]
+
+- =dc= domain component (root)
+- =ou= organisational unit
+- =cn= common name
+- =sn= surname
+
+Example, DN
+=cn=John Doe, ou=People, dc=sun.com=
+A =RDN= is a component of the =DN=
+=cn=John Doe, ou=People= is a RDN relative to the root RDN =dc=sun.com=.
+
+
+** code snippets/
 
 #+begin_src python
-from os2datascanner import
+from os2datascanner import SourceManager
 C.convert(FilesystemHandle.make_handle("/home/alec/Documents/ocr_this_if_you_dare.png").follow(sm), C.types.OutputType.Text)
 #+end_src
 

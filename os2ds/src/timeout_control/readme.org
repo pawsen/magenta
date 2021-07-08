@@ -1,0 +1,14 @@
+
+Get the xls file from
+https://drive.google.com/file/d/1T9nGCNTUl6R82RifnPRFHrM7cFy9dtHQ/
+
+
+#+begin_src sh
+cat > test.py <<"END"
+from os2datascanner.engine2.model.core import *
+from os2datascanner.engine2.model.file import *
+lrfs = Source.from_handle(FilesystemHandle.make_handle("/home/paw/Downloads/pain.xls"))
+sm = SourceManager()
+list(lrfs.handles(sm))
+END
+#+end_src
