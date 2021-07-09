@@ -130,6 +130,14 @@ chmod -R o+w src/os2datascanner/projects/report/reportapp/migrations
 chmod -R o+w src/os2datascanner/projects/admin/locale
 #+end_src
 
+Likewise install DS as ~editable~ using pip, meaning that pip will install a link to DS in =site-packages=. With this, it is not necessary to modify =PYTHONPATH=
+#+begin_src sh
+pip install -e .
+
+> fd "os2datascanner" ~/.pyenv/versions
+/home/paw/.pyenv/versions/3.6.12/envs/os2ds/lib/python3.6/site-packages/os2datascanner.egg-link
+#+end_src
+
 
 Se [[https://udvikler.docs.magenta.dk/docker/index.html][udviklerhåndbogen]] for flere kommandoer
 
@@ -486,7 +494,7 @@ services:
 We need to set the API token in =dev-environment/api/dev-settings.toml=. It is in the format of a [[https://swagger.io/docs/specification/authentication/bearer-authentication/][bearer authentication]] as a pre-shared-key(bpsk), and we just set
 #+begin_src conf
 [server]
-token = "os2ds"
+token = "thisIsNotASecret"
 #+end_src
 Then we can interact with the API endpoints {=openapi.yaml=, =dummy/1=, =scan/1=}
 
@@ -919,6 +927,7 @@ docker logs os2datascanner_engine_worker_1
 ** testing
 *** local
 #+begin_src sh
+dse python -m unittest discover -s src/os2datascanner/engine2/tests
 dse python -m unittest os2datascanner.engine2.tests.integration.test_engine2_pipeline.Engine2PipelineTests
 dsa ./manage.py test os2datascanner.projects.admin.core.tests.test_flags.ModelChoiceEnumTest
 #+end_src
