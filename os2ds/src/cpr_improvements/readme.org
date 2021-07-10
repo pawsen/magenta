@@ -1,0 +1,36 @@
+#+TITLE: Readme
+
+* conversions
+** convert to csv
+#+begin_src sh
+libreoffice --convert-to csv:"Text - txt - csv (StarCalc):124,34,76" ex1.ods
+libreoffice --convert-to csv:"Text - txt - csv (StarCalc):9,34,76" ex1.ods
+#+end_src
+
+* examples
+[[https://drive.google.com/file/d/1JTo0WAlpGDfJADN2Dbha2rrNjVMexDDn/view?usp=sharing][download from google drive]] or use wget
+#+begin_src sh
+wget -r "https://drive.google.com/uc?export=download&id=1JTo0WAlpGDfJADN2Dbha2rrNjVMexDDn" -O ~/Downloads/cpr-examples.ods
+
+cat > test.py <<"EOF"
+from pathlib import Path
+from pprint import pformat
+from os2datascanner.engine2.model.core import Source, SourceManager
+from os2datascanner.engine2.model.file import FilesystemHandle
+from os2datascanner.engine2.rules.cpr import CPRRule
+from os2datascanner.engine2.conversions import convert
+
+fpath = Path("~/Downloads/cpr-examples.ods").expanduser()
+rule = CPRRule(modulus_11=False, ignore_irrelevant=False)
+sm = SourceManager()
+
+lrfs = Source.from_handle(FilesystemHandle.make_handle(fpath))
+lrfh = list(lrfs.handles(sm))[0]
+lrfr =lrfh.follow(sm)
+representation = convert(lrfr, rule.operates_on).value
+print(representation)
+
+matches = list( rule.match(representation))
+print(pformat(matches))
+EOF
+#+end_src

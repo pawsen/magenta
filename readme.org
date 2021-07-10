@@ -26,7 +26,6 @@
     - [[#ldap-structure][ldap structure]]
     - [[#connect-to-magenta-ad][connect to Magenta AD]]
     - [[#local-ldap-server][local ldap server]]
-  - [[#code-snippets][code snippets/]]
   - [[#promethues][promethues]]
   - [[#grafana][grafana]]
     - [[#magentas-grafana][magentas grafana]]
@@ -40,6 +39,8 @@
   - [[#testing][testing]]
     - [[#local][local]]
     - [[#docker-1][docker]]
+  - [[#code-snippets][code snippets/]]
+    - [[#example-with-downloading-from-google-drive][example with downloading from google drive]]
   - [[#registered-convertershandlers][registered converters/handlers]]
 - [[#random][random]]
   - [[#pipeline-projekt-oversigt][Pipeline projekt oversigt]]
@@ -733,13 +734,6 @@ See the stucture, using phpLDAPadmin http://localhost:8100
 : pass: testMAG
 
 
-** code snippets/
-
-#+begin_src python
-from os2datascanner import SourceManager
-C.convert(FilesystemHandle.make_handle("/home/alec/Documents/ocr_this_if_you_dare.png").follow(sm), C.types.OutputType.Text)
-#+end_src
-
 ** promethues
 Prometheus collects metrics from the engine modules, using a =http pull= model(server is scraping target). This means that each module, when started with the =--metric= flag, also starts a prometheus web server (=start_http_server(args.prometheus_port)= in [[https://git.magenta.dk/os2datascanner/os2datascanner/-/blob/development/src/os2datascanner/engine2/pipeline/run_stage.py#L67-68][run_stage.py]]) and corresponding =prometheus_summary= decorator providing the metrics.
 
@@ -937,6 +931,48 @@ dsa ./manage.py test os2datascanner.projects.admin.core.tests.test_flags.ModelCh
 docker-compose run admin_application python -m django test os2datascanner.projects.admin.tests
 docker-compose run engine_explorer python -m unittest discover -s /code/src/os2datascanner/engine2/tests
 docker-compose run report_application python -m django test os2datascanner.projects.report.tests
+#+end_src
+
+** code snippets/
+
+#+begin_src python
+from os2datascanner import SourceManager
+C.convert(FilesystemHandle.make_handle("/home/alec/Documents/ocr_this_if_you_dare.png").follow(sm), C.types.OutputType.Text)
+#+end_src
+
+*** example with downloading from google drive
+
+NOTE: It is important to keep quotes around ="EOF"=, otherwise shell variables will be parsed.
+Also, I could not do =import os2datascanner.engine2.conversions as C=. =import= was parsed.
+
+=cat > test.py <<-"EOF"= will remove indentation, thus making it possible to format the cat-strings fro better readablility, if needed.
+
+
+[[https://drive.google.com/file/d/1JTo0WAlpGDfJADN2Dbha2rrNjVMexDDn/view?usp=sharing][download from google drive]] or use wget
+#+begin_src sh
+wget -r "https://drive.google.com/uc?export=download&id=1JTo0WAlpGDfJADN2Dbha2rrNjVMexDDn" -O ~/Downloads/cpr-examples.ods
+
+cat > test.py <<"EOF"
+from pathlib import Path
+from pprint import pformat
+from os2datascanner.engine2.model.core import Source, SourceManager
+from os2datascanner.engine2.model.file import FilesystemHandle
+from os2datascanner.engine2.rules.cpr import CPRRule
+from os2datascanner.engine2.conversions import convert
+
+fpath = Path("~/Downloads/cpr-examples.ods").expanduser()
+rule = CPRRule(modulus_11=False, ignore_irrelevant=False)
+sm = SourceManager()
+
+lrfs = Source.from_handle(FilesystemHandle.make_handle(fpath))
+lrfh = list(lrfs.handles(sm))[0]
+lrfr =lrfh.follow(sm)
+representation = convert(lrfr, rule.operates_on).value
+print(representation)
+
+matches = list( rule.match(representation))
+print(pformat(matches))
+EOF
 #+end_src
 
 ** registered converters/handlers
