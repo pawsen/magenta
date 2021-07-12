@@ -26,6 +26,11 @@
     - [[#ldap-structure][ldap structure]]
     - [[#connect-to-magenta-ad][connect to Magenta AD]]
     - [[#local-ldap-server][local ldap server]]
+  - [[#smb][smb]]
+    - [[#install][install]]
+    - [[#connect-to-shares][connect to shares]]
+    - [[#smbserverpy][smbserver.py]]
+    - [[#create-files-with-hidden-and-system-attributes][create files with hidden and system attributes]]
   - [[#promethues][promethues]]
   - [[#grafana][grafana]]
     - [[#magentas-grafana][magentas grafana]]
@@ -39,8 +44,10 @@
   - [[#testing][testing]]
     - [[#local][local]]
     - [[#docker-1][docker]]
-  - [[#code-snippets][code snippets/]]
+  - [[#code-snippets][code snippets]]
     - [[#example-with-downloading-from-google-drive][example with downloading from google drive]]
+    - [[#generate-list-of-matches][generate list of matches]]
+    - [[#smbc-get-mode-for-files][smbc: get mode for files]]
   - [[#registered-convertershandlers][registered converters/handlers]]
 - [[#random][random]]
   - [[#pipeline-projekt-oversigt][Pipeline projekt oversigt]]
@@ -733,6 +740,121 @@ See the stucture, using phpLDAPadmin http://localhost:8100
 : user: cn=admin,dc=magenta,dc=test
 : pass: testMAG
 
+** smb
+*** install
+#+begin_src sh
+pipx install impacket
+sudo apt install samba smbclient libsmbclient-dev
+#+end_src
+
+add user to sambagroup in order to share folder by right-clicking from nautilus
+: sudo usermod -a -G sambashare $USER
+
+*** connect to shares
+
+[[https://serverfault.com/a/166255][List (samba?) shares on network]]
+#+begin_src sh
+# This no longer works with Samba version 4
+nmblookup -S '*'
+#+end_src
+
+List shares, connect and change dir. Type =help= to get a list of =smbclient= commands. It is much like a ftp-client.
+#+begin_src shell
+smbclient --user=deathstar%tordenskjold -L 172.16.20.230
+smbclient --user=deathstar%tordenskjold //172.16.20.230/Users
+cd \DeathStar\Documents\os2ds
+ls
+#+end_src
+
+Listing files shows a column with [[https://superuser.com/a/1597400][file attributes]]. These can be set with the [[https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/attrib][ATTRIB]] command on windows (or right-clicking)
+
+Mount the smb-share (the latter command is if =cifs-utils= is installed)
+#+begin_src shell
+sudo mount -t cifs  //172.16.20.230/Users ~/mnt -o username=deathstar,pass=tordenskjold
+sudo mount.cifs  //172.16.20.230/Users ~/mnt -o username=deathstar,pass=tordenskjold
+#+end_src
+For some SMB shares it is necessary to add =vers=1.0= to the list of =-o= options
+
+
+All this might be possible with a samba share. Not tried
+https://superuser.com/questions/747753/showing-hidden-files-as-hidden-in-windows-from-linux-samba-share-of-ntfs-drive
+*** smbserver.py
+Run ~smbserver.py~ with root privileges, but using my =virtual env=
+#+begin_src sh
+alias spython='sudo $(printenv VIRTUAL_ENV)/bin/python3'
+spython smbserver.py -comment "os2 share" -username guest -password guest -ts -smb2support os2-data ./data
+# test
+smbclient --user=guest //127.0.0.1/os2-data
+#+end_src
+Check the ~-m SMB2~ option for ~smbclient~.
+
+**** change samba protocol
+: protocol negotiation failed: NT_STATUS_NOT_SUPPORTED
+
+then either add ~-smb2support~ when calling ~smbserver.py~ or try [[https://unix.stackexchange.com/a/585339][adding]] (under =GLOBAL=)
+#+begin_src sh
+vi /etc/samba/smb.conf
+client min protocol = CORE
+client max protocol = SMB3
+#+end_src
+
+*** create files with hidden and system attributes
+
+In general, the easiest seems to be to connet to the share with =smbclient= and do
+#+begin_src sh
+setmode <file> +h
+#+end_src
+
+**** on windows
+in =CMD=
+#+begin_src sh
+attrib +s +h <file>
+dir /s /b /a > content.txt
+attrib /s /d > attributes.txt
+#+end_src
+
+**** on samba
+according to the [[https://www.oreilly.com/openbook/samba/book/ch05_03.html][docs]], it should be possible to map the ~execute bits~ to
+=archive=, =system= and =hidden= attributes. However I can not get this to work.
+It might be for ~samba < 4.0~. The same procedure is described in this [[https://serverfault.com/questions/993228/how-do-i-set-the-archive-bit-of-a-file-shared-with-samba][SO]], but still not working.
+
+Recent samba versions might store the attributes in database-files at =/var/lib/samba/*.tdb=
+
+***** Notes on file system attributtes
+#+begin_quote
+In Linux, there are total of nine mode bits that set the basic access
+permissions. The first three bits set the permissions for the owner of the file.
+The next three bits set the permissions for the members of the file’s group. The
+last three bits set the permissions for everyone else on the system:
+#+end_quote
+
+Thus the maximum numeric value for each field is
+#+begin_src python :results output
+print(int("111", 2))
+#+end_src
+
+#+RESULTS:
+: 7
+
+
+***** setup samba
+
+test the configuration
+: testparm
+
+***** anonymous browsing
+From https://askubuntu.com/a/1104925
+#+begin_quote
+If there is no match to the username the client user is tagged a "Bad User" and converted ( mapped ) to the guest account which by default is ~nobody~.
+#+end_quote
+Thus try either
+: force user = nobody
+: guest = ok
+or
+: chown -Rh 65534:65534 /share
+
+It is not enough to set =rwx= to =others= (=chmod o+rwx /share=), this can be checked with
+: strace -f -e chdir,geteuid,getegid -p <pid-of-the-parent-smbd-process>
 
 ** promethues
 Prometheus collects metrics from the engine modules, using a =http pull= model(server is scraping target). This means that each module, when started with the =--metric= flag, also starts a prometheus web server (=start_http_server(args.prometheus_port)= in [[https://git.magenta.dk/os2datascanner/os2datascanner/-/blob/development/src/os2datascanner/engine2/pipeline/run_stage.py#L67-68][run_stage.py]]) and corresponding =prometheus_summary= decorator providing the metrics.
@@ -933,7 +1055,7 @@ docker-compose run engine_explorer python -m unittest discover -s /code/src/os2d
 docker-compose run report_application python -m django test os2datascanner.projects.report.tests
 #+end_src
 
-** code snippets/
+** code snippets
 
 #+begin_src python
 from os2datascanner import SourceManager
@@ -973,6 +1095,21 @@ print(representation)
 matches = list( rule.match(representation))
 print(pformat(matches))
 EOF
+#+end_src
+*** generate list of matches
+#+begin_src python
+from pprint import pformat
+rule = CPRRule(modulus_11=True, ignore_irrelevant=False, examine_context=False,
+              blacklist=False)
+matches = list(rule.match(content))
+print(pformat(matches))
+#+end_src
+*** smbc: get mode for files
+#+begin_src
+dkc exec engine_worker python
+from os2datascanner.engine2.model.smbc import *
+ctx = smbc.Context()
+Mode.for_url(ctx, "smb://deathstar:PASS@172.16.20.230/Users/deathstar/documents/os2ds/hidden_doc.txt")
 #+end_src
 
 ** registered converters/handlers
