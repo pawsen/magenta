@@ -49,6 +49,7 @@
     - [[#generate-list-of-matches][generate list of matches]]
     - [[#smbc-get-mode-for-files][smbc: get mode for files]]
   - [[#registered-convertershandlers][registered converters/handlers]]
+  - [[#nixis][nixis]]
 - [[#random][random]]
   - [[#pipeline-projekt-oversigt][Pipeline projekt oversigt]]
   - [[#get-requirementstxt][get requirements.txt]]
@@ -300,9 +301,11 @@ ENDSQL
 #+end_src
 
 *** network
-Inspect network and find the IPs of the containers
+Inspect network and find the IPs of the containers / gateway.
+The Gateway IP is the address the django-application sees as the ~user-ip~
 #+begin_src sh
 docker network inspect os2datascanner_default | grep -B 3 '172.19.0'
+docker inspect os2datascanner_admin_application_1 | grep '"Gateway"'
 #+end_src
 
 Find connections to container
@@ -561,6 +564,17 @@ docker-compose logs --follow api_server
 For django 2.2
 [[https://ccbv.co.uk/projects/django/2.2/][Classy Class-Based Views]]
 [[https://docs.djangoproject.com/en/2.2/][docs.djangoproject.com]]
+**** validation
+Validering i Django er lidt kompliceret. Der er mindst 3 forskellige komponenter med dette ansvar
+- Databasen kan udføre validering i formen af database-betingelser
+- [[https://docs.djangoproject.com/en/3.2/ref/models/instances/#validating-objects][modelobjekter]] kan under kørsel af clean-metoden
+- [[https://docs.djangoproject.com/en/3.2/ref/forms/validation/][Django Forms]] kan under behandling af HTTP-blanketten
+
+Django Forms er den foretrukne måde at gøre det på, men det er ikke den, vi plejer at bruge i OS2datascanner, undtaget Ios LDAP-implementering
+https://docs.djangoproject.com/en/3.2/topics/forms/modelforms/#validation-on-a-modelform
+
+***** Forms
+https://docs.djangoproject.com/en/3.2/topics/forms/modelforms/
 
 **** django_extensions
 [[https://github.com/django-extensions/django-extensions][django_extensions]] is a collection of extensions providing extra functionality to the =manage.py= command.
@@ -1142,6 +1156,9 @@ Source._Source__url_handlers
 #+end_src
 
 See also [[file:os2ds/src/examples/gzip_source_from_string.py][gzip_source_from_string.py]]
+** nixis
+Example shell.nix file
+https://discourse.nixos.org/t/coc-nvim-nvim-stuff/2974/11
 * random
 ** Pipeline projekt oversigt
 https://docs.google.com/spreadsheets/d/1WylHagXFc2rXuB2qEfnPng4an78U49WiiP8lJWMCc2Y/edit#gid=281544569
