@@ -1,0 +1,26 @@
+#+TITLE: Ds_readme
+
+- ENGINE Sanity check at startup
+  - correct read/write permissions on /tmp folder (or whereever DS store temp-files)
+  - can we access source (samba share, etc)
+    ie. some form for login check
+  - IF NOT, clear error in admin module/logs
+
+- debug tools
+  - cli tool to scan a resource
+    input:
+    - scan_id (to get login information)
+    - file/resource to scan
+    output:
+
+- admin interface (maybe cli-tool from container)
+  - endpoints (all queriable by curl/wget)
+    - list all scan_jobs, with id, name, etc
+    - start_scan_by_id
+  - scan_status
+    - show statistical information (summary)
+      how many matches/problems by file extension
+
+- report
+  - "log tail" for problem, matches, etc
+    give me n-latest problem messages and follow

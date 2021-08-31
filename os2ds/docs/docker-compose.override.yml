@@ -5,11 +5,11 @@ services:
       ports:
         - "5432:5432"
 
-    engine_explorer:
+    explorer:
       command: explorer --enable-metrics --debug
-    engine_exporter:
+    exporter:
       command: exporter --enable-metrics --debug
-    engine_worker:
+    worker:
       command: worker --enable-metrics --debug
 
     # It seems it is not possible to have two entries for the same container.
@@ -19,7 +19,7 @@ services:
     #   profiles: ["debug"]
     #   entrypoint: ["echo", "Service worker disabled"]
 
-    engine_processor:
+    processor:
       profiles: ["debug"]
       build:
         context: .
@@ -31,7 +31,7 @@ services:
         - ./src/os2datascanner:/code/src/os2datascanner
       depends_on:
         - queue
-    engine_matcher:
+    matcher:
       profiles: ["debug"]
       build:
         context: .
@@ -43,7 +43,7 @@ services:
         - ./src/os2datascanner:/code/src/os2datascanner
       depends_on:
         - queue
-    engine_tagger:
+    tagger:
       profiles: ["debug"]
       build:
         context: .
