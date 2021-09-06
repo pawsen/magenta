@@ -22,6 +22,7 @@
 - [[#heartbeat--health-status][heartbeat / health status]]
   - [[#check-rabbitmq-health-status][check rabbitMQ health status]]
   - [[#db][db]]
+  - [[#docker-compose][docker-compose]]
 - [[#logging][logging]]
   - [[#initiate-logging][initiate logging]]
 - [[#libreoffice][libreoffice]]
@@ -335,6 +336,34 @@ def check_configuration_db_status():
     else:
         logger.error(error_msg)
         sys.exit(3)
+#+end_src
+** docker-compose
+Removed again from DS due to the many request being logged by django.
+Maybe we could filter requests by setting a custom "user-agent" for curl?
+https://git.magenta.dk/os2datascanner/os2datascanner/-/commit/70a4fd7858e5b11ecad5c20b11141c04cb12b6e5
+#+begin_src yaml
+db:
+    healthcheck:
+    test: ["CMD-SHELL", "pg_isready -U postgres"]
+    interval: 5s
+    timeout: 5s
+    retries: 3
+    start_period: 30s
+
+admin:
+    healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost:5000"]
+    interval: 5s
+    timeout: 5s
+    retries: 3
+    start_period: 40s
+
+report:
+    test: ["CMD", "curl", "-f", "http://localhost:5000"]
+    interval: 5s
+    timeout: 5s
+    retries: 3
+    start_period: 40s
 #+end_src
 * logging
 

@@ -35,6 +35,8 @@
   - [[#grafana][grafana]]
     - [[#magentas-grafana][magentas grafana]]
   - [[#gcloud][gcloud]]
+    - [[#change-setup][change setup]]
+    - [[#list-commands][list commands]]
   - [[#local-setup][local setup]]
     - [[#local-setup-without-docker][local setup without docker]]
     - [[#poetry][poetry]]
@@ -737,6 +739,12 @@ Connect with =remmina= using
 : password from bitwarden.
 
 *** local ldap server
+Use phpLDAPadmin http://localhost:8100
+: user: cn=admin,dc=magenta,dc=test
+: pass: testMAG
+
+LDAP uses by default TCP and UDP on port 389, or on port 636 for LDAPS
+
 **** installation
 install utils
 #+begin_src sh
@@ -747,12 +755,12 @@ sudo apt install ldap-utils
 **** create users
 #+begin_src sh
 echo -e "dn: ou=jumbo,dc=magenta,dc=test\nobjectClass: organizationalUnit\nou:jumbo\n" > ne2; for k in `seq 1 10`; do echo -e "dn: cn=Test User $k,ou=jumbo,dc=magenta,dc=test\nobjectClass: inetOrgPerson\ncn: Test User $k\nsn: Test User $k\nmail: test$k@magenta.test\n" >> ne2; done
+
 ldapadd -v -D cn=admin,dc=magenta,dc=test -w testMAG -f ne2
 #+end_src
 
-See the stucture, using phpLDAPadmin http://localhost:8100
-: user: cn=admin,dc=magenta,dc=test
-: pass: testMAG
+**** create objects
+Press on the ~domain controller~ (~dc=magenta,dc=test~), ~create child entry~, ~Generic: Organisational Unit~, "name it" and press ~commit~.
 
 ** smb
 *** install
@@ -933,6 +941,39 @@ Or use as a proxy
 gcloud compute ssh --tunnel-through-iap test-webserver-with-dummy-data --zone=europe-west4-a -- -N -p 22 -D localhost:5000
 curl https://api.ip2geo.pl/json/
 curl --proxy socks5://localhost:5000 https://api.ip2geo.pl/json/
+#+end_src
+
+*** change setup
+#+begin_src sh
+gcloud config list
+gcloud projects list
+gcloud config set project magenta-os2ds-production
+#+end_src
+
+*** list commands
+#+begin_src sh
+gcloud projects list
+gcloud container clusters list
+gcloud compute instances list
+gcloud compute instance-groups list
+
+# sql (postgres)
+gcloud sql instances list
+# cloud storage
+gsutil ls
+#+end_src
+**** kubectl
+
+#+begin_src sh
+gcloud container clusters get-credentials os2ds-cluster --zone europe-west4-a
+kubectl get nodes
+
+#+end_src
+
+access to DB
+#+begin_src sh
+kubectl run --rm=true -i --tty psql-client --image=postgres:12-alpine --restart=Never -- /bin/sh
+psql -h db.prod.os2datascanner.com -U admin -W os2ds_admin
 #+end_src
 
 ** local setup
