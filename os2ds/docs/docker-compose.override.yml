@@ -5,6 +5,10 @@ services:
       ports:
         - "5432:5432"
 
+    queue:
+      ports:
+        - "5672:5672"
+
     explorer:
       command: explorer --enable-metrics --debug
     exporter:

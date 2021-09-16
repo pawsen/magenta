@@ -358,6 +358,17 @@ OS2DS_ADMIN_USER_CONFIG_PATH=dev-environment/admin/dev-settings.toml
 OS2DS_REPORT_USER_CONFIG_PATH=dev-environment/report/dev-settings.toml
 #+end_src
 
+
+Run the apps locally
+#+begin_src sh
+export ds='$HOME/path_to_os2datascanner'
+export dsa='OS2DS_ADMIN_USER_CONFIG_PATH=$ds/dev-environment/admin/dev-settings.toml'
+
+cd $ds/src/os2datascanner/projects/admin
+dsa python ./manage.py runserver :8000
+dsa uvicorn --reload --port 8000 asgi:application
+#+end_src
+
 **** report
 Report module - before starting the webserver generate static files and translations as per [[https://git.magenta.dk/os2datascanner/os2datascanner/blob/development/docker/docker-entrypoint-django.sh#L27-30][docker-entrypoint-django.sh]]
 #+begin_src sh

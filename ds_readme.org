@@ -24,3 +24,35 @@
 - report
   - "log tail" for problem, matches, etc
     give me n-latest problem messages and follow
+
+
+
+* messages
+
+** MatchFragment
+#+begin_src json
+{
+  'rule': {
+    'type': 'links',
+    'sensitivity': 0,
+    'name': None
+  },
+  'matches': [
+    {
+      'match': 'http://localhost:64346/intet.html',
+      'context': 'unable to follow links',
+      'sensitivity': 0
+    },
+    {
+      'match': 'http://pawsen.dk',
+      'context': 'unable to follow links',
+      'sensitivity': 0
+    },
+    {
+      'match': 'http://pawsen2.dk',
+      'context': 'unable to follow links',
+      'sensitivity': 0
+    }
+  ]
+}
+#+end_src
