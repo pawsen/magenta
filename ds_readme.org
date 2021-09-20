@@ -56,3 +56,52 @@
   ]
 }
 #+end_src
+
+* Admin
+** models
+
+En bruger kan være
+- =superuser=, og har dermed adgang til alle =Feature=
+  dette er indbygget django feature der kommer fra =from django.c   ontrib.auth import get_user_model=
+- =administrator_for= og dermed knyttet til en =Client= (kunde). Dette er en DS feature.
+  Tilknyt din bruger til en =Client= ved at vælge =tilføj administratorer= i admin-interfacet.
+  Der skal være oprettet en =kunde= under =Kunder=. Husk at slå Features til for =kunden=
+
+#+begin_src python
+from os2datascanner.projects.admin.core.models.client import Client
+from os2datascanner.projects.admin.core.models.administrator import Administrator
+from os2datascanner.projects.admin.core.models import Feature
+
+# See if a given Feature is enabled for a user that have administrator_for
+user  = User.objects.all()[0]
+client = user.administrator_for.client
+user.administrator_for.client.enabled_features
+feature.IMPORT_SERVICES in user.administrator_for.client.enabled_features
+
+# get a user from a Client. There is a reverse ono-to-many(ForeignKey) relation, thus we need .first()
+client = Client.objects.all()[1]
+user = client.administrators.first()
+#+end_src
+
+
+ascii created using [[https://asciiflow.com/#/share/eJyrVspLzE1VslLyDzZyCY5PTMnNzFPSUcpJrEwtAopWxyhVxChZWZqa68QoVQJZRhYGQFZJakUJkBOjpEAlkJKVmJeer5ecn1dSlJmkl1hakqEXE5NHLeOBID21JL60OLUoPjc%2FJTWHSLOdczJT80og7GQwWw8cQpnFJUWJJflFxXpIih9N2UO8k4GKYcy0zKLiEg1NvGrJMBjIoBRN24UwNxQYduS4YnoL5Q7BZq9%2FUXpiXmZVYklmfl4xpr1QgBJb8Wn5RVhTFRWCChWBDIWkFxzWIQv7h2IV1sjMLcgvKtFE9z9FgQfhewOzWSYSH2YVkhtIs0KpVqkWAF8Il0o%3D)][asciiflow]]
+
+#+BEGIN_SRC ditaa :file img/admin_user_relationship.png
+                                                                        django.contrib.auth.
+                                                                           get_user_model
+                                    Client      client.administrators.           |
+                                       |        first()                          |
+                                       |      +--------------------->          User
+                                       |      <---------------------+
+                 Organizations         |        user.administrator_for.
+                 +---------------------+----    client
+                 |
+         OU      |
+         (import)|
+          +------+--------
+          |
+Konti     |
+(import)  |
+   -------+-------
+#+END_SRC
+
