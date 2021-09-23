@@ -991,7 +991,20 @@ psql -h db.prod.os2datascanner.com -U admin -W os2ds_admin
 *** local setup without docker
 Install both system- and python packages
 
-Run =install.sh= to install system- and python packages or run this
+System packages
+It might be necessary to downgrade =libpg= which is used by =libpq-dev= to provide =pg_config=
+See available versions (=list -a= and =apt-cache policy= is equivalent but different formatting of output)
+#+begin_src sh
+apt list -a libpq5
+apt-cache policy libpq5
+sudo apt install libpq5=12.8-0ubuntu0.20.04.1
+#+end_src
+
+Then install all system dependencies (maybe comment out some that is not needed)
+#+begin_src sh
+sudo apt-get -y install --no-install-recommends  $(rg -IN '^[^#][[:alnum:]]+' requirements//sys-requirements/sys-requirements*.txt)
+#+end_src
+
 #+begin_src sh
 fd -e txt . requirements/python-requirements -x pip install -r
 #+end_src
@@ -1008,6 +1021,8 @@ Install debug tools
 **** run
 different pipelines to run -- NOTE deprecated. use =pipeline.run_stage <stage>= instead
 #+begin_src sh
+dse python -m os2datascanner.engine2.pipeline.run_stage explorer
+
 python -m os2datascanner.engine2.pipeline.explorer
 python -m os2datascanner.engine2.pipeline.processor
 python -m os2datascanner.engine2.pipeline.matcher
