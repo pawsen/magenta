@@ -42,9 +42,17 @@ rz_list = []
 count = 0
 with SourceManager() as sm:
     for h in zsm.handles(sm):
+        handle = h
         rz = h.follow(sm)
         rz_list.append(rz)
         print(h)
+        print(
+            f"type:\t{handle.source.type_label}\n"
+            f"\thandle  \t{handle.presentation}\n"
+            f"\tsort_key\t{handle.sort_key}\n"
+            f"\tname    \t{handle.name}\n"
+                    )
+
         count += 1
 
 print(f"handles found {count}")
