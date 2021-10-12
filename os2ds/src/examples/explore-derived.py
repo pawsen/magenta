@@ -1,28 +1,20 @@
 #!/usr/bin/env python3
 
-import sys
 from pathlib import Path
-from os2datascanner.engine2.model.file import FilesystemSource, FilesystemHandle
-from os2datascanner.engine2.model.derived.zip import ZipHandle, ZipSource
+from os2datascanner.engine2.model.file import FilesystemHandle
 from os2datascanner.engine2.conversions import convert
 from os2datascanner.engine2.conversions.types import OutputType
-from os2datascanner.engine2.model.core import FileResource, Handle, Source
-from os2datascanner.engine2.model.data import DataSource, DataHandle
 from os2datascanner.engine2.model.core import (
     Source,
-    Handle,
     SourceManager,
-    UnknownSchemeError,
-    DeserialisationError,
 )
 
 datadir = Path().resolve().parent / "data/derived"
-fwd = datadir
-
 sm = SourceManager()
 
-def try_apply(source, sm, rule=None):
-    print(f"try_apply got called with source {source.type_label}")
+
+def traverse_derived_source(source, sm, rule=None):
+    print(f"got called with source {source.type_label}")
 
     for handle in source.handles(sm):
         derived = Source.from_handle(handle, sm)
@@ -36,9 +28,7 @@ def try_apply(source, sm, rule=None):
         )
 
         if derived:
-            yield from try_apply(derived, sm, rule)
-        else:
-            # import ipdb; ipdb.set_trace()
+            yield from traverse_derived_source(derived, sm, rule)
 
             resource = handle.follow(sm)
             operates_on = rule.operates_on if rule else OutputType.Text
@@ -52,16 +42,16 @@ rule = None
 def run_on_handle(handle):
     with SourceManager() as sm:
         source = Source.from_handle(handle, sm)
-        matches = list(try_apply(source, sm, rule))
+        matches = list(traverse_derived_source(source, sm, rule))
 
 
 fname = "embedded-cpr.pdf"
 fname = "embedded-cpr.odt"
-fname = "embedded-cpr.docx"
+# fname = "embedded-cpr.docx"
 fname = "embedded-cpr-odt.zip"
-fname = "embedded-cpr-pdf.zip"
-fname = "embedded-cpr.eml"
-handle = FilesystemHandle.make_handle(fwd / fname)
+# fname = "embedded-cpr-pdf.zip"
+# fname = "embedded-cpr.eml"
+handle = FilesystemHandle.make_handle(datadir / fname)
 
 run_on_handle(handle)
 
