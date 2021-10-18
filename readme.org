@@ -937,22 +937,34 @@ https://magenta.grafana.net
 Setup instructions
 [[https://labs.docs.magenta.dk/google-cloud-platform/instance-ssh-access.html][SSH-access to Google Cloud Compute instances (servers)]]
 
+The workflow is
+- list projects
+- list instances in a project
+- logon to the instance by specifying =--project= and =--zone= (this is not strictly necessary - it will chose the default zone if none is specified)
+
+
 #+begin_src sh
-gcloud compute ssh --tunnel-through-iap test-webserver-with-dummy-data --zone=europe-west4-a
+gcloud projects list
+gcloud compute instances list --project magenta-labs-os2ds-development
+
+gcloud compute ssh test-webserver-with-dummy-data --project=magenta-labs-os2ds-development --zone=europe-west4-a
+gcloud compute ssh test-web --project magenta-labs-os2ds-development --zone europe-west4-b
 #+end_src
 
 
 Copy files
 #+begin_src sh
-gcloud compute scp MYFILE --tunnel-through-iap test-webserver-with-dummy-data:~/ --zone=europe-west4-a
+gcloud compute scp MYFILE test-webserver-with-dummy-data:~/ --zone=europe-west4-a
 #+end_src
 
 Or use as a proxy
 #+begin_src sh
-gcloud compute ssh --tunnel-through-iap test-webserver-with-dummy-data --zone=europe-west4-a -- -N -p 22 -D localhost:5000
+gcloud compute ssh test-webserver-with-dummy-data --project=magenta-labs-os2ds-development --zone=europe-west4-a -- -N -p 22 -D localhost:5000
+
 curl https://api.ip2geo.pl/json/
 curl --proxy socks5://localhost:5000 https://api.ip2geo.pl/json/
 #+end_src
+
 
 *** change setup
 #+begin_src sh
@@ -963,9 +975,9 @@ gcloud config set project magenta-os2ds-production
 
 *** list commands
 #+begin_src sh
-gcloud projects list
 gcloud container clusters list
 gcloud compute instances list
+gcloud projects list
 gcloud compute instance-groups list
 
 # sql (postgres)
