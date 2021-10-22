@@ -37,6 +37,7 @@
   - [[#gcloud][gcloud]]
     - [[#change-setup][change setup]]
     - [[#list-commands][list commands]]
+    - [[#test-server][test server]]
   - [[#local-setup][local setup]]
     - [[#local-setup-without-docker][local setup without docker]]
     - [[#poetry][poetry]]
@@ -236,6 +237,9 @@ The easiest is to dump directly to/from localhost
 docker exec -t os2datascanner_db_1 pg_dumpall -U postgres --clean > db_dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
 
 # restore
+docker-comose exec -T db psql -U postgres < your_dump.sql
+
+# OR
 cat your_dump.sql | docker exec -i os2datascanenr_db_1 psql -U postgres
 #+end_src
 
@@ -998,6 +1002,51 @@ access to DB
 kubectl run --rm=true -i --tty psql-client --image=postgres:12-alpine --restart=Never -- /bin/sh
 psql -h db.prod.os2datascanner.com -U admin -W os2ds_admin
 #+end_src
+
+*** test server
+https://test-admin.os2datascanner.dk
+https://test.os2datascanner.dk/admin
+
+#+begin_src sh
+gcloud compute ssh test-web --project=magenta-labs-os2ds-development --zone=europe-west4-b
+sudo -s
+cd /opt/docker/os2ds_web
+
+# login to a container
+docker-compose exec report /bin/bash
+# or login as root if you need to install packages
+docker-compose exec --user root report /bin/bash
+
+# dump the db
+docker-compose exec -T db pg_dumpall -U postgres --clean > db_dump.sql
+gzip -k db_dump.sql
+chown pmo_magenta_aps_dk. db_dump.sql.gz
+mv db_dump.sql.gz /home/pmo_magenta_aps_dk/
+
+gcloud compute scp --project=magenta-labs-os2ds-development --zone=europe-west4-b test-web:~/db_dump.sql.gz ~/Downloads
+gunzip ~/Downloads/db_dump.sql.gz
+
+# import the db into local system
+docker-compose down -v
+docker-compose up -d db
+
+docker-compose exec -T db psql -U postgres < ~/Downloads/db_dump.sql
+
+# change user and permissions in the db
+# test-web have the db users os2ds_{report,admin}, whereas we use
+# os2datascanner_{report,admin}_dev
+docker-compose exec db psql -U postgres
+
+# it might be nessecary to connect to the relevant db's before reassigning
+\l    # list databases
+\du   # list users
+\c os2datascanner_admin  # connect to db
+\d+   # list tables in db
+
+reassign owned by os2ds_admin to os2datascanner_admin_dev;
+reassign owned by os2ds_report to os2datascanner_report_dev;
+#+end_src
+
 
 ** local setup
 *** local setup without docker
