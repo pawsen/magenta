@@ -206,3 +206,106 @@ docker attach <explorer_id>
 sticky
 # detach docker containeren uden at stoppe den
 ^p ^q
+
+* ipv6
+
+: extraOptions = "--ipv6 --fixed-cidr-v6 2001:db8:1::/64";
+
+To enable IPv6 internet access from containers, enable NAT for the private Docker subnet on the host:
+: ip6tables -t nat -A POSTROUTING -s 2001:db8:1::/64 ! -o docker0 -j MASQUERADE
+(and find a way to make it persistent)
+
+Test it with
+#+begin_src sh
+dkc run --rm 0u root mo bash
+apt update
+apt install nmap inetutils-ping dnsutils
+
+ping -6 google,com
+#+end_src
+
+
+#+begin_src yaml
+version: "3.9"
+services:
+  frontend:
+    depends_on:
+      mo:
+        condition: service_started
+    networks:
+      - ipv6
+  mo:
+    depends_on:
+      mox:
+        condition: service_started
+      msg_broker:
+        condition: service_started
+      keycloak:
+        condition: service_started
+      otel-collector:
+        condition: service_started
+    environment:
+      os2mo_auth: "false"
+    user: root
+    networks:
+      - ipv6
+  mox:
+    depends_on:
+      mox-db-init:
+        condition: service_completed_successfully
+      mox-db:
+        condition: service_started
+      otel-collector:
+        condition: service_started
+    ports:
+      - "5432:5432"
+    networks:
+      - ipv6
+  mox-db-init:
+    depends_on:
+      mox-db:
+        condition: service_started
+    networks:
+      - ipv6
+  keycloak:
+    depends_on:
+      keycloak-gen:
+        condition: service_completed_successfully
+      keycloak-db:
+        condition: service_started
+    networks:
+      - ipv6
+  otel-collector:
+    depends_on:
+      tempo:
+        condition: service_started
+  grafana:
+    depends_on:
+      tempo:
+        condition: service_started
+    networks:
+      - ipv6
+  msg_broker:
+    networks:
+      - ipv6
+  keycloak-db:
+    networks:
+      - ipv6
+  mox-db:
+    networks:
+      - ipv6
+  tempo:
+    networks:
+      - ipv6
+  fixture-loader:
+    networks:
+      - ipv6
+
+
+networks:
+  ipv6:
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: "fd12:3456:789a:1::/64"
+#+end_src
