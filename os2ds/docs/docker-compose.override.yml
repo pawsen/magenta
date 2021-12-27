@@ -9,12 +9,12 @@ services:
       ports:
         - "5672:5672"
 
-    explorer:
-      command: explorer --enable-metrics --debug
-    exporter:
-      command: exporter --enable-metrics --debug
-    worker:
-      command: worker --enable-metrics --debug
+    # explorer:
+    #   command: explorer --enable-metrics --debug
+    # exporter:
+    #   command: exporter --enable-metrics --debug
+    # worker:
+    #   command: worker --enable-metrics --debug
 
     # It seems it is not possible to have two entries for the same container.
     # After `docker-compose --profile debug up -d` you must stop the worker,
@@ -29,33 +29,33 @@ services:
         context: .
         dockerfile: docker/engine/Dockerfile
         target: engine
-      command: processor --enable-metrics --debug
+      command: processor --enable-metrics --log debug
       volumes:
         - ./dev-environment/engine/dev-settings.toml:/user-settings.toml
         - ./src/os2datascanner:/code/src/os2datascanner
       depends_on:
         - queue
-    matcher:
-      profiles: ["debug"]
-      build:
-        context: .
-        dockerfile: docker/engine/Dockerfile
-        target: engine
-      command: matcher --enable-metrics --debug
-      volumes:
-        - ./dev-environment/engine/dev-settings.toml:/user-settings.toml
-        - ./src/os2datascanner:/code/src/os2datascanner
-      depends_on:
-        - queue
-    tagger:
-      profiles: ["debug"]
-      build:
-        context: .
-        dockerfile: docker/engine/Dockerfile
-        target: engine
-      command: tagger --enable-metrics --debug
-      volumes:
-        - ./dev-environment/engine/dev-settings.toml:/user-settings.toml
-        - ./src/os2datascanner:/code/src/os2datascanner
-      depends_on:
-        - queue
+    # matcher:
+    #   profiles: ["debug"]
+    #   build:
+    #     context: .
+    #     dockerfile: docker/engine/Dockerfile
+    #     target: engine
+    #   command: matcher --enable-metrics --debug
+    #   volumes:
+    #     - ./dev-environment/engine/dev-settings.toml:/user-settings.toml
+    #     - ./src/os2datascanner:/code/src/os2datascanner
+    #   depends_on:
+    #     - queue
+    # tagger:
+    #   profiles: ["debug"]
+    #   build:
+    #     context: .
+    #     dockerfile: docker/engine/Dockerfile
+    #     target: engine
+    #   command: tagger --enable-metrics --debug
+    #   volumes:
+    #     - ./dev-environment/engine/dev-settings.toml:/user-settings.toml
+    #     - ./src/os2datascanner:/code/src/os2datascanner
+    #   depends_on:
+    #     - queue

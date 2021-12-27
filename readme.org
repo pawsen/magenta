@@ -1018,7 +1018,7 @@ docker-compose exec report /bin/bash
 docker-compose exec --user root report /bin/bash
 
 # dump the db
-docker-compose exec -T db pg_dumpall -U postgres --clean > db_dump.sql
+docker-compose exec db pg_dumpall -U postgres --clean > db_dump.sql
 gzip -k db_dump.sql
 chown pmo_magenta_aps_dk. db_dump.sql.gz
 mv db_dump.sql.gz /home/pmo_magenta_aps_dk/
@@ -1042,11 +1042,55 @@ docker-compose exec db psql -U postgres
 \du   # list users
 \c os2datascanner_admin  # connect to db
 \d+   # list tables in db
+\du   # list user priviledges
 
 reassign owned by os2ds_admin to os2datascanner_admin_dev;
 reassign owned by os2ds_report to os2datascanner_report_dev;
 #+end_src
 
+
+#+begin_src sh
+dkc exec db psql -U postgres
+
+# change password of user postgres
+# it is optionally to connect to the postgres db: \c postgres
+\password postgres
+
+drop database os2datascanner_report;
+drop database os2datascanner_admin;
+
+alter database os2ds_admin rename to os2datascanner_admin;
+alter database os2ds_report rename to os2datascanner_report;
+
+\c os2datascanner_admin
+reassign owned by os2ds_admin to os2datascanner_admin_dev;
+
+# connet as report user -- to make sure new tables are created with correct owner
+\c os2datascanner os2datascanner_report
+create table document_report_tmp as (SELECT * FROM os2datascanner_report_documentreport LIMIT 100);
+drop table document_report_tmp;
+
+alter table os2datascanner_report_documentreport rename to doc_report_bak;
+alter table document_report_tmp rename to os2datascanner_report_documentreport;
+alter table os2datascanner_report_documentreport owner to os2datascanner_report_dev;
+
+create table os2datascanner_report_documentreport as
+((SELECT * FROM doc_report_bak LIMIT 10) union all
+(SELECT * FROM doc_report_bak LIMIT 10));
+
+drop table os2datascanner_
+create table os2datascanner_report_documentreport as
+((SELECT * FROM doc_report_bak where sort_key = '.' LIMIT 10) union
+(SELECT * FROM doc_report_bak where sort_key != '.' LIMIT 10));
+
+create table wrong_sort_key as
+(select * from doc_report_bak where sort_key = '.');
+
+select id from os2datascanner_report_documentreport order by id asc;
+
+truncate os2datascanner_report_documentreport cascade;
+
+#+end_src
 
 ** local setup
 *** local setup without docker
@@ -1287,6 +1331,8 @@ See also [[file:os2ds/src/examples/gzip_source_from_string.py][gzip_source_from_
 ** nixis
 Example shell.nix file
 https://discourse.nixos.org/t/coc-nvim-nvim-stuff/2974/11
+
+
 * random
 ** Pipeline projekt oversigt
 https://docs.google.com/spreadsheets/d/1WylHagXFc2rXuB2qEfnPng4an78U49WiiP8lJWMCc2Y/edit#gid=281544569

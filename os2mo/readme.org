@@ -1,0 +1,184 @@
+#+TITLE: Readme
+
+
+* LoRa
+
+
+** get all search parameters for endpoint
+
+tip. Jeg skal lave en søgning i LoRa, fx. finde alle adresser for en person.
+Det gøres ved
+```
+curl -s "http://localhost:8080/organisation/organisationfunktion?funktionsnavn=FUNKTIONSNAVN&NØGLE=uuid&list=1"
+```
+Men hvordan finder jeg `FUNKTIONSNAVN` og `NØGLE`?
+
+Det gør jeg ved at få alle `organisationfunktion`er i databasen og derefter ekstrahere relevant info,
+
+```
+curl -s "http://localhost:8080/organisation/organisationfunktion?funktionsnavn=%&list=1" | jq > funktionsnavne.txt
+
+jq '[ .results[][].registreringer[].attributter.organisationfunktionegenskaber[].funktionsnavn ] | unique' funktionsnavne.txt
+
+jq '[ .results[][].registreringer[].relationer | keys | flatten[] ] | unique' funktionsnavne.txt
+```
+
+Det giver mig
+```
+> jq '[ .results[][].registreringer[].relationer | keys | flatten[] ] | unique' funktionsnavne.txt
+[
+  "adresser",
+  "opgaver",
+  "organisatoriskfunktionstype",
+  "primær",
+  "tilknyttedebrugere",
+  "tilknyttedeenheder",
+  "tilknyttedeitsystemer",
+  "tilknyttedeorganisationer"
+]
+> jq '[ .results[][].registreringer[].attributter.organisationfunktionegenskaber[].funktionsnavn ] | unique' funktionsnavne.txt
+[
+  "Adresse",
+  "Engagement",
+  "IT-system",
+  "Leder",
+  "Rolle",
+  "Tilknytning"
+]
+```
+og jeg ved nu at mit kald til LoRa skal være
+
+```
+> curl -s "http://localhost:8080/organisation/organisationfunktion?funktionsnavn=Adresse&tilknyttedebrugere=57561cc7-5e07-4a7b-b2bb-af5a22fa1f65&list=1"
+```
+for at få alle adresser tilknyttet brugeren `57561cc7-5e07-4a7b-b2bb-af5a22fa1f65`
+
+
+
+```
+        search_fields=_extract_search_params(
+            query_args={
+                "at": None,
+                "validity": None,
+                "overordnet": str(parent_uuid),
+                "gyldighed": "Aktiv",
+
+```
+** get all endpoints
+Jeg ser at man kan,
+https://git.magenta.dk/rammearkitektur/lora/blob/master/oio_rest/oio_rest/views.py#L48
+```
+> curl -s "http://localhost:8080/site-map"
+# nu ved jeg at man kan
+> curl -s "http://localhost:8080/organisation/organisationenhed/fields" | jq
+```
+
+```
+> curl -s "http://localhost:8080/organisation/organisationenhed/fields" | jq
+{
+  "attributter": {
+    "egenskaber": [
+      "brugervendtnoegle",
+      "enhedsnavn",
+      "integrationsdata"
+    ]
+  },
+  "attributter_metadata": {
+    "egenskaber": {
+      "brugervendtnoegle": {
+        "mandatory": true
+      }
+    }
+  },
+  "tilstande": {
+    "gyldighed": [
+      "Aktiv",
+      "Inaktiv"
+    ]
+  },
+  "relationer_nul_til_en": [
+    "overordnet",
+    "tilhoerer",
+    "skatteenhed",
+    "branche",
+    "niveau",
+    "produktionsenhed",
+    "enhedstype"
+  ],
+  "relationer_nul_til_mange": [
+    "tilknyttedeenheder",
+    "tilknyttedepersoner",
+    "tilknyttedefunktioner",
+    "tilknyttedeitsystemer",
+    "opgaver",
+    "adresser",
+    "tilknyttedeinteressefaellesskaber",
+    "opmærkning",
+    "ansatte",
+    "tilknyttedebrugere",
+    "tilknyttedeorganisationer"
+  ]
+}
+```
+
+* mo
+** utils
+hping3
+postman
+
+** test servers
+https://morademoorgviewer.magenta.dk
+https://moratest.magenta.dk/
+
+** docs
+https://mox.readthedocs.io
+https://os2mo-data-import-and-export.readthedocs.io
+
+** tips
+tip. Jeg skal lave en søgning i LoRa, fx. finde alle adresser for en person.
+Det gøres ved
+
+curl -s "http://localhost:8080/organisation/organisationfunktion?funktionsnavn=FUNKTIONSNAVN&NØGLE=uuid&list=1"
+
+
+Men hvordan finder jeg FUNKTIONSNAVN og NØGLE?
+
+Det gør jeg ved at få alle organisationfunktioner i databasen og derefter ekstrahere relevant info,
+
+curl -s "http://localhost:8080/organisation/organisationfunktion?funktionsnavn=%&list=1" | jq > funktionsnavne.txt
+jq '[ .results[][].registreringer[].attributter.organisationfunktionegenskaber[].funktionsnavn ] | unique' funktionsnavne.txt
+
+jq '[ .results[][].registreringer[].relationer | keys | flatten[] ] | unique' funktionsnavne.txt
+
+
+
+Det giver mig
+
+> jq '[ .results[][].registreringer[].relationer | keys | flatten[] ] | unique' funktionsnavne.txt
+[
+  "adresser",
+  "opgaver",
+  "organisatoriskfunktionstype",
+  "primær",
+  "tilknyttedebrugere",
+  "tilknyttedeenheder",
+  "tilknyttedeitsystemer",
+  "tilknyttedeorganisationer"
+]
+> jq '[ .results[][].registreringer[].attributter.organisationfunktionegenskaber[].funktionsnavn ] | unique' funktionsnavne.txt
+[
+  "Adresse",
+  "Engagement",
+  "IT-system",
+  "Leder",
+  "Rolle",
+  "Tilknytning"
+]
+
+
+og jeg ved nu at mit kald til LoRa skal være
+
+> curl -s "http://localhost:8080/organisation/organisationfunktion?funktionsnavn=Adresse&tilknyttedebrugere=57561cc7-5e07-4a7b-b2bb-af5a22fa1f65&list=1"
+
+
+for at få alle adresser tilknyttet brugeren 57561cc7-5e07-4a7b-b2bb-af5a22fa1f65
