@@ -182,3 +182,27 @@ og jeg ved nu at mit kald til LoRa skal være
 
 
 for at få alle adresser tilknyttet brugeren 57561cc7-5e07-4a7b-b2bb-af5a22fa1f65
+
+* debug på server
+Det har jeg lige brugt ifm. debugging af datascanner på en server.
+
+Det er dog nødvendigt at tilføje
+
+    stdin_open: true
+    tty: true
+
+
+til docker-compose.yml. Dernæst
+
+docker-compose up -d
+docker-compose exec -u root <explorer> bash
+apt install neovim
+pip install pdbpp
+# set breakpoint()
+^d
+docker-compose restart <explorer>
+docker attach <explorer_id>
+# brug pdb++ og skriv
+sticky
+# detach docker containeren uden at stoppe den
+^p ^q
